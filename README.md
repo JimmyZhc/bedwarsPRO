@@ -1,5 +1,7 @@
 # bedwarsPRO
 BedwarsPRO (Modifications and integration by JmmYm) 是基于 BedwarsRel 深度魔改的起床战争插件，本项目基于 GPL-3.0 许可证开源。
+
+### 在使用本源代码进行二次开发或拓展时，请务必保留原始作者信息，包括 Ram 与 JmmYm，不得以任何形式删除或隐藏。
  
 ### 版权声明
 Original BedwarsRel (C) 2015 Sebastian Binder (and other contributors)
@@ -10,9 +12,7 @@ Original BedwarsItemAddon (C) 2015 Ram
 
 Original BedwarsPRO (C) 2026 JmmYm
 
-### 在使用本源代码进行二次开发或拓展时，请务必保留原始作者信息，包括 Ram 与 JmmYm，不得以任何形式删除或隐藏。
-
-二创作者联系方式：
+作者联系方式：
 
 邮箱：jimmyzhangzhc@gmail.com
 
