@@ -1,0 +1,891 @@
+# BedwarsPRO Main Configuration
+# Merged from BedwarsRel + BedwarsScoreBoardAddon + BedwarsItemAddon
+
+license-key: ""
+
+# -------- 基础设置 --------
+chat-prefix: '&b起床战争§7>>'
+plugin-metrics: false
+send-error-data: false
+global-chat-after-end: true
+gamelength: 60
+allow-crafting: false
+overwrite-names: false
+lobby-gamemode: 0
+
+# -------- 全息统计信息 --------
+holographic-stats:
+  show-prefix: false
+  name-color: '&7'
+  value-color: '&3'
+  head-line: 起床战争
+
+# -------- 队伍与聊天 --------
+teamname-on-tab: false
+teamname-in-chat: true
+hearts-on-death: true
+die-on-void: true
+lobbytime: 60
+lobby-chatformat: '§7$player$§7: $msg$'
+ingame-chatformat-all: '&7[&fALL&7]$player$&f: $msg$'
+ingame-chatformat: '$player$&f: $msg$'
+game-block: BED_BLOCK
+store-game-records: true
+store-game-records-holder: true
+bed-sound: ENDERDRAGON_GROWL
+player-drops: false
+keep-inventory-on-death: false
+place-in-liquid: true
+
+# -------- 可破坏方块列表 --------
+breakable-blocks:
+  use-as-blacklist: false
+  list:
+    - none
+
+# -------- 队伍选择实体 --------
+jointeam-entity:
+  show-name: true
+
+# -------- 等待大厅计分板 --------
+lobby-scoreboard:
+  enabled: true
+  title: §d§l起床战争
+  content:
+    - §eModified By JmmYm
+
+# -------- 游戏内计分板（合并 bw + bwsba） --------
+scoreboard:
+  format-bed-destroyed: $team$ $status$
+  format-bed-alive: $team$ $status$
+  format-title: '&e&l起床战争'
+  interval: 2
+  you: "&7(你)"
+  team_bed_status:
+    bed_alive: "&a✔"
+    bed_destroyed: "&c✘"
+    bed_alive_empty: "&a✔"
+  team_status_format:
+    bed_alive: "{color} {team} &a✔ &8(&f&l{players}&8) {you}"
+    bed_destroyed: "{color} {team} &c✘ &8(&f&l{players}&8) {you}"
+    bed_alive_empty: "{color} {team} &a✔ &8(&f&l{players}&8) {you}"
+    team_dead: "{color} {team} &c✘ &8(&f&l{players}&8) {you}"
+
+# -------- 标题动画（Title） --------
+titles:
+  win:
+    enabled: true
+    title-stay: 5.0
+    title-fade-out: 2.0
+    subtitle-fade-in: 1.5
+    subtitle-fade-out: 2.0
+  map:
+    enabled: false
+    title-stay: 2.0
+    subtitle-fade-in: 1.5
+    subtitle-fade-out: 1.5
+  countdown:
+    enabled: true
+    format: '&3{countdown}'
+
+# -------- 爆炸相关 --------
+explodes:
+  destroy-worldblocks: false
+  destroy-beds: false
+
+# -------- 玩家交互 --------
+friendlyfire: false
+friendlybreak: false
+gameoverdelay: 20
+use-internal-shop: true
+save-inventory: false
+show-team-in-actionbar: false
+chat-to-all-prefix: {}
+seperate-game-chat: true
+seperate-spectator-chat: true
+
+# -------- 统计系统 --------
+statistics:
+  enabled: false
+  show-on-game-end: true
+  storage: database
+  bed-destroyed-kills: false
+  scores:
+    kill: 2
+    die: 0
+    win: 30
+    bed-destroy: 5
+    lose: 0
+    record: 10
+  player-leave-kills: false
+
+# -------- 数据库（仅当 storage: database） --------
+database:
+  host: localhost
+  port: 3306
+  db: bedwars
+  user: root
+  password: root
+  table-prefix: bw_
+
+# -------- 观战与复活 --------
+spectation-enabled: true
+respawn-protection: 0
+allowed-commands:
+  - /hub
+
+# -------- 游戏结束行为 --------
+endgame:
+  mainlobby-enabled: false
+  all-players-to-mainlobby: false
+
+# -------- BungeeCord 群组服设置 --------
+# enabled: false = 一端多图模式（游戏结束重置该图，不重启服务器）
+# enabled: true  = 一端一图模式（游戏结束重启整个服务器，需配合BC群组服）
+bungeecord:
+  enabled: false
+  hubserver: lobby
+  endgame-in-lobby: false
+  full-restart: false
+  spigot-restart: false
+  motds:
+    lobby: '&a等待中...'
+    running: '&7[&b$currentplayers$&7/&b$maxplayers$&7]'
+    stopped: |
+      $regionname$
+      &c[已停止]
+    full: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+
+# -------- 语言 --------
+locale: zh_CN
+
+# -------- 资源生成器配置 --------
+resource:
+  bronze:
+    item:
+      - type: NETHER_STAR
+        amount: 1
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: §4灵魂
+    spawn-interval: 1000
+    spread: 1.0
+  iron:
+    item:
+      - type: IRON_INGOT
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: §f铁
+    spawn-interval: 1500
+    spread: 1.0
+  gold:
+    item:
+      - type: GOLD_INGOT
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: §6金
+    spawn-interval: 10000
+    spread: 1.0
+  diamond:
+    item:
+      - type: DIAMOND
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: §b钻石
+    spawn-interval: 30000
+    spread: 1.0
+
+# -------- 更新检查 --------
+check-updates: false
+update-infos: false
+
+# -------- 奖励系统 --------
+rewards:
+  enabled: false
+  player-win:
+    - /point
+  player-end-game:
+    - /point
+  player-destroy-bed:
+    - /point
+  player-kill:
+    - /point
+
+# -------- 特殊物品配置 --------
+specials:
+  rescue-platform:
+    break-time: 10
+    using-wait-time: 20
+    item: BLAZE_ROD
+    can-break: false
+    block: SLIME_BLOCK
+  protection-wall:
+    break-time: 30
+    wait-time: 20
+    can-break: true
+    item: BRICK
+    block: SANDSTONE
+    width: 4
+    height: 4
+    distance: 2
+  magnetshoe:
+    probability: -1
+    boots: IRON_BOOTS
+  warp-powder:
+    show-particles: true
+    particle: fireworksSpark
+    teleport-time: 4
+  trap:
+    play-sound: true
+    effects:
+      - ==: PotionEffect
+        effect: 15
+        duration: 100
+        amplifier: 2
+        ambient: true
+        has-particles: true
+      - ==: PotionEffect
+        effect: 18
+        duration: 100
+        amplifier: 2
+        ambient: true
+        has-particles: true
+      - ==: PotionEffect
+        effect: 2
+        duration: 100
+        amplifier: 2
+        ambient: true
+        has-particles: true
+  tntsheep:
+    fuse-time: 8.0
+  arrow-blocker:
+    protection-time: 10
+    using-wait-time: 30
+    item: ender_eye
+
+# -------- 牌子（Sign）显示 --------
+sign:
+  first-line: $title$
+  second-line: 起床战争 $gamename$
+  third-line: 起床战争 &7[&b$currentplayers$&7/&b$maxplayers$&7]
+  fourth-line: 起床战争 $status$
+
+# -------- 玩家个人设置 --------
+player-settings:
+  one-stack-on-shift: true
+  old-shop-as-default: false
+
+# -------- 其他设置 --------
+lobbytime-full: 30
+hearts-in-halfs: true
+spawn-resources-in-chest: true
+global-autobalance: false
+
+# === 以下为 BedwarsScoreBoardAddon 配置（原 bwsba 扁平） ===
+
+#配置版本 (请勿修改!)
+version: 23
+
+#更新检测
+update_check:
+  enabled: false
+  report: true
+
+#初始化调试
+init_debug: false
+
+#隐藏非游戏玩家
+hide_player: true
+
+#Tab血量显示
+tab_health: true
+
+#头顶血量显示
+tag_health: true
+
+#合并掉落物品
+item_merge: false
+
+#改变饥饿值
+hunger_change: false
+
+#喝药水清除玻璃瓶
+clear_bottle: true
+
+#快速重生
+fast_respawn: true
+
+#聊天格式
+chat_format:
+  enabled: true
+  chat:
+    lobby: true
+    all: true
+    spectator: true
+  all_prefix:
+    - "!"
+    - "#"
+    - "@"
+  lobby: "{player} > {message}"
+  lobby_team: "{color}{player} &f> {message}"
+  ingame: "&7[{color}{team}&7] {color}{player} &f> {message}"
+  ingame_all: "&7[&f全体&7] &7[{color}{team}&7] {color}{player} &f> {message}"
+  spectator: "&7[&f旁观者&7] &f{player} > {message}"
+
+#最终击杀显示
+final_killed:
+  enabled: true
+  message: "&6{player} &6被击杀，击杀者： {killer} &b&l最终击杀"
+
+#定时执行命令
+timecommand:
+  startcommand:
+    - ""
+  event1:
+    gametime: 3420
+    command:
+      - "title @a title {\"text\":\"\",\"color\":\"dark_red\"}"
+      - "title @a subtitle {\"text\":\"产金速率变更\",\"color\":\"dark_red\"}"
+  event2:
+    gametime: 3240
+    command:
+      - "title @a title {\"text\":\"\",\"color\":\"dark_red\"}"
+      - "title @a subtitle {\"text\":\"第二岛屿刷新僵尸\",\"color\":\"dark_red\"}"
+      - "zombie_spawn gold_spawners"
+  event3:
+    gametime: 3060
+    command:
+      - "trigger_random_event"
+  event4:
+    gametime: 2880
+    command:
+      - "title @a title {\"text\":\"\",\"color\":\"dark_red\"}"
+      - "title @a subtitle {\"text\":\"产钻速率变更\",\"color\":\"dark_red\"}"
+  event5:
+    gametime: 2700
+    command:
+      - "title @a title {\"text\":\"\",\"color\":\"dark_red\"}"
+      - "title @a subtitle {\"text\":\"第一岛屿刷新僵尸猪人\",\"color\":\"dark_red\"}"
+      - "zombie_pigman_spawn diamond_spawners"
+  event6:
+    gametime: 2520
+    command:
+      - "title @a title {\"text\":\"\",\"color\":\"dark_red\"}"
+      - "title @a subtitle {\"text\":\"所有床已被摧毁\",\"color\":\"dark_red\"}"
+      - "destroy_all_beds"
+
+#队伍选择菜单
+select_team:
+  enabled: true
+  status:
+    select: "&e点击选择！"
+    inteam: "&e已在队伍中！"
+    team_full: "&c队伍已满！"
+  no_players: "&7(无)"
+  item:
+    name: "{color}{team}"
+    lore:
+      - ""
+      - "&f玩家: &e{players}&7/&e{maxplayers}"
+      - ""
+      - "&f玩家列表:"
+      - "  {color}{players_list}"
+      - ""
+      - "{status}"
+
+#清除大厅方块
+lobby_block:
+  enabled: false
+  position_1:
+    x: 12
+    y: 10
+    z: 12
+  position_2:
+    x: -12
+    y: -5
+    z: -12
+
+#掉线重连
+rejoin:
+  enabled: true
+  message:
+    rejoin: "&e{player} 重新加入了游戏！"
+    error: "&c无法重新加入游戏！"
+
+#弓箭伤害显示
+bowdamage:
+  enabled: false
+  title: ""
+  subtitle: ""
+  message: "&f你对玩家 &a{player} &f造成了 &a{damage} &f点伤害 血量 &a{health}/{maxhealth}"
+
+#伤害显示
+damagetitle:
+  enabled: false
+  title: ""
+  subtitle: "&b伤害 &f- &e{damage}  &b血量 &f- &e{health}&f/&e{maxhealth}"
+
+#玩家加入游戏时的标题
+jointitle:
+  enabled: true
+  title: "&f{player}&a加入了游戏"
+  subtitle: ""
+
+#游戏开始后标题
+start_title:
+  enabled: true
+  title:
+    - "&a游戏开始！"
+    - "&e保护好你的床！"
+  subtitle: ""
+
+#床被摧毁标题
+destroyed_title:
+  enabled: true
+  title: "&c床被摧毁"
+  subtitle: "&7你将不能重生!"
+
+#胜利标题
+victory_title:
+  enabled: true
+  title:
+    - "&6&l恭喜！"
+  subtitle: "{color}{team} §f获得胜利，用时：§6{time}"
+
+#播放声音
+play_sound:
+  enabled: true
+  sound:
+    start:
+      - ENDERDRAGON_GROWL,1,1
+    death: {}
+    kill:
+      - CAT_MEOW,1,1
+      - WOLF_BARK,1,1
+    upgrade: {}
+    sethealth: {}
+    no_resource:
+      - ENDERMAN_TELEPORT,1,0.5
+    enable_witherbow:
+      - ENDERDRAGON_GROWL,1,1
+    witherbow:
+      - WITHER_HURT,1,0
+    deathmode: {}
+    over:
+      - ENDERDRAGON_DEATH,1,1
+
+#旁观设置
+spectator:
+  enabled: true
+  centre:
+    enabled: true
+    height: 120
+  spectator_target:
+    title: "&a正在旁观&7{player}"
+    subtitle: "&a点击左键打开菜单   &c按Shift键退出"
+  quit_spectator:
+    title: ""
+    subtitle: "&e退出旁观模式"
+  speed:
+    enabled: true
+    slot: 5
+    item: 404
+    item_name: "&a旁观设置"
+    item_lore: {}
+    gui_title: "旁观者设置"
+    no_speed: "&a没有速度效果"
+    speed_1: "&a速度 I"
+    speed_2: "&a速度 II"
+    speed_3: "&a速度 III"
+    speed_4: "&a速度 IV"
+  fast_join:
+    enabled: false
+    slot: 8
+    item: 339
+    item_name: "&a再玩一局"
+    item_lore: {}
+    group: "bedwars"
+
+  #资源
+  resources:
+    IRON_INGOT: "&7铁"
+    GOLD_INGOT: "&6金"
+    DIAMOND: "&b钻石"
+
+#喷漆涂鸦
+graffiti:
+  enabled: true
+  holographic:
+    enabled: true
+    text: "&e点击！"
+
+#商店
+shop:
+  enabled: true
+  item_shop:
+    type: VILLAGER
+    skin: Steve
+    name:
+      - "&f商店"
+    look: false
+  team_shop:
+    type: BLAZE
+    skin: Steve
+    name:
+      - "&f商店"
+    look: false
+
+#倒计时重生设置
+respawn:
+  enabled: true
+  centre:
+    enabled: true
+    height: 120
+  respawn_delay: 5
+  protected:
+    enabled: true
+    time: 5
+  countdown:
+    title: "&e{respawntime}"
+    subtitle: "&a秒后复活"
+    message: ""
+  respawn:
+    title: "&a已重生"
+    subtitle: ""
+    message: "&a你已重生！"
+
+#物品给予
+giveitem:
+  keeparmor: false
+  armor:
+    helmet:
+      give: true
+      move: true
+      item:
+        - type: TEAM_ARMOR
+          meta:
+            ==: ItemMeta
+            meta-type: LEATHER_ARMOR
+            enchants:
+              WATER_WORKER: 1
+            Unbreakable: true
+          probability: 1
+    chestplate:
+      give: true
+      move: true
+      item:
+        - type: TEAM_ARMOR
+          meta:
+            ==: ItemMeta
+            meta-type: LEATHER_ARMOR
+            Unbreakable: true
+          probability: 1
+    leggings:
+      give: true
+      move: true
+      item:
+        - type: TEAM_ARMOR
+          meta:
+            ==: ItemMeta
+            meta-type: LEATHER_ARMOR
+            Unbreakable: true
+          probability: 1
+    boots:
+      give: true
+      move: true
+      item:
+        - type: TEAM_ARMOR
+          meta:
+            ==: ItemMeta
+            meta-type: LEATHER_ARMOR
+            Unbreakable: true
+          probability: 1
+  item:
+    item1:
+      give: true
+      slot: 0
+      item:
+        - type: WOOD_SWORD
+          meta:
+            ==: ItemMeta
+            meta-type: UNSPECIFIC
+            Unbreakable: true
+          probability: 1
+
+#均匀地散布队伍资源点
+spread_resource:
+  enabled: true
+  launch: false
+  range: 1.0
+
+#个人、队伍箱子
+game_chest:
+  enabled: true
+  range: 10
+  message: "&c{team} 团队还未被淘汰，你无法打开这个箱子！"
+
+#隐藏隐身玩家
+invisibility_player:
+  enabled: true
+  footstep: true
+  hide_particles: true
+  damage_show_player: false
+
+#凋零弓
+witherbow:
+  enabled: true
+  gametime: 2400
+  already_starte: "已开启"
+  title: "&b&l凋零弓"
+  subtitle: "&f所有箭矢将替换为凋零头颅"
+  message: "&b凋零弓已开启，所有箭矢将替换为凋零头颅！"
+
+#死亡模式
+deathmode:
+  enabled: true
+  gametime: 900
+  title: "&c&l死亡模式"
+  subtitle: "&f所有队伍床被破坏！"
+  message: "&f死亡模式开启，所有队伍床被破坏！"
+
+#击杀资源抢夺
+deathitem:
+  enabled: true
+  items:
+    - 'IRON_INGOT'
+    - 'GOLD_INGOT'
+    - 'DIAMOND'
+  item_name_chinesize: true
+  message: "+{amount} {item}"
+
+#禁止摧毁床
+nobreakbed:
+  enabled: false
+  gametime: 3300
+  nobreakmessage: "&f游戏开始后5分钟内禁止破坏床！"
+  title: ""
+  subtitle: ""
+  message: "&f已允许破坏敌方的床！"
+
+#出生点、资源点保护
+spawn_no_build:
+  spawn:
+    enabled: true
+    range: 1
+  resource:
+    enabled: false
+    range: 2
+  message: "&c你不能在这里放置方块！"
+
+#全息显示配置
+holographic:
+  resource:
+    enabled: false
+    speed: 1.0
+    resources: {}
+  bed_title:
+    bed_alive:
+      enabled: false
+      title: "&a床完好"
+    bed_destroyed:
+      enabled: false
+      title: "&c床已摧毁"
+
+#物品栏上方信息
+actionbar: ""
+
+#自定义倒计时
+timer:
+  1: 3600
+
+#设定计划信息
+planinfo:
+  1:
+    start_time: 3600
+    end_time: 3420
+    plans:
+      plan_1: "产金速率变更"
+      plan_2: "等待事件..."
+  2:
+    start_time: 3420
+    end_time: 3240
+    plans:
+      plan_1: "僵尸来袭"
+      plan_2: "第二岛屿将刷新僵尸！"
+  3:
+    start_time: 3240
+    end_time: 3060
+    plans:
+      plan_1: "随机事件"
+      plan_2: "等待事件..."
+  4:
+    start_time: 3060
+    end_time: 2880
+    plans:
+      plan_1: "产钻速率变更"
+      plan_2: "等待事件..."
+  5:
+    start_time: 2880
+    end_time: 2700
+    plans:
+      plan_1: "猪人来袭"
+      plan_2: "第一岛屿刷新僵尸猪人"
+  6:
+    start_time: 2700
+    end_time: 2520
+    plans:
+      plan_1: "床摧毁"
+      plan_2: "所有床将被摧毁！"
+
+#资源点升级
+resourceupgrade:
+  1:
+    gametime: 3420
+    upgrade:
+      - "GOLD_INGOT,160"
+  2:
+    gametime: 2880
+    upgrade:
+      - "DIAMOND,500"
+
+#资源限制
+resourcelimit:
+  enabled: false
+  limit: []
+
+#玩家头顶名称称号
+playertag:
+  prefix: "{color}{team} &f| {color}"
+  suffix: ""
+
+#日期格式
+date_format: "MM/dd/yy"
+
+#等待大厅计分板（计分板插件内部使用）
+lobby_scoreboard:
+  enabled: true
+  interval: 2
+
+#队伍商店
+team_shop:
+  trap_shop:
+    title: "&6陷阱商店"
+    back:
+      - "&7返回"
+  upgrade_shop:
+    title: "&e升级商店"
+    frame:
+      - "&7----------------------------"
+    trap:
+      item: "TRAP"
+      name: "陷阱"
+      lore:
+        - "&f点击装备陷阱"
+    message:
+      upgrade: "&a已购买升级！"
+      no_resource: "&c资源不足！"
+    state:
+      no_resource: "&c资源不足"
+      lock: "&c锁定"
+      unlock: "&a可用"
+  upgrade:
+    sword_sharpness:
+      enabled: true
+      item: "IRON_SWORD"
+      name: "锋利"
+      level_1:
+        cost: "20"
+        lore:
+          - "&7等级 I"
+          - "&f增加剑的伤害"
+      level_2:
+        cost: "40"
+        lore:
+          - "&7等级 II"
+          - "&f增加剑的伤害"
+      level_3:
+        cost: "80"
+        lore:
+          - "&7等级 III"
+          - "&f增加剑的伤害"
+      level_full:
+        lore:
+          - "&7已满级"
+    armor_protection:
+      enabled: true
+      item: "IRON_CHESTPLATE"
+      name: "护甲"
+      level_1:
+        cost: "30"
+        lore:
+          - "&7等级 I"
+          - "&f增加护甲"
+      level_2:
+        cost: "60"
+        lore:
+          - "&7等级 II"
+          - "&f增加护甲"
+      level_3:
+        cost: "90"
+        lore:
+          - "&7等级 III"
+          - "&f增加护甲"
+      level_4:
+        cost: "120"
+        lore:
+          - "&7等级 IV"
+          - "&f增加护甲"
+      level_full:
+        lore:
+          - "&7已满级"
+    counter_offensive_trap:
+      enabled: false
+      item: "TRIPWIRE_HOOK"
+      name: "陷阱"
+      trigger_range: 1.0
+      effect_range: 2.0
+      level_1:
+        lore:
+          - "&f等级 I"
+      level_full:
+        lore:
+          - "&f已满级"
+    alarm_trap:
+      enabled: false
+      item: "BELL"
+      name: "警报陷阱"
+      trigger_range: 1.0
+      trigger:
+        title: "&c警报!"
+        subtitle: "&e有人接近!"
+        message: "&c警报: &f有人接近你的床!"
+      level_1:
+        lore:
+          - "&f等级 I"
+      level_full:
+        lore:
+          - "&f已满级"
+    defense:
+      enabled: false
+      item: "SHIELD"
+      name: "防御"
+      trigger_range: 1.0
+      level_1:
+        lore:
+          - "&f等级 I"
+      level_full:
+        lore:
+          - "&f已满级"
+
+# === BWIA Item Addon 配置 ===
+
+#更新检测
+itemaddon_update_check:
+  enabled: false
+  report: true

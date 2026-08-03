@@ -1,0 +1,140 @@
+# ===================================================
+# BedwarsPRO 任务系统配置
+# ===================================================
+
+# -------- 每日任务开关 --------
+daily:
+  enabled: true
+  # true = 每天随机分配 count 个任务供玩家选择
+  # false = 玩家可从任务池自由选择（全部显示）
+  random-assign: true
+  count: 3
+
+# -------- 每周任务开关 --------
+weekly:
+  enabled: true
+  # true = 每周随机分配 count 个任务（从池中随机抽取）
+  # false = 每周任务全部启用
+  random-assign: false
+  count: 3
+
+# -------- 限时任务（原特殊任务）--------
+# 管理员通过 /bwpro task publish 发布，存在时间上限
+timed:
+  # 单个限时任务持续分钟数，到期自动移除
+  duration-minutes: 60
+
+# -------- 对局内行为奖励（实时发放）--------
+# 玩家在游戏对局中完成对应行为时立即给予经验和栖云币
+ingame-rewards:
+  normal-kill:
+    exp: 1
+    coins: 3
+  final-kill:
+    exp: 3
+    coins: 1
+  destroy-bed:
+    exp: 5
+    coins: 1
+  win:
+    exp: 6
+    coins: 2
+
+# -------- 追杀令（限时任务专用）--------
+# 通过 /bwpro task publish 击杀令 <玩家名> 发布
+# 接取后在游戏中击杀指定目标玩家即可获得奖励
+bounty:
+  reward-exp: 15
+  reward-coins: 2
+
+# -------- 调试时间加速倍率 --------
+# 1 = 真实时间（1天=24小时, 1周=7天）
+# 60 = 加速60倍（1天=24分钟）
+# 1440 = 1天=1分钟（便于调试）
+debug:
+  time-multiplier: 1
+
+# -------- 每日任务定义池 --------
+# type 可选值：
+#   PARTICIPATE       参与对局
+#   KILL              击杀玩家
+#   DESTROY_BED       破坏床
+#   COLLECT_RESOURCE  收集资源
+#   WIN               获胜对局
+#   FINAL_KILL        最终击杀（床被破坏后击杀）
+#   QUICK_WIN         快速获胜（5分钟内获胜）
+# 奖励字段：
+#   reward-exp    完成时给予的经验数量
+#   reward-coins  完成时给予的栖云币数量
+daily-tasks:
+  - type: PARTICIPATE
+    target: 3
+    name: "参与对局"
+    description: "参与3场起床战争对局"
+    reward-exp: 15
+    reward-coins: 2
+  - type: KILL
+    target: 5
+    name: "猎手"
+    description: "击杀5名玩家"
+    reward-exp: 20
+    reward-coins: 2
+  - type: DESTROY_BED
+    target: 2
+    name: "破床专家"
+    description: "破坏2张床"
+    reward-exp: 25
+    reward-coins: 3
+  - type: COLLECT_RESOURCE
+    target: 64
+    name: "资源收集者"
+    description: "收集64个资源"
+    reward-exp: 15
+    reward-coins: 1
+  - type: WIN
+    target: 1
+    name: "胜利者"
+    description: "获得1场对局胜利"
+    reward-exp: 30
+    reward-coins: 4
+  - type: FINAL_KILL
+    target: 3
+    name: "终结者"
+    description: "完成3次最终击杀"
+    reward-exp: 25
+    reward-coins: 3
+  - type: QUICK_WIN
+    target: 1
+    name: "速胜大师"
+    description: "在5分钟内获得1场对局胜利"
+    reward-exp: 40
+    reward-coins: 5
+
+# -------- 每周任务定义池 --------
+# 每周任务自动跟踪所有玩家进度，无需接受。
+# target-min ~ target-max: 每周开始时随机选取目标值
+# 奖励字段：
+#   reward-exp    完成时给予的经验数量
+#   reward-coins  完成时给予的栖云币数量
+weekly-tasks:
+  - type: WEEKLY_KILL
+    target-min: 50
+    target-max: 50
+    name: "累计击杀"
+    description: "一周内累计击杀50名玩家"
+    reward-exp: 120
+    reward-coins: 15
+  - type: WEEKLY_WIN
+    target-min: 5
+    target-max: 10
+    name: "累计胜场"
+    description: "一周内赢得5-10场游戏胜利"
+    reward-exp: 150
+    reward-coins: 20
+  - type: WEEKLY_DESTROY_BED
+    target-min: 10
+    target-max: 25
+    name: "累计拆床"
+    description: "一周内摧毁10-25张床"
+    reward-exp: 120
+    reward-coins: 15

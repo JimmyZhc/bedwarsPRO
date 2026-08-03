@@ -1,0 +1,232 @@
+name: BedwarsPRO
+description: |
+   Original BedwarsRel (C) 2015 Sebastian Binder (and other contributors)
+   Original BedwarsScoreBoardAddon (C) 2015 Ram
+   Original BedwarsItemAddon (C) 2015 Ram
+   Modifications and integration into bedwarsPRO (C) 2026 JmmYm
+author: Ram, Modified By JmmYm
+website: https://github.com/JimmyZhc/bedwarsPRO
+main: io.jmmym.bedwarspro.BedwarsPRO
+version: 1.0.0
+
+depend: [ProtocolLib]
+softdepend: [Multiverse-Core, Multiworld, HolographicDisplays, Citizens, PlaceholderAPI, ServerJoiner, WorldEdit, BedwarsXP]
+
+commands:
+  bw:
+    description: 所有 BedwarsPRO 命令的基础命令
+    usage: /<command> <help>
+    permission: bw.base
+  bw author:
+    description: 显示插件作者信息
+    usage: /<command> author
+    permission: bw.base
+  bw setspawner:
+    description: 设置一个特定类型的资源生成点
+    usage: /<command> [game] [Ressource]
+    permission: bw.setup
+  bw addgame:
+    description: 添加一个新的游戏
+    usage: /<command> [Name]
+    permission: bw.setup
+  bw start:
+    description: 开始一个游戏
+    usage: /<command> [game]
+    permission: bw.setup
+  bw addteam:
+    description: 向游戏添加一个队伍
+    usage: /<command> [Name] [Color]
+    permission: bw.setup
+  bw save:
+    description: 将游戏保存到配置文件
+    usage: /<command> [Name]
+    permission: bw.setup
+  bw setregion:
+    description: 设置游戏的两个可选区域之一
+    usage: /<command> [Name] [loc1;loc2]
+    permission: bw.setup
+  bw join:
+    description: 加入游戏中的特定队伍
+    usage: /<command> [game] [Team]
+    permission: bw.base
+  bw setspawn:
+    description: 设置队伍的出生点
+    usage: /<command> [game] [Team]
+    permission: bw.setup
+  bw setlobby:
+    description: 设置游戏的大厅位置
+    usage: /<command> [game]
+    permission: bw.setup
+  bw settarget:
+    description: 设置游戏中队伍的目标方块（床）
+    usage: /<command> [game] [Team]
+    permission: bw.setup
+  bw setbed:
+    description: 设置游戏中队伍的床
+    usage: /<command> [game] [Team]
+    permission: bw.setup
+  bw leave:
+    description: 离开当前游戏
+    usage: /<command>
+    permission: bw.base
+  bw reload:
+    description: 重载配置和语言文件
+    usage: /<command>
+    permission: bw.setup
+  bw list:
+    description: 列出所有可用的游戏
+    usage: /<command>
+    permission: bw.base
+  bw regionname:
+    description: 设置区域名称
+    usage: /<command>
+    permission: bw.setup
+  bw removeteam:
+    description: 移除游戏中的一个队伍
+    usage: /<command>
+    permission: bw.setup
+  bw removegame:
+    description: 移除一个游戏
+    usage: /<command>
+    permission: bw.setup
+  bw clearspawner:
+    description: 移除游戏中的所有资源生成点
+    usage: /<command>
+    permission: bw.setup
+  bw gametime:
+    description: 设置游戏世界中使用的时间
+    usage: /<command>
+    permission: bw.setup
+  bw stats:
+    description: 显示起床战争的统计数据
+    usage: /<command>
+    permission: bw.base
+  bw setminplayers:
+    description: 设置游戏的最小玩家数量
+    usage: /<command>
+    permission: bw.setup
+  bw setgameblock:
+    description: 为特定游戏设置目标方块
+    usage: /<command>
+    permission: bw.setup
+  bw setbuilder:
+    description: 设置地图的建筑者，用于游戏开始时显示标题
+    usage: /<command>
+    permission: bw.setup
+  bw setautobalance:
+    description: 当全局自动平衡关闭时，为此游戏开启或关闭自动平衡
+    usage: /<command>
+    permission: bw.setup
+  bw kick:
+    description: 将玩家踢出游戏
+    usage: /<command>
+    permission: bw.kick
+  bw addteamjoin:
+    description: 标记一个用于加入特定队伍的生物（如NPC）
+    usage: /<command>
+    permission: bw.setup
+  bw addholo:
+    description: 添加一个全息统计显示位置
+    usage: /<command>
+    permission: bw.setup
+  bw removeholo:
+    description: 移除一个全息统计显示位置
+    usage: /<command>
+    permission: bw.setup
+  bedwarsscoreboardaddon:
+    description: BedwarsScoreBoardAddon 基础命令
+    aliases: [bwsba]
+    usage: /<command>
+  bedwarsitemaddon:
+    description: BedwarsItemAddon 基础命令
+    aliases: [bwia]
+    usage: /<command>
+  shout:
+    description: 向所有人喊话
+    usage: /<command>
+  rejoin:
+    description: 重新加入游戏
+    usage: /<command>
+  bwpro:
+    description: BedwarsPRO 每日任务系统命令
+    usage: /<command> task [gui|on|off|publish <name>|clear|info]
+    permission: bwpro.task.use
+
+permissions:
+  bw.base:
+    description: 允许玩家进行游戏
+    default: true
+  bw.setup:
+    description: 允许设置新游戏或现有游戏
+    default: op
+  bw.kick:
+    description: 允许玩家将其他玩家踢出游戏
+    default: op
+  bw.vip.*:
+    description: 允许特殊用户权限
+    default: op
+    children:
+      bw.vip.joinfull: true
+      bw.vip.forcestart: true
+      bw.vip.reducecountdown: true
+      bw.vip.skipbalance: true
+  bw.cmd:
+    description: 允许在游戏内执行非起床战争命令
+    default: op
+  bw.otherstats:
+    description: 允许查看其他玩家的统计数据
+    default: op
+  bedwarsscoreboardaddon.reload:
+    description: 允许重载 BedwarsScoreBoardAddon 配置
+    default: op
+  bedwarsscoreboardaddon.updatecheck:
+    description: 允许检查更新
+    default: op
+  bedwarsscoreboardaddon.edit:
+    description: 允许编辑游戏设置
+    default: op
+  bedwarsscoreboardaddon.teleport:
+    description: 允许传送到玩家处
+    default: op
+  bedwarsscoreboardaddon.shop.list:
+    description: 允许列出商店物品
+    default: op
+  bedwarsscoreboardaddon.shop.set:
+    description: 允许设置商店物品
+    default: op
+  bedwarsscoreboardaddon.shop.remove:
+    description: 允许移除商店物品
+    default: op
+  bedwarsscoreboardaddon.spawner.list:
+    description: 允许列出生成点
+    default: op
+  bedwarsscoreboardaddon.spawner.set:
+    description: 允许设置生成点
+    default: op
+  bedwarsscoreboardaddon.spawner.remove:
+    description: 允许移除生成点
+    default: op
+  bedwarsitemaddon.reload:
+    description: 允许重载 BedwarsItemAddon 配置
+    default: op
+  bedwarsitemaddon.updatecheck:
+    description: 允许检查更新
+    default: op
+  bedwarsitemaddon.*:
+    description: BedwarsItemAddon 的通配符权限
+    default: op
+    children:
+      bedwarsitemaddon.reload: true
+      bedwarsitemaddon.updatecheck: true
+  bwpro.task.use:
+    description: 允许使用 /bwpro task 基础命令（查看/接受任务）
+    default: true
+  bwpro.task.publish:
+    description: 允许发布特殊每日任务（金色名）
+    default: op
+  bwpro.task.admin:
+    description: 允许开关每日/每周任务系统、清空特殊任务
+    default: op
+  bwpro.task.reload:
+    description: 允许重载 tasks.yml 配置
+    default: op

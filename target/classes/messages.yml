@@ -1,0 +1,121 @@
+# BedwarsPRO 任务系统 - 聊天消息配置
+# 修改后使用 /bwpro task reload 重载（或重启服务器）
+# 可用颜色代码: &0-黑色 &1-深蓝 &2-深绿 &3-深青 &4-深红 &5-深紫 &6-金 &7-灰
+#              &8-深灰 &9-蓝 &a-绿 &b-青 &c-红 &d-紫 &e-黄 &f-白
+# 可用占位符: {player} {task} {target} {exp} {coins} {minutes} {id} {type} {progress} {max}
+
+# ===== 任务完成提示 =====
+daily-complete: "&6[每日任务] &a你完成了: &f{task} &a!"
+weekly-complete: "&5[每周任务] &a你完成了: &f{task} &a!"
+reward-line: "&e奖励: &f经验 +{exp}  &6栖云币 +{coins}"
+
+# ===== 对局内行为奖励 =====
+ingame-normal-kill: "&6[普通击杀] &a获得奖励: &e经验 +{exp}  &6栖云币 +{coins}"
+ingame-final-kill: "&6[最终击杀] &a获得奖励: &e经验 +{exp}  &6栖云币 +{coins}"
+ingame-destroy-bed: "&6[拆床] &a获得奖励: &e经验 +{exp}  &6栖云币 +{coins}"
+ingame-win: "&6[胜利] &a获得奖励: &e经验 +{exp}  &6栖云币 +{coins}"
+
+# ===== 追杀令 =====
+bounty-complete: "&6[追杀令] &a你成功击杀了目标 &e{target} &a!"
+bounty-publish-success: "&a已发布追杀令: &6击杀令 (目标: &e{target}&a) &e（持续 {minutes} 分钟）"
+bounty-publish-duplicate: "&e针对 {target} 的追杀令已存在。"
+
+# ===== 限时任务 =====
+timed-publish-success: "&a已发布限时任务: &6{task} &e（持续 {minutes} 分钟）"
+timed-publish-not-found: "&c未找到名为 '{task}' 的任务。请检查 tasks.yml。"
+timed-publish-duplicate: "&e该限时任务已存在。"
+timed-publish-broadcast: "&6[限时任务发布] &f管理员发布了限时任务: &6{task} &7— &f{description} &e（持续 {minutes} 分钟）"
+timed-remove: "&6[限时任务移除] &fID#{id} {task} &7已下架。"
+timed-expire: "&6[限时任务到期] &f{task} &7已超时自动下架。"
+timed-list-empty: "&e当前没有已发布的限时任务。"
+timed-list-header: "&6===== 已发布限时任务列表 ====="
+timed-list-entry: "&6ID#{id} &f{task} &7— &f{description} &2 [目标: {target}]"
+timed-list-footer: "&8使用 /bwpro task remove <ID> 移除指定任务"
+timed-cleared: "&a已清空所有限时任务。"
+
+# ===== 玩家加入提示 =====
+join-header: "&6===== 当前活跃限时任务 ====="
+join-bounty-entry: "&6[追杀令] &f{task} &7— &f{description}"
+join-timed-entry: "&6[限时] &f{task} &7— &f{description}"
+join-footer: "&e使用 /bwpro task gui 查看并接取任务"
+
+# ===== 命令反馈 =====
+cmd-not-player: "&c此命令只能由玩家执行。"
+cmd-no-permission: "&c你没有权限。"
+cmd-no-permission-publish: "&c你没有权限发布限时任务。"
+cmd-no-permission-admin: "&c你没有权限执行此操作。"
+cmd-usage-publish: "&c用法: /bwpro task publish <任务名>  或  /bwpro task publish 击杀令 <目标玩家>"
+cmd-usage-publish-bounty: "&c用法: /bwpro task publish 击杀令 <目标玩家名>"
+cmd-usage-random: "&c用法: /bwpro task random <on|off>"
+cmd-usage-weekly: "&c用法: /bwpro task weekly <on|off>"
+cmd-usage-wrandom: "&c用法: /bwpro task wrandom <on|off>"
+cmd-usage-remove: "&c用法: /bwpro task remove <ID>  (先用 /bwpro task list 查看ID)"
+cmd-usage-reset: "&c用法: /bwpro task reset <玩家> [daily|weekly|timed|all]"
+cmd-invalid-id: "&cID 必须是数字。"
+cmd-id-not-found: "&cID#{id} 不存在。使用 /bwpro task list 查看可用ID。"
+cmd-player-not-found: "&c未找到玩家: {player}"
+cmd-player-no-data: "&c玩家 {player} 没有任务数据。"
+cmd-invalid-type: "&c无效的类型: {type} (可选: daily, weekly, timed, all)"
+cmd-reload-success: "&a任务配置已重载。"
+cmd-reload-detail: "&7每日池: {daily} | 每周池: {weekly} | 每日随机: {random} | 每周随机: {wrandom}"
+cmd-reload-fail: "&c重载失败: {error}"
+cmd-daily-toggle: "&a每日任务系统已 {state}。"
+cmd-weekly-toggle: "&a每周任务系统已 {state}。"
+cmd-random-toggle: "&a每日随机分配已 {state}。"
+cmd-wrandom-toggle: "&a每周随机分配已 {state}。"
+cmd-daily-weekly-disabled: "&c每日和每周任务系统当前均已关闭。"
+cmd-remove-success: "&a已移除限时任务 ID#{id}"
+cmd-reset-success: "&a已重置玩家 {player} 的 &e{type} &a任务进度。"
+cmd-system-not-init: "&c任务系统未初始化。"
+
+# ===== 任务信息查看 =====
+info-no-daily: "&e你今日尚未接受每日任务。使用 /bwpro task gui 选择。"
+info-daily-tag: "&b[每日] "
+info-weekly-tag: "&5[每周] "
+info-progress: "&7  进度: {progress}/{max}"
+info-completed-mark: "&6 ✔已完成"
+info-day-debug: "&8天={day}"
+
+# ===== GUI 交互反馈 =====
+gui-accept-success: "&a已接受任务！"
+gui-already-accepted: "&e你今日已接受任务，无法更改。"
+gui-invalid-slot: "&c无效的任务槽位。"
+gui-daily-disabled: "&c每日任务系统已关闭。"
+
+# ===== Help 菜单 =====
+help-header: "&2===== BedwarsPRO 任务系统 ====="
+help-gui: "&b/bwpro task gui &7- 打开任务菜单"
+help-info: "&b/bwpro task info &7- 查看任务进度"
+help-list: "&b/bwpro task list &7- 列出已发布限时任务及ID"
+help-onoff: "&b/bwpro task on|off &7- 开关每日任务"
+help-random: "&b/bwpro task random on|off &7- 开关每日随机分配"
+help-weekly: "&b/bwpro task weekly on|off &7- 开关每周任务"
+help-wrandom: "&b/bwpro task wrandom on|off &7- 开关每周随机分配"
+help-reload: "&b/bwpro task reload &7- 重载配置"
+help-remove: "&b/bwpro task remove <ID> &7- 按ID移除限时任务"
+help-clear: "&b/bwpro task clear &7- 清空全部限时任务"
+help-reset: "&b/bwpro task reset <玩家> [daily|weekly|timed|all] &7- 清除玩家任务进度"
+help-publish: "&b/bwpro task publish <name> &7- 发布限时任务"
+help-publish-bounty: "&b/bwpro task publish 击杀令 <玩家名> &7- 发布追杀令"
+
+# ===== GUI 界面 =====
+gui-title: "&2每日 / 每周 / 限时任务"
+gui-weekly-separator: "&b↓ 每周任务 ↓"
+gui-timed-separator: "&6↓ 限时任务 ↓"
+gui-footer-separator: "&8BedwarsPRO 任务系统"
+gui-target: "&e目标: &f{target}"
+gui-progress-line: "&a进度: &f{progress}/{max}"
+gui-completed: "&6✔ 已完成"
+gui-accepted: "&a已接受"
+gui-no-accept: "&c今日已接受其他任务"
+gui-click-accept: "&d点击接受此任务"
+gui-weekly-name: "&5[每周] {name}"
+gui-weekly-target: "&e本周目标: &f{target}"
+gui-weekly-progress: "&a进度: &f{progress}/{max}"
+gui-weekly-done: "&6✔ 已完成"
+gui-weekly-auto: "&8（自动跟踪，无需接受）"
+gui-reward-prefix: "&e奖励: "
+gui-exp: "&f经验 +{exp}"
+gui-coins: "&6栖云币 +{coins}"
+gui-no-reward: "&8无"
+gui-bounty-target: "&6(目标: &e{target}&6)"

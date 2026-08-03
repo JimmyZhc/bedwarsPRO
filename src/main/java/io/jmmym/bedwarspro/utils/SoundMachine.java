@@ -1,0 +1,25 @@
+package io.jmmym.bedwarspro.utils;
+
+import io.jmmym.bedwarspro.BedwarsPRO;
+import org.bukkit.Sound;
+
+public class SoundMachine {
+
+  public static Sound get(String v18, String v19) {
+    Sound finalSound = null;
+
+    try {
+      if (BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
+        finalSound = Sound.valueOf(v18);
+      } else {
+        finalSound = Sound.valueOf(v19);
+      }
+    } catch (Exception ex) {
+      BedwarsPRO.getInstance().getBugsnag().notify(ex);
+      // just compatibility
+    }
+
+    return finalSound;
+  }
+
+}
