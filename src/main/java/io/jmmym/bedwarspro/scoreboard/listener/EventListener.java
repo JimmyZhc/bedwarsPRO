@@ -126,6 +126,17 @@ public class EventListener implements Listener {
 					}
 				}
 			}
+			if (args.length > 2 && args[1].equalsIgnoreCase("editgame")) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						Game game = BedwarsPRO.getInstance().getGameManager().getGame(args[2]);
+						if (game != null) {
+							EditGame.editGame(player, game);
+						}
+					}
+				}.runTask(Main.getPlugin());
+			}
 			return;
 		}
 		if (!args[0].equalsIgnoreCase("/rejoin")) {

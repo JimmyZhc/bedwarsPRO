@@ -61,8 +61,10 @@ import java.util.Map;
 import java.util.HashMap;
 public class PlayerListener extends BaseListener {
 
-  // 保存死亡玩家的下界之星，重生时归还
+  // 保存死亡玩家的绑定护甲，重生时归还
   private static Map<UUID, List<ItemStack>> savedNetherStars = new HashMap<>();
+  // 保存死亡玩家的下界之星数量，重生时归还
+  private static Map<UUID, Integer> savedNetherStarCount = new HashMap<>();
 
   private String getChatFormat(String format, Team team, boolean isSpectator, boolean all) {
     String form = format;
@@ -838,21 +840,31 @@ public class PlayerListener extends BaseListener {
         killer.getInventory().addItem(soul);
       }
 
-      // 保留死亡玩家的灵魂和绑定护甲
+      // 统计背包中的下界之星数量（不包括箱子/末影箱中的）
+      int netherStarCount = 0;
+      for (ItemStack invItem : player.getInventory().getContents()) {
+        if (invItem != null && invItem.getType() == Material.NETHER_STAR) {
+          netherStarCount += invItem.getAmount();
+        }
+      }
+      if (netherStarCount > 0) {
+        savedNetherStarCount.put(player.getUniqueId(), netherStarCount);
+      }
+
+      // 保留死亡玩家的绑定护甲，并从掉落物中移除下界之星和绑定护甲
       List<ItemStack> savedItems = new ArrayList<>();
       List<ItemStack> drops = pde.getDrops();
       Iterator<ItemStack> it = drops.iterator();
       while (it.hasNext()) {
         ItemStack item = it.next();
         if (item != null && item.getType() == Material.NETHER_STAR) {
-          savedItems.add(item.clone());
           it.remove();
         } else if (isBoundArmor(item)) {
           savedItems.add(item.clone());
           it.remove();
         }
       }
-      // 保存到静态 map，重生时归还
+      // 保存绑定护甲到静态 map，重生时归还
       if (!savedItems.isEmpty()) {
         savedNetherStars.put(player.getUniqueId(), savedItems);
       }
@@ -1242,14 +1254,17 @@ public class PlayerListener extends BaseListener {
             }
           }
 
-          // 归还非护甲类保存物品（如下界之星）
-          if (savedNetherStars.containsKey(p.getUniqueId())) {
-            List<ItemStack> saved = savedNetherStars.remove(p.getUniqueId());
-            for (ItemStack item : saved) {
-              if (!isBoundArmor(item)) {
-                inv.addItem(item);
-              }
-            }
+          // 清空已处理的绑定护甲保存数据
+          savedNetherStars.remove(p.getUniqueId());
+
+          // 按计数归还下界之星（只归还死亡时背包中的数量）
+          if (savedNetherStarCount.containsKey(p.getUniqueId())) {
+            int count = savedNetherStarCount.remove(p.getUniqueId());
+            ItemStack soul = new ItemStack(Material.NETHER_STAR, count);
+            ItemMeta soulMeta = soul.getItemMeta();
+            soulMeta.setDisplayName(ChatColor.DARK_RED + "灵魂");
+            soul.setItemMeta(soulMeta);
+            inv.addItem(soul);
           }
 
           // 应用队伍武器附魔

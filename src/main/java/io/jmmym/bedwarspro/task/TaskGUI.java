@@ -1,5 +1,6 @@
 package io.jmmym.bedwarspro.task;
 
+import io.jmmym.bedwarspro.BedwarsPRO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,12 +97,50 @@ public class TaskGUI implements InventoryHolder {
             Task t = specialTasks.get(i);
             int dailyIdx = allDaily.indexOf(t);
             slotToDailyIndex.put(SPECIAL_START + i, dailyIdx);
-            inventory.setItem(SPECIAL_START + i,
-                    buildDailyItem(t, i + 1, hasAccepted, accepted, state));
+            if (t.isBounty()) {
+                inventory.setItem(SPECIAL_START + i, buildBountyItem(t, i + 1, state));
+            } else {
+                inventory.setItem(SPECIAL_START + i,
+                        buildDailyItem(t, i + 1, hasAccepted, accepted, state));
+            }
         }
 
-        // ===== 行6: 分隔 (slot 45-53) =====
-        fillSeparator(45, 53, TaskMessages.get("gui-footer-separator"));
+        // ===== 行6: 分隔+时钟 (slot 45-53) =====
+        fillClockSeparator(45, 53, TaskMessages.get("gui-footer-separator"), player);
+    }
+
+    private ItemStack buildBountyItem(Task t, int displayNum, PlayerTaskState state) {
+        Material mat = Material.GOLDEN_APPLE;
+        ItemStack item = new ItemStack(mat);
+        ItemMeta meta = item.getItemMeta();
+
+        StringBuilder displayName = new StringBuilder();
+        displayName.append(ChatColor.GOLD).append(displayNum).append(". ").append(t.getName());
+        if (t.getTargetPlayer() != null) {
+            displayName.append(TaskMessages.get("gui-bounty-target",
+                    "target", t.getTargetPlayer()));
+        }
+        meta.setDisplayName(displayName.toString());
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + t.getDescription());
+        lore.add(TaskMessages.get("gui-target", "target", t.getTarget()));
+        lore.add(buildRewardLore(t));
+
+        if (state.hasBountyCompleted(t.getTargetPlayer())) {
+            lore.add(TaskMessages.get("gui-completed"));
+        } else if (state.hasActiveBounty()
+                && t.getTargetPlayer() != null
+                && t.getTargetPlayer().equalsIgnoreCase(state.getActiveBountyTarget())) {
+            lore.add(TaskMessages.get("gui-accepted"));
+        } else if (state.hasActiveBounty()) {
+            lore.add(ChatColor.RED + "已有活跃击杀令，完成后可接取");
+        } else {
+            lore.add(TaskMessages.get("gui-click-accept"));
+        }
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
     }
 
     private ItemStack buildDailyItem(Task t, int displayNum, boolean hasAccepted,
@@ -182,13 +221,64 @@ public class TaskGUI implements InventoryHolder {
     }
 
     private void fillSeparator(int from, int to, String label) {
+        int color = BedwarsPRO.getInstance().getConfig().getInt("task-gui.separator-color", 3);
         for (int slot = from; slot <= to; slot++) {
-            ItemStack sep = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
+            ItemStack sep = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) color);
             ItemMeta meta = sep.getItemMeta();
             meta.setDisplayName(slot == (from + to) / 2 ? label : " ");
-            meta.setLore(new ArrayList<>());
             sep.setItemMeta(meta);
             inventory.setItem(slot, sep);
+        }
+    }
+
+    /** 第6行分隔：中间放时钟显示刷新/领取时间 */
+    private void fillClockSeparator(int from, int to, String label, Player player) {
+        TaskManager tm = TaskManager.getInstance();
+        int color = BedwarsPRO.getInstance().getConfig().getInt("task-gui.separator-color", 3);
+        int clockOffset = BedwarsPRO.getInstance().getConfig().getInt("task-gui.clock-slot", 4);
+        int clockSlot = from + clockOffset;
+        String clockMatName = BedwarsPRO.getInstance().getConfig().getString("task-gui.clock-material", "WATCH");
+        Material clockMat;
+        try {
+            clockMat = Material.valueOf(clockMatName);
+        } catch (IllegalArgumentException e) {
+            clockMat = Material.WATCH;
+        }
+
+        long nextDaily = tm != null ? tm.getNextDailyRefreshTime() : 0;
+        long nextWeekly = tm != null ? tm.getNextWeeklyRefreshTime() : 0;
+        String dailyTime = TaskManager.formatTime(nextDaily);
+        String weeklyTime = TaskManager.formatTime(nextWeekly);
+
+        // 领取时间：玩家已接受任务则显示 acceptedTime+24h，否则显示"无"
+        String claimTime;
+        PlayerTaskState state = tm != null ? tm.getState(player) : null;
+        if (state != null && state.getAcceptedTime() > 0) {
+            claimTime = TaskManager.formatTime(state.getAcceptedTime() + 86400000L);
+        } else {
+            claimTime = ChatColor.GRAY + "无";
+        }
+
+        for (int slot = from; slot <= to; slot++) {
+            if (slot == clockSlot) {
+                // 时钟物品
+                ItemStack clock = new ItemStack(clockMat);
+                ItemMeta meta = clock.getItemMeta();
+                meta.setDisplayName(ChatColor.YELLOW + "任务时间信息");
+                List<String> lore = new ArrayList<>();
+                lore.add(ChatColor.YELLOW + "每日刷新: " + ChatColor.WHITE + dailyTime);
+                lore.add(ChatColor.YELLOW + "每周刷新: " + ChatColor.WHITE + weeklyTime);
+                lore.add(ChatColor.YELLOW + "下次领取: " + ChatColor.WHITE + claimTime);
+                meta.setLore(lore);
+                clock.setItemMeta(meta);
+                inventory.setItem(slot, clock);
+            } else {
+                ItemStack sep = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) color);
+                ItemMeta meta = sep.getItemMeta();
+                meta.setDisplayName(slot == (from + to) / 2 ? label : " ");
+                sep.setItemMeta(meta);
+                inventory.setItem(slot, sep);
+            }
         }
     }
 

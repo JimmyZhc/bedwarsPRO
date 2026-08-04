@@ -944,6 +944,7 @@ public class BedwarsPRO extends JavaPlugin {
     this.commands.add(new HelpCommand(this));
     this.commands.add(new SetSpawnerCommand(this));
     this.commands.add(new AddGameCommand(this));
+    this.commands.add(new EditGameCommand(this));
     this.commands.add(new StartGameCommand(this));
     this.commands.add(new StopGameCommand(this));
     this.commands.add(new SetRegionCommand(this));
@@ -989,6 +990,7 @@ public class BedwarsPRO extends JavaPlugin {
     new WeatherListener();
     new BlockListener();
     new PlayerListener();
+    io.jmmym.bedwarspro.listener.ReturnLobbyListener.getInstance();
     if (!BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
       new Player19Listener();
     }

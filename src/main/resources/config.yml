@@ -566,7 +566,7 @@ giveitem:
   armor:
     helmet:
       give: true
-      move: true
+      move: false
       item:
         - type: TEAM_ARMOR
           meta:
@@ -578,7 +578,7 @@ giveitem:
           probability: 1
     chestplate:
       give: true
-      move: true
+      move: false
       item:
         - type: TEAM_ARMOR
           meta:
@@ -636,6 +636,15 @@ invisibility_player:
   footstep: true
   hide_particles: true
   damage_show_player: false
+
+#任务系统GUI配置
+task-gui:
+  #分隔线玻璃板颜色 (1.8.x 数据值: 0=白 1=橙 2=品红 3=淡蓝 4=黄 5=黄绿 6=粉 7=灰 8=浅灰 9=青 10=紫 11=蓝 12=棕 13=绿 14=红 15=黑)
+  separator-color: 3
+  #第6行时钟槽位 (0-8 对应第6行第1-9格)
+  clock-slot: 4
+  #时钟物品材质
+  clock-material: WATCH
 
 #凋零弓
 witherbow:

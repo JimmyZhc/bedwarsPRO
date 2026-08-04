@@ -632,7 +632,7 @@ giveitem:
       give: true
 
       #护甲是否可以脱下
-      move: true
+      move: false
 
       #物品
       item:
@@ -656,7 +656,7 @@ giveitem:
       give: true
 
       #护甲是否可以脱下
-      move: true
+      move: false
 
       #物品
       item:

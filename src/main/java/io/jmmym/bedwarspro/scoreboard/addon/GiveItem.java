@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -177,22 +179,66 @@ public class GiveItem implements Listener {
 		if (!(inventory.getHolder().equals(player.getInventory().getHolder()) && (inventory.getTitle().equals("container.crafting") || inventory.getTitle().equals("container.inventory")))) {
 			return;
 		}
-		if (e.getRawSlot() == 5 && !Config.giveitem_armor_helmet_move) {
-			e.setCancelled(true);
-			return;
+
+		// 保护不可移动的皮革护甲（helmet/chestplate/leggings/boots）
+		int rawSlot = e.getRawSlot();
+		ItemStack currentItem = e.getCurrentItem();
+
+		// 检查目标槽位是否为受保护的护甲槽位
+		boolean isProtectedSlotHelmet = (rawSlot == 5) && !Config.giveitem_armor_helmet_move;
+		boolean isProtectedSlotChest = (rawSlot == 6) && !Config.giveitem_armor_chestplate_move;
+		boolean isProtectedSlotLeg = (rawSlot == 7) && !Config.giveitem_armor_leggings_move;
+		boolean isProtectedSlotBoot = (rawSlot == 8) && !Config.giveitem_armor_boots_move;
+
+		if (isProtectedSlotHelmet || isProtectedSlotChest || isProtectedSlotLeg || isProtectedSlotBoot) {
+			// 保护：不允许点击、shift点击、放置、交换等所有操作
+			// 但允许在槽位为空时放置物品
+			if (currentItem == null || currentItem.getType() == Material.AIR) {
+				// 槽位为空，允许放置
+			} else {
+				// 槽位有物品，阻止一切操作
+				e.setCancelled(true);
+				return;
+			}
 		}
-		if (e.getRawSlot() == 6 && !Config.giveitem_armor_chestplate_move) {
-			e.setCancelled(true);
-			return;
+
+		// 额外保护：检查是否是受保护的皮革护甲被移动
+		// 防止从其他槽位shift点击到受保护槽位旁边的位置
+		if (currentItem != null && currentItem.getType() != Material.AIR) {
+			if (isLeatherTeamArmor(currentItem) && (isProtectedSlotHelmet || isProtectedSlotChest || isProtectedSlotLeg || isProtectedSlotBoot)) {
+				e.setCancelled(true);
+				return;
+			}
 		}
-		if (e.getRawSlot() == 7 && !Config.giveitem_armor_leggings_move) {
-			e.setCancelled(true);
-			return;
+
+		// 防止拖动：如果是受保护护甲上的拖动操作
+		if (e.getClick() != null && e.getClick().isShiftClick()) {
+			ItemStack cursor = e.getCursor();
+			if (cursor != null && isLeatherTeamArmor(cursor)) {
+				e.setCancelled(true);
+				return;
+			}
+			// 如果shift点击源槽位的物品
+			if (rawSlot >= 5 && rawSlot <= 8) {
+				boolean slotProtected = (rawSlot == 5 && !Config.giveitem_armor_helmet_move)
+						|| (rawSlot == 6 && !Config.giveitem_armor_chestplate_move)
+						|| (rawSlot == 7 && !Config.giveitem_armor_leggings_move)
+						|| (rawSlot == 8 && !Config.giveitem_armor_boots_move);
+				if (slotProtected && currentItem != null && isLeatherTeamArmor(currentItem)) {
+					e.setCancelled(true);
+					return;
+				}
+			}
 		}
-		if (e.getRawSlot() == 8 && !Config.giveitem_armor_boots_move) {
-			e.setCancelled(true);
-			return;
-		}
+	}
+
+	/** 判断是否为队伍皮革护甲（带WATER_WORKER附魔的皮革装备） */
+	private boolean isLeatherTeamArmor(ItemStack item) {
+		if (item == null || item.getType() == Material.AIR) return false;
+		String name = item.getType().name();
+		if (!name.startsWith("LEATHER_")) return false;
+		// 1.8.8 没有 isUnbreakable()，用 WATER_WORKER 附魔作为队伍护甲标识
+		return item.containsEnchantment(Enchantment.WATER_WORKER);
 	}
 
 	@EventHandler

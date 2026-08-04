@@ -236,6 +236,36 @@ public class TaskListener implements Listener {
         if (tm == null) {
             return;
         }
+
+        // 判断是否为击杀令（使用独立的接取逻辑）
+        List<Task> allDaily = tm.getDailyTasks();
+        if (dailyIndex < allDaily.size()) {
+            Task clickedTask = allDaily.get(dailyIndex);
+            if (clickedTask.isBounty() && clickedTask.getTargetPlayer() != null) {
+                // 击杀令：使用独立接取方法
+                int result = tm.acceptBountyTask(player, clickedTask.getTargetPlayer());
+                switch (result) {
+                    case 1:
+                        TaskMessages.msg(player, "gui-accept-success");
+                        player.closeInventory();
+                        TaskGUI.open(player);
+                        break;
+                    case 0:
+                        player.sendMessage(ChatColor.RED + "该击杀令已完成，无法重复接取！");
+                        player.closeInventory();
+                        break;
+                    case -1:
+                        player.sendMessage(ChatColor.RED + "已有活跃击杀令，完成后可接取新的！");
+                        player.closeInventory();
+                        break;
+                    default:
+                        break;
+                }
+                return;
+            }
+        }
+
+        // 普通每日/限时任务：原有逻辑
         int result = tm.acceptTask(player, dailyIndex);
         switch (result) {
             case 1:

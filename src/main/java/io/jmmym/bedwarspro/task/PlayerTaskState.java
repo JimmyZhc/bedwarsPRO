@@ -26,6 +26,8 @@ public class PlayerTaskState {
     private String acceptedBountyTarget = null;
     private int progress = 0;
     private boolean completed = false;
+    /** 接受任务时的时间戳（毫秒），用于计算下次领取时间。 */
+    private long acceptedTime = 0L;
 
     // ===== 每周任务状态 =====
     /** 当前进度对应的周编号。0 表示未初始化。 */
@@ -34,6 +36,12 @@ public class PlayerTaskState {
     private final Map<String, Integer> weeklyProgress = new HashMap<>();
     /** 已完成的每周任务名集合。 */
     private final Set<String> weeklyCompleted = new HashSet<>();
+
+    // ===== 击杀令独立状态 =====
+    /** 当前已接受的击杀令目标玩家名（null 表示未接受）。 */
+    private String activeBountyTarget = null;
+    /** 已完成的击杀令目标玩家名集合（不可重复接取）。 */
+    private final Set<String> completedBounties = new HashSet<>();
 
     public PlayerTaskState(UUID playerId) {
         this.playerId = playerId;
@@ -93,6 +101,14 @@ public class PlayerTaskState {
         this.completed = completed;
     }
 
+    public long getAcceptedTime() {
+        return acceptedTime;
+    }
+
+    public void setAcceptedTime(long acceptedTime) {
+        this.acceptedTime = acceptedTime;
+    }
+
     public boolean hasAcceptedToday(long currentDay) {
         return acceptedDay == currentDay && acceptedTaskIndex >= 0;
     }
@@ -104,6 +120,7 @@ public class PlayerTaskState {
         this.acceptedBountyTarget = null;
         this.progress = 0;
         this.completed = false;
+        this.acceptedTime = 0L;
     }
 
     // ===== 每周任务方法 =====
@@ -148,6 +165,34 @@ public class PlayerTaskState {
         this.weeklyCompleted.clear();
     }
 
+    // ===== 击杀令方法 =====
+
+    public String getActiveBountyTarget() {
+        return activeBountyTarget;
+    }
+
+    public void setActiveBountyTarget(String target) {
+        this.activeBountyTarget = target;
+    }
+
+    public boolean hasBountyCompleted(String targetPlayer) {
+        return targetPlayer != null && completedBounties.contains(targetPlayer.toLowerCase());
+    }
+
+    public void markBountyCompleted(String targetPlayer) {
+        if (targetPlayer != null) {
+            completedBounties.add(targetPlayer.toLowerCase());
+        }
+    }
+
+    public boolean hasActiveBounty() {
+        return activeBountyTarget != null;
+    }
+
+    public void clearActiveBounty() {
+        this.activeBountyTarget = null;
+    }
+
     // ===== 序列化 =====
 
     public void save(ConfigurationSection section) {
@@ -157,6 +202,7 @@ public class PlayerTaskState {
         section.set("completed", completed);
         section.set("acceptedSpecialName", acceptedSpecialName);
         section.set("acceptedBountyTarget", acceptedBountyTarget);
+        section.set("acceptedTime", acceptedTime);
 
         section.set("weeklyWeek", weeklyWeek);
         ConfigurationSection weeklySec = section.createSection("weeklyProgress");
@@ -164,6 +210,9 @@ public class PlayerTaskState {
             weeklySec.set(e.getKey(), e.getValue());
         }
         section.set("weeklyCompleted", new java.util.ArrayList<>(weeklyCompleted));
+
+        section.set("activeBountyTarget", activeBountyTarget);
+        section.set("completedBounties", new java.util.ArrayList<>(completedBounties));
     }
 
     public static PlayerTaskState load(UUID playerId, ConfigurationSection section) {
@@ -177,6 +226,7 @@ public class PlayerTaskState {
         state.completed = section.getBoolean("completed", false);
         state.acceptedSpecialName = section.getString("acceptedSpecialName", null);
         state.acceptedBountyTarget = section.getString("acceptedBountyTarget", null);
+        state.acceptedTime = section.getLong("acceptedTime", 0L);
 
         state.weeklyWeek = section.getLong("weeklyWeek", 0L);
         ConfigurationSection weeklySec = section.getConfigurationSection("weeklyProgress");
@@ -187,6 +237,11 @@ public class PlayerTaskState {
         }
         for (String s : section.getStringList("weeklyCompleted")) {
             state.weeklyCompleted.add(s);
+        }
+
+        state.activeBountyTarget = section.getString("activeBountyTarget", null);
+        for (String s : section.getStringList("completedBounties")) {
+            state.completedBounties.add(s);
         }
         return state;
     }

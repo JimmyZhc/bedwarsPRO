@@ -10,7 +10,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -364,19 +366,84 @@ public class TaskManager {
         return apiKey;
     }
 
-    // ==================== 时间计算 ====================
+    // ==================== 时间计算（北京时间 GMT+8）====================
 
-    public long getCurrentDay() {
-        long dayMillis = 86400000L / timeMultiplier;
-        if (dayMillis < 1L) {
-            dayMillis = 1L;
-        }
-        return System.currentTimeMillis() / dayMillis;
+    private static final java.util.TimeZone BJ_TIMEZONE = java.util.TimeZone.getTimeZone("GMT+8");
+    private static final long DAY_MILLIS = 86400000L;
+
+    /** 获取北京当前时间的 Calendar。 */
+    private static java.util.Calendar getBeijingCalendar() {
+        return java.util.Calendar.getInstance(BJ_TIMEZONE);
     }
 
-    /** 周编号 = 天编号 / 7。 */
+    /** 获取北京当天0点的时间戳（毫秒）。 */
+    public static long getBeijingDayStart() {
+        java.util.Calendar cal = getBeijingCalendar();
+        cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        cal.set(java.util.Calendar.MINUTE, 0);
+        cal.set(java.util.Calendar.SECOND, 0);
+        cal.set(java.util.Calendar.MILLISECOND, 0);
+        return cal.getTimeInMillis();
+    }
+
+    /** 获取北京当前周周一0点的时间戳（毫秒，周一为一周第一天）。 */
+    public static long getBeijingWeekStart() {
+        java.util.Calendar cal = getBeijingCalendar();
+        cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        cal.set(java.util.Calendar.MINUTE, 0);
+        cal.set(java.util.Calendar.SECOND, 0);
+        cal.set(java.util.Calendar.MILLISECOND, 0);
+        // 周一为一周第一天
+        int dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK);
+        if (dayOfWeek == java.util.Calendar.SUNDAY) {
+            cal.add(java.util.Calendar.DAY_OF_MONTH, -1);
+        } else {
+            cal.add(java.util.Calendar.DAY_OF_MONTH, -(dayOfWeek - java.util.Calendar.MONDAY));
+        }
+        return cal.getTimeInMillis();
+    }
+
+    /** 每日编号：北京当天0点时间戳 / DAY_MILLIS。 */
+    public long getCurrentDay() {
+        return getBeijingDayStart() / DAY_MILLIS;
+    }
+
+    /** 周编号：北京本周周一0点时间戳 / (DAY_MILLIS * 7)。 */
     public long getCurrentWeek() {
-        return getCurrentDay() / 7L;
+        return getBeijingWeekStart() / (DAY_MILLIS * 7L);
+    }
+
+    /** 一天的毫秒数。 */
+    public long getDayMillis() {
+        return DAY_MILLIS;
+    }
+
+    /** 一周的毫秒数。 */
+    public long getWeekMillis() {
+        return DAY_MILLIS * 7L;
+    }
+
+    /** 获取每日任务下次刷新时间（北京时间第二天0点）。 */
+    public long getNextDailyRefreshTime() {
+        return getBeijingDayStart() + DAY_MILLIS;
+    }
+
+    /** 获取每周任务下次刷新时间（北京时间下周一0点）。 */
+    public long getNextWeeklyRefreshTime() {
+        return getBeijingWeekStart() + DAY_MILLIS * 7L;
+    }
+
+    /** 格式化时间戳为北京时间 "YYYY年MM月DD日HH时MM分SS秒"。 */
+    public static String formatTime(long timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒");
+        sdf.setTimeZone(BJ_TIMEZONE);
+        return sdf.format(new Date(timestamp));
+    }
+
+    /** 计算距给定时间戳的剩余秒数。 */
+    public static long secondsUntil(long timestamp) {
+        long diff = timestamp - System.currentTimeMillis();
+        return Math.max(0, diff / 1000L);
     }
 
     // ==================== 每日任务刷新 ====================
@@ -732,6 +799,7 @@ public class TaskManager {
         state.setAcceptedBountyTarget(t.getTargetPlayer());
         state.setProgress(0);
         state.setCompleted(false);
+        state.setAcceptedTime(System.currentTimeMillis());
         savePlayerState(player.getUniqueId());
         return 1;
     }
@@ -983,33 +1051,84 @@ public class TaskManager {
     }
 
     /**
-     * 检查击杀事件是否触发追杀令完成。
-     * 当杀手已接受追杀令任务且受害者为目标玩家时，完成任务并发放奖励。
+     * 接受击杀令任务（独立于每日/每周任务，可重复接取，已完成不可接）。
+     * @param player 玩家
+     * @param targetPlayer 击杀目标玩家名
+     * @return 1=成功, 0=已完成该目标, -1=已有活跃击杀令, -2=任务不存在
+     */
+    public int acceptBountyTask(Player player, String targetPlayer) {
+        if (targetPlayer == null) {
+            return -2;
+        }
+        // 检查击杀令是否存在
+        Task bounty = null;
+        for (Task s : specialTasks) {
+            if (s.isBounty() && s.getTargetPlayer() != null
+                    && s.getTargetPlayer().equalsIgnoreCase(targetPlayer)) {
+                bounty = s;
+                break;
+            }
+        }
+        if (bounty == null) {
+            return -2;
+        }
+        PlayerTaskState state = getPlayerState(player.getUniqueId());
+        // 检查是否已完成该目标的击杀令
+        if (state.hasBountyCompleted(targetPlayer)) {
+            return 0;
+        }
+        // 检查是否已有活跃击杀令
+        if (state.hasActiveBounty()) {
+            return -1;
+        }
+        state.setActiveBountyTarget(targetPlayer);
+        savePlayerState(player.getUniqueId());
+        return 1;
+    }
+
+    /**
+     * 检查击杀事件是否触发追杀令完成（使用独立的击杀令状态，不影响每日任务）。
      * @return true=触发追杀令完成
      */
     public boolean checkBountyKill(Player killer, Player victim) {
-        Task accepted = getAcceptedTask(killer);
-        if (accepted == null || !accepted.isBounty() || accepted.isSpecial() != true) {
-            return false;
-        }
-        if (accepted.getTargetPlayer() == null) {
-            return false;
-        }
-        if (!accepted.getTargetPlayer().equalsIgnoreCase(victim.getName())) {
-            return false;
-        }
         PlayerTaskState state = getState(killer);
-        if (state.isCompleted()) {
+        if (!state.hasActiveBounty()) {
             return false;
         }
-        state.setProgress(1);
-        state.setCompleted(true);
-        TaskMessages.msg(killer, "bounty-complete", "target", victim.getName());
-        TaskMessages.msg(killer, "reward-line",
-                "exp", accepted.getRewardExp(), "coins", accepted.getRewardCoins());
-        grantReward(killer, accepted);
+        String target = state.getActiveBountyTarget();
+        if (target == null || !target.equalsIgnoreCase(victim.getName())) {
+            return false;
+        }
+        // 完成击杀令
+        state.clearActiveBounty();
+        state.markBountyCompleted(victim.getName());
+        // 查找击杀令任务以获取奖励
+        Task bounty = null;
+        for (Task s : specialTasks) {
+            if (s.isBounty() && s.getTargetPlayer() != null
+                    && s.getTargetPlayer().equalsIgnoreCase(victim.getName())) {
+                bounty = s;
+                break;
+            }
+        }
+        if (bounty != null) {
+            TaskMessages.msg(killer, "bounty-complete", "target", victim.getName());
+            TaskMessages.msg(killer, "reward-line",
+                    "exp", bounty.getRewardExp(), "coins", bounty.getRewardCoins());
+            grantReward(killer, bounty);
+        }
         savePlayerState(killer.getUniqueId());
         return true;
+    }
+
+    /** 获取玩家当前活跃的击杀令目标。 */
+    public String getActiveBountyTarget(Player player) {
+        return getPlayerState(player.getUniqueId()).getActiveBountyTarget();
+    }
+
+    /** 判断玩家是否已完成某目标的击杀令。 */
+    public boolean hasBountyCompleted(Player player, String targetPlayer) {
+        return getPlayerState(player.getUniqueId()).hasBountyCompleted(targetPlayer);
     }
 
     /**
@@ -1235,6 +1354,27 @@ public class TaskManager {
                 plugin.getLogger().warning("[TaskManager] 写回 tasks.yml 失败: " + ex.getMessage());
             }
         }
+    }
+
+    /** 强制刷新每日任务（忽略时间和配置缓存）。 */
+    public void forceRefreshDaily() {
+        currentDay = getCurrentDay() + 1; // 强制触发刷新
+        dailyTasks.clear();
+        dailyTaskNames.clear();
+        refreshDailyIfNeeded();
+        saveState();
+        plugin.getLogger().info("[TaskManager] 每日任务已强制刷新");
+    }
+
+    /** 强制刷新每周任务（忽略时间和配置缓存）。 */
+    public void forceRefreshWeekly() {
+        currentWeek = getCurrentWeek() + 1; // 强制触发刷新
+        weeklyTasks.clear();
+        weeklyTaskNames.clear();
+        weeklyTaskTargets.clear();
+        refreshWeeklyIfNeeded();
+        saveState();
+        plugin.getLogger().info("[TaskManager] 每周任务已强制刷新");
     }
 
     /** 热重载：重新加载 tasks.yml + api.yml 配置并刷新当日/本周任务。 */

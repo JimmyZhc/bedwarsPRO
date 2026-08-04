@@ -298,6 +298,17 @@ public abstract class GameCycle {
     this.getGame().stopWorkers();
     this.setEndGameRunning(true);
 
+    // 游戏结束：把所有玩家设为冒险模式，确保有物品栏
+    for (Player p : this.getGame().getPlayers()) {
+      if (p.isOnline()) {
+        p.setGameMode(org.bukkit.GameMode.ADVENTURE);
+      }
+    }
+
+    // 游戏结束：给所有在线玩家发放返回大厅粘液球
+    io.jmmym.bedwarspro.listener.ReturnLobbyListener.getInstance()
+        .giveReturnLobbySlimeBallsToGamePlayers(this.getGame());
+
     // new record?
     boolean storeRecords = BedwarsPRO.getInstance().getBooleanConfig("store-game-records", true);
     boolean storeHolders = BedwarsPRO

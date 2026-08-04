@@ -1,5 +1,6 @@
 package io.jmmym.bedwarspro.commands;
 
+import io.jmmym.bedwarspro.BedwarsPRO;
 import io.jmmym.bedwarspro.task.PlayerTaskState;
 import io.jmmym.bedwarspro.task.Task;
 import io.jmmym.bedwarspro.task.TaskGUI;
@@ -42,6 +43,16 @@ public class TaskCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // 支持 /bwpro reload（不带 task 前缀）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("reload")) {
+            TaskManager tm = TaskManager.getInstance();
+            if (tm == null) {
+                TaskMessages.msg(sender, "cmd-system-not-init");
+                return true;
+            }
+            return handleReload(sender, tm);
+        }
+
         if (args.length < 1 || !args[0].equalsIgnoreCase("task")) {
             sendHelp(sender);
             return true;
@@ -80,6 +91,8 @@ public class TaskCommand implements CommandExecutor {
                 return handleRemove(sender, args, tm);
             case "clear":
                 return handleClear(sender, tm);
+            case "taskrefresh":
+                return handleTaskRefresh(sender, args, tm);
             case "reset":
                 return handleReset(sender, args, tm);
             case "help":
@@ -165,6 +178,11 @@ public class TaskCommand implements CommandExecutor {
             return true;
         }
         try {
+            // 重载插件主配置 config.yml
+            BedwarsPRO.getInstance().reloadConfig();
+            // 重载消息文件 messages.yml
+            TaskMessages.reload();
+            // 重载任务配置 tasks.yml + api.yml
             tm.reload();
             TaskMessages.msg(sender, "cmd-reload-success");
             TaskMessages.msg(sender, "cmd-reload-detail",
@@ -272,6 +290,32 @@ public class TaskCommand implements CommandExecutor {
         return true;
     }
 
+    private boolean handleTaskRefresh(CommandSender sender, String[] args, TaskManager tm) {
+        if (!hasAdminPerm(sender)) {
+            TaskMessages.msg(sender, "cmd-no-permission");
+            return true;
+        }
+        boolean refreshDaily = true;
+        boolean refreshWeekly = true;
+        if (args.length >= 3) {
+            String type = args[2].toLowerCase();
+            if (type.equals("daily")) {
+                refreshWeekly = false;
+            } else if (type.equals("weekly")) {
+                refreshDaily = false;
+            }
+        }
+        if (refreshDaily) {
+            tm.forceRefreshDaily();
+            TaskMessages.msg(sender, "cmd-taskrefresh-daily");
+        }
+        if (refreshWeekly) {
+            tm.forceRefreshWeekly();
+            TaskMessages.msg(sender, "cmd-taskrefresh-weekly");
+        }
+        return true;
+    }
+
     private boolean handleReset(CommandSender sender, String[] args, TaskManager tm) {
         if (!hasAdminPerm(sender)) {
             TaskMessages.msg(sender, "cmd-no-permission");
@@ -350,6 +394,7 @@ public class TaskCommand implements CommandExecutor {
             TaskMessages.msg(sender, "help-weekly");
             TaskMessages.msg(sender, "help-wrandom");
             TaskMessages.msg(sender, "help-reload");
+            TaskMessages.msg(sender, "help-taskrefresh");
             TaskMessages.msg(sender, "help-remove");
             TaskMessages.msg(sender, "help-clear");
             TaskMessages.msg(sender, "help-reset");

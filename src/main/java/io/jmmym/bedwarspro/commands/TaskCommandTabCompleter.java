@@ -30,10 +30,10 @@ public class TaskCommandTabCompleter implements TabCompleter {
             Arrays.asList("gui", "info", "list", "help");
     private static final List<String> SUB_COMMANDS_ADMIN =
             Arrays.asList("gui", "info", "list", "on", "off", "random",
-                    "weekly", "wrandom", "reload", "remove", "clear", "reset", "help");
+                    "weekly", "wrandom", "reload", "remove", "clear", "reset", "taskrefresh", "help");
     private static final List<String> SUB_COMMANDS_PUBLISHER =
             Arrays.asList("gui", "info", "list", "on", "off", "random",
-                    "weekly", "wrandom", "reload", "publish", "remove", "clear", "reset", "help");
+                    "weekly", "wrandom", "reload", "publish", "remove", "clear", "reset", "taskrefresh", "help");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label,
@@ -57,10 +57,14 @@ public class TaskCommandTabCompleter implements TabCompleter {
 
     private List<String> getSuggest(CommandSender sender, String[] args) {
         if (args.length == 1) {
+            List<String> firstLevel = new ArrayList<>();
             if ("task".startsWith(args[0].toLowerCase())) {
-                return Arrays.asList("task");
+                firstLevel.add("task");
             }
-            return new ArrayList<>();
+            if ("reload".startsWith(args[0].toLowerCase())) {
+                firstLevel.add("reload");
+            }
+            return firstLevel;
         }
         if (!args[0].equalsIgnoreCase("task")) {
             return new ArrayList<>();
@@ -133,6 +137,13 @@ public class TaskCommandTabCompleter implements TabCompleter {
                 ids.add(String.valueOf(i));
             }
             return ids;
+        }
+        // 第3级: taskrefresh → daily|weekly
+        if (args.length == 3 && args[1].equalsIgnoreCase("taskrefresh")) {
+            if (sender.hasPermission("bwpro.task.admin") || sender.isOp()) {
+                return Arrays.asList("daily", "weekly");
+            }
+            return new ArrayList<>();
         }
         // 第3级: reset <player> — 补齐在线玩家名
         if (args.length == 3 && args[1].equalsIgnoreCase("reset")) {

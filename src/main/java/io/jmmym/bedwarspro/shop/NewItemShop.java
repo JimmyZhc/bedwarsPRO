@@ -94,6 +94,35 @@ public class NewItemShop {
     return 0;
   }
 
+  private int getSwordLevel(ItemStack sword) {
+    if (sword == null) return 0;
+    String name = sword.getType().name();
+    if (name.equals("WOOD_SWORD") || name.equals("WOODEN_SWORD")) return 1;
+    if (name.equals("STONE_SWORD")) return 2;
+    if (name.equals("IRON_SWORD")) return 3;
+    if (name.equals("DIAMOND_SWORD")) return 4;
+    return 0;
+  }
+
+  private boolean isSword(Material material) {
+    String name = material.name();
+    return name.equals("WOOD_SWORD") || name.equals("WOODEN_SWORD")
+        || name.equals("STONE_SWORD")
+        || name.equals("IRON_SWORD")
+        || name.equals("DIAMOND_SWORD");
+  }
+
+  /** 查找玩家背包中第一个符合条件的剑的槽位 */
+  private int findSwordSlot(PlayerInventory inv, int maxHotbarSlot) {
+    for (int i = 0; i <= maxHotbarSlot; i++) {
+      ItemStack item = inv.getItem(i);
+      if (item != null && isSword(item.getType())) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   private boolean equipItem(Player player, ItemStack item) {
     if (item == null || item.getType() == Material.AIR) return false;
     PlayerInventory inv = player.getInventory();
@@ -407,14 +436,46 @@ public class NewItemShop {
     }
 
     if (!isLeggings) {
-      HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
-      if (notStored.size() > 0) {
-        ItemStack notAddedItem = notStored.get(0);
-        int removingAmount = addingItem.getAmount() - notAddedItem.getAmount();
-        addingItem.setAmount(removingAmount);
-        inventory.removeItem(addingItem);
-        player.sendMessage(ChatColor.RED + "背包已满，购买失败！");
-        return false;
+      // 如果是剑，尝试替换原有剑（同位置）
+      if (isSword(addingItem.getType())) {
+        int targetSlot = findSwordSlot(inventory, 8);
+        int newLevel = getSwordLevel(addingItem);
+        if (targetSlot >= 0) {
+          ItemStack oldSword = inventory.getItem(targetSlot);
+          int oldLevel = getSwordLevel(oldSword);
+          if (newLevel > oldLevel) {
+            // 替换旧剑
+            inventory.setItem(targetSlot, addingItem);
+            player.sendMessage(ChatColor.GREEN + "已替换为更高级的剑！");
+            player.updateInventory();
+            return true;
+          } else if (newLevel == oldLevel) {
+            refundResources(player, trade);
+            player.sendMessage(ChatColor.RED + "你已经拥有同等级的剑，无法购买！");
+            return false;
+          } else {
+            refundResources(player, trade);
+            player.sendMessage(ChatColor.RED + "你已经拥有更好的剑，无法购买！");
+            return false;
+          }
+        }
+        // 没有旧剑，检查背包空间
+        HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
+        if (notStored.size() > 0) {
+          refundResources(player, trade);
+          player.sendMessage(ChatColor.RED + "背包已满，购买失败！");
+          return false;
+        }
+      } else {
+        HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
+        if (notStored.size() > 0) {
+          ItemStack notAddedItem = notStored.get(0);
+          int removingAmount = addingItem.getAmount() - notAddedItem.getAmount();
+          addingItem.setAmount(removingAmount);
+          inventory.removeItem(addingItem);
+          player.sendMessage(ChatColor.RED + "背包已满，购买失败！");
+          return false;
+        }
       }
     } else {
       if (!equipped) {

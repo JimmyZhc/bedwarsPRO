@@ -28,20 +28,23 @@ public class SingleGameCycle extends GameCycle {
       return;
     }
 
+    // 优先使用主大厅，其次使用等待大厅
     Location targetLocation = null;
-
-    if (BedwarsPRO.getInstance().toMainLobby()
-        && BedwarsPRO.getInstance().allPlayersBackToMainLobby()) {
-      this.getGame().playerLeave(player, false);
-      return;
-    }
-
-    // 优先使用主大厅（多图模式下回到主大厅而非当前游戏等待区）
     Location mainLobby = this.getGame().getMainLobby();
     if (mainLobby != null) {
       targetLocation = mainLobby;
     } else {
       targetLocation = this.getGame().getLobby();
+    }
+
+    if (BedwarsPRO.getInstance().toMainLobby()
+        && BedwarsPRO.getInstance().allPlayersBackToMainLobby()) {
+      // 仍然先传送到主大厅/等待大厅，再执行 playerLeave
+      if (targetLocation != null) {
+        player.teleport(targetLocation);
+      }
+      this.getGame().playerLeave(player, false);
+      return;
     }
 
     if (targetLocation != null) {
@@ -216,17 +219,20 @@ public class SingleGameCycle extends GameCycle {
     // teleport to join location
     PlayerStorage storage = this.getGame().getPlayerStorage(player);
 
-    if (BedwarsPRO.getInstance().toMainLobby()) {
-      Location mainLobby = this.getGame().getMainLobby();
-      if (mainLobby != null) {
-        if (BedwarsPRO.getInstance().isHologramsEnabled()
-            && BedwarsPRO.getInstance().getHolographicInteractor() != null
-            && mainLobby.getWorld() == player.getWorld()) {
-          BedwarsPRO.getInstance().getHolographicInteractor().updateHolograms(player);
-        }
-        player.teleport(mainLobby);
-      } else if (storage != null && storage.getLeft() != null) {
+    // 优先传送到主大厅
+    Location mainLobby = this.getGame().getMainLobby();
+    if (mainLobby != null) {
+      if (BedwarsPRO.getInstance().isHologramsEnabled()
+          && BedwarsPRO.getInstance().getHolographicInteractor() != null
+          && mainLobby.getWorld() == player.getWorld()) {
+        BedwarsPRO.getInstance().getHolographicInteractor().updateHolograms(player);
+      }
+      player.teleport(mainLobby);
+    } else if (BedwarsPRO.getInstance().toMainLobby()) {
+      if (storage != null && storage.getLeft() != null) {
         player.teleport(storage.getLeft());
+      } else if (this.getGame().getLobby() != null) {
+        player.teleport(this.getGame().getLobby());
       }
     } else {
       if (storage != null && storage.getLeft() != null) {

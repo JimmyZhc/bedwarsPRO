@@ -69,14 +69,22 @@ public class EditGame implements Listener {
 
 		// 设置主大厅（仅在非 BungeeCord 模式下显示）
 		if (!BedwarsPRO.getInstance().isBungee()) {
-			ItemStack mainLobbyItem = new ItemStack(Material.CHORUS_FRUIT);
-			ItemUtil.setItemName(mainLobbyItem, Config.getLanguage("item.edit_game.name.set_main_lobby"));
+			ItemStack mainLobbyItem = new ItemStack(Material.COMPASS);
+			String mainLobbyName = Config.getLanguage("item.edit_game.name.set_main_lobby");
+			if (mainLobbyName.equals("null")) {
+				mainLobbyName = "§f设置主大厅";
+			}
+			ItemUtil.setItemName(mainLobbyItem, mainLobbyName);
 			List<String> mainLobbyLore = new ArrayList<String>();
 			mainLobbyLore.add("");
+			String loreSet = Config.getLanguage("item.edit_game.lore.set");
+			String loreComplete = Config.getLanguage("item.edit_game.lore.complete");
+			if (loreSet.equals("null")) loreSet = "§e点击设置！";
+			if (loreComplete.equals("null")) loreComplete = "§a已设置！";
 			if (game.getMainLobby() == null) {
-				mainLobbyLore.add(Config.getLanguage("item.edit_game.lore.set"));
+				mainLobbyLore.add(loreSet);
 			} else {
-				mainLobbyLore.add(Config.getLanguage("item.edit_game.lore.complete"));
+				mainLobbyLore.add(loreComplete);
 			}
 			ItemUtil.setItemLore(mainLobbyItem, mainLobbyLore);
 			inventory.setItem(10, mainLobbyItem);
