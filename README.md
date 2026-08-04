@@ -131,7 +131,7 @@ Tab 列表玩家血量显示
 
 玩家 Tag 自定义
 
-特殊道具（来自 BedwarsItemAddon）
+特殊道具（来自 BedwarsItemAddon）【以下功能均默认关闭】
 火球（Fireball）
 
 TNT / TNT 发射器
@@ -142,9 +142,7 @@ TNT / TNT 发射器
 
 搭桥蛋（Bridge Egg）
 
-末影珍珠椅（Ender Pearl Chair）
-
-梦魇守卫（Dream Defender Golem）
+末影珍珠（Ender Pearl Chair）
 
 蠹虫（Bedbug）
 
@@ -152,7 +150,7 @@ TNT / TNT 发射器
 
 行走平台（Walk Platform）
 
-紧凑型弹出塔（Compact Pop-up Tower）
+紧凑型塔（Compact Pop-up Tower）
 
 魔法牛奶（Magic Milk）
 
@@ -179,6 +177,8 @@ Multiverse-Core	可选	多世界支持
 
 ## 命令与权限
 ### BedwarsPRO 新增命令
+
+/bwpro reload 【bwpro.task.use】 重载所有配置文件
 
 /bwpro task gui 【bwpro.task.use】 打开 每日菜单 
 
