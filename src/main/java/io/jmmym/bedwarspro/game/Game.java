@@ -2,6 +2,9 @@ package io.jmmym.bedwarspro.game;
 
 import com.google.common.collect.ImmutableMap;
 import io.jmmym.bedwarspro.BedwarsPRO;
+import io.jmmym.bedwarspro.bot.BotManager;
+import io.jmmym.bedwarspro.bot.BotPlayer;
+import io.jmmym.bedwarspro.bot.BotTaskRunner;
 import io.jmmym.bedwarspro.events.BedwarsGameStartEvent;
 import io.jmmym.bedwarspro.events.BedwarsGameStartedEvent;
 import io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent;
@@ -58,6 +61,7 @@ import org.bukkit.util.Vector;
 @Data
 public class Game {
 
+  private List<BotPlayer> bots = null;
   private boolean autobalance = false;
   private String builder = null;
   private YamlConfiguration config = null;
@@ -103,6 +107,7 @@ public class Game {
 
     this.name = name;
     this.runningTasks = new ArrayList<BukkitTask>();
+    this.bots = new ArrayList<BotPlayer>();
 
     this.freePlayers = new ArrayList<Player>();
     this.resourceSpawners = new ArrayList<ResourceSpawner>();
@@ -215,6 +220,35 @@ public class Game {
 
   public void addSpecialItem(SpecialItem item) {
     this.specialItems.add(item);
+  }
+
+  public boolean addBot(BotPlayer bot) {
+    BotManager botManager = BedwarsPRO.getInstance().getBotManager();
+    int maxBots = BedwarsPRO.getInstance().getBotConfig().getMaxBotsPerGame();
+    if (this.bots.size() >= maxBots) {
+      return false;
+    }
+    this.bots.add(bot);
+    BotTaskRunner runner = botManager.getOrCreateTaskRunner(this);
+    runner.addBot(bot.getBukkitPlayer());
+    return true;
+  }
+
+  public void removeBot(BotPlayer bot) {
+    this.bots.remove(bot);
+    BotManager botManager = BedwarsPRO.getInstance().getBotManager();
+    BotTaskRunner runner = botManager.getTaskRunner(this);
+    if (runner != null) {
+      runner.removeBot(bot.getBukkitPlayer());
+    }
+  }
+
+  public List<BotPlayer> getBots() {
+    return this.bots;
+  }
+
+  public int getBotCount() {
+    return this.bots.size();
   }
 
   public void addTeam(String name, TeamColor color, int maxPlayers) {
@@ -1709,6 +1743,25 @@ public class Game {
     }
 
     this.startTimerCountdown();
+
+    // 每5秒强制检查游戏是否应该结束（安全网）
+    this.addRunningTask(new BukkitRunnable() {
+      @Override
+      public void run() {
+        if (Game.this.state == GameState.RUNNING && !Game.this.isOver) {
+          Game.this.getCycle().checkGameOver();
+        }
+      }
+    }.runTaskTimer(BedwarsPRO.getInstance(), 100L, 100L));
+
+    // Start Bot AI task runner
+    if (BedwarsPRO.getInstance().getBotConfig().isEnabled() && !this.bots.isEmpty()) {
+      BotTaskRunner botRunner = BedwarsPRO.getInstance().getBotManager().getOrCreateTaskRunner(this);
+      org.bukkit.scheduler.BukkitTask task = botRunner.start();
+      if (task != null) {
+        this.addRunningTask(task);
+      }
+    }
 
     if (BedwarsPRO.getInstance().getBooleanConfig("titles.map.enabled", false)) {
       this.displayMapInfo();

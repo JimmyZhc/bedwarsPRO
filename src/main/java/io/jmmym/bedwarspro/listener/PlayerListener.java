@@ -829,6 +829,39 @@ public class PlayerListener extends BaseListener {
       return;
     }
 
+    // Bot死亡处理
+    if (BedwarsPRO.getInstance().getBotManager().isBot(player)) {
+      pde.setDeathMessage(null);
+      pde.setDroppedExp(0);
+      pde.getDrops().clear();
+      Team botTeam = game.getPlayerTeam(player);
+      boolean bedAlive = botTeam != null && !botTeam.isDead(game);
+      if (!bedAlive) {
+        // 床已毁 - 移除bot
+        new BukkitRunnable() {
+          @Override
+          public void run() {
+            try {
+              io.jmmym.bedwarspro.bot.BotPlayer botPlayer =
+                  BedwarsPRO.getInstance().getBotManager().getBotPlayer(player);
+              if (botPlayer != null) {
+                Team bt = game.getPlayerTeam(player);
+                if (bt != null) {
+                  bt.removePlayer(player);
+                }
+                game.removeBot(botPlayer);
+              }
+              BedwarsPRO.getInstance().getBotManager().unregisterBot(player);
+              game.getCycle().checkGameOver();
+            } catch (Exception ignored) {
+            }
+          }
+        }.runTaskLater(BedwarsPRO.getInstance(), 5L);
+      }
+      // 床完好 - 不移除，让bot自然重生
+      return;
+    }
+
     if (game.getState() == GameState.RUNNING) {
       // 击杀者获得灵魂（下界之星）
       Player killer = player.getKiller();
@@ -1209,10 +1242,57 @@ public class PlayerListener extends BaseListener {
       return;
     }
 
+    // Bot重生处理
+    if (BedwarsPRO.getInstance().getBotManager().isBot(p)) {
+      if (game.getState() == GameState.RUNNING) {
+        Team team = game.getPlayerTeam(p);
+        if (team != null && !team.isDead(game)) {
+          pre.setRespawnLocation(team.getSpawnLocation());
+          new BukkitRunnable() {
+            @Override
+            public void run() {
+              if (p.isOnline()) {
+                p.setMaxHealth(20.0);
+                p.setHealth(20.0);
+              }
+            }
+          }.runTaskLater(BedwarsPRO.getInstance(), 1L);
+        } else {
+          pre.setRespawnLocation(p.getLocation());
+        }
+      }
+      return;
+    }
+
     if (game.getState() == GameState.RUNNING) {
       game.getCycle().onPlayerRespawn(pre, p);
         p.setMaxHealth(20.0);
         p.setHealth(20.0);
+
+      // ---- 延迟确保观战者物品栏有物品 ----
+      // toSpectator() 可能在重生事件期间物品栏未就绪，
+      // 所以延迟5tick重新检查并补发物品
+      final boolean isSpectating = game.isSpectator(p);
+      if (isSpectating) {
+        new BukkitRunnable() {
+          @Override
+          public void run() {
+            if (!p.isOnline()) return;
+            if (!game.isSpectator(p)) return;
+            boolean hasItem = false;
+            for (ItemStack item : p.getInventory().getContents()) {
+              if (item != null && item.getType() == Material.NETHER_STAR) {
+                hasItem = true;
+                break;
+              }
+            }
+            if (!hasItem) {
+              io.jmmym.bedwarspro.listener.ReturnLobbyListener.getInstance()
+                  .giveReturnLobbySlimeBalls(p);
+            }
+          }
+        }.runTaskLater(BedwarsPRO.getInstance(), 5L);
+      }
 
       // ---- 延迟恢复绑定护甲 ----
       // GiveItem.onDeath 会在死亡后 1 tick 给玩家皮革护甲，
@@ -1302,6 +1382,12 @@ public class PlayerListener extends BaseListener {
   public void onQuit(PlayerQuitEvent pqe) {
     Player player = pqe.getPlayer();
 
+    // Bot断开不处理
+    if (BedwarsPRO.getInstance().getBotManager().isBot(player)) {
+      pqe.setQuitMessage(null);
+      return;
+    }
+
     // 屏蔽默认全局消息，只发给不在游戏中的玩家
     Game quitGame = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
     pqe.setQuitMessage(null);
@@ -1349,6 +1435,10 @@ public class PlayerListener extends BaseListener {
 
   @EventHandler
   public void onSwitchWorld(PlayerChangedWorldEvent change) {
+    // Bot传送不处理
+    if (BedwarsPRO.getInstance().getBotManager().isBot(change.getPlayer())) {
+      return;
+    }
     Game game = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(change.getPlayer());
     if (game != null) {
       if (game.getState() == GameState.RUNNING) {

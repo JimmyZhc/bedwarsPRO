@@ -23,7 +23,7 @@ public class Utils {
 	public static Class<?> getNMSClass(String name) {
 		if (!classes.containsKey(name)) {
 			try {
-				classes.put(name, Class.forName("net.minecraft.server.v1_8_R3." + name));
+				classes.put(name, Class.forName("net.minecraft.server." + getVersion() + "." + name));
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}

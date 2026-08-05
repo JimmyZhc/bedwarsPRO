@@ -284,9 +284,11 @@ public class ScoreBoard {
                                                 if (team_status.containsKey(t.getName())) {
                                                         lines.add(team_status.get(t.getName()).replace("{you}", you));
                                                 } else {
+                                                        int playerCount = t.getPlayers().size();
+                                                        String countStr = playerCount > 0 ? " §7(" + playerCount + ")" : "";
                                                         String status = t.isDead(game)
-                                                                        ? "§c✘ §7" + t.getName()
-                                                                        : "§a✔ " + t.getChatColor() + t.getName();
+                                                                        ? "§c✘ §7" + t.getName() + countStr
+                                                                        : "§a✔ " + t.getChatColor() + t.getName() + countStr;
                                                         lines.add(status.replace("{you}", you));
                                                 }
                                         }

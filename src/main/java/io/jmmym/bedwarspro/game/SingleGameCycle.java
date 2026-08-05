@@ -11,6 +11,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SingleGameCycle extends GameCycle {
 
@@ -89,6 +90,33 @@ public class SingleGameCycle extends GameCycle {
     for (Player p : freePlayers) {
       this.kickPlayer(p, true);
     }
+
+    // 强制传送残留玩家（安全网）
+    final Game game = this.getGame();
+    new BukkitRunnable() {
+      @Override
+      public void run() {
+        for (Player p : new ArrayList<>(game.getPlayers())) {
+          if (p.isOnline()) {
+            Location target = game.getMainLobby() != null ? game.getMainLobby() : game.getLobby();
+            if (target != null) {
+              p.teleport(target);
+            }
+            game.playerLeave(p, false);
+          }
+        }
+        // 也处理freePlayers中可能残留的
+        for (Player p : new ArrayList<>(game.getFreePlayers())) {
+          if (p.isOnline()) {
+            Location target = game.getMainLobby() != null ? game.getMainLobby() : game.getLobby();
+            if (target != null) {
+              p.teleport(target);
+            }
+            game.playerLeave(p, false);
+          }
+        }
+      }
+    }.runTaskLater(BedwarsPRO.getInstance(), 60L);
 
     // reset countdown prevention breaks
     this.setEndGameRunning(false);
@@ -247,8 +275,7 @@ public class SingleGameCycle extends GameCycle {
       }
     }
 
-    if (this.getGame().getState() == GameState.RUNNING && !this.getGame().isStopping()
-        && !this.getGame().isSpectator(player)) {
+    if (this.getGame().getState() == GameState.RUNNING && !this.getGame().isStopping()) {
       this.checkGameOver();
     }
   }

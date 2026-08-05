@@ -2,6 +2,7 @@ package io.jmmym.bedwarspro.game;
 
 import com.google.common.collect.ImmutableMap;
 import io.jmmym.bedwarspro.BedwarsPRO;
+import io.jmmym.bedwarspro.bot.BotPlayer;
 import io.jmmym.bedwarspro.utils.ChatWriter;
 import io.jmmym.bedwarspro.utils.Utils;
 import java.io.File;
@@ -23,10 +24,12 @@ public class GameManager {
   public static String gamesPath = "games";
   private Map<Player, Game> gamePlayer = null;
   private ArrayList<Game> games = null;
+  private Map<Player, BotPlayer> botPlayers = null;
 
   public GameManager() {
     this.games = new ArrayList<Game>();
     this.gamePlayer = new HashMap<Player, Game>();
+    this.botPlayers = new HashMap<Player, BotPlayer>();
   }
 
   public Game addGame(String name) {
@@ -351,6 +354,22 @@ public class GameManager {
 
   public void removeGamePlayer(Player player) {
     this.gamePlayer.remove(player);
+  }
+
+  public void addBotPlayer(Player player, BotPlayer bot) {
+    this.botPlayers.put(player, bot);
+  }
+
+  public BotPlayer getBotPlayer(Player player) {
+    return this.botPlayers.get(player);
+  }
+
+  public boolean isBotPlayer(Player player) {
+    return this.botPlayers.containsKey(player);
+  }
+
+  public void removeBotPlayer(Player player) {
+    this.botPlayers.remove(player);
   }
 
   public void unloadGame(Game game) {

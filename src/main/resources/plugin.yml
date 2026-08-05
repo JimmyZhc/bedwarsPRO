@@ -151,6 +151,10 @@ commands:
     description: BedwarsPRO 每日任务系统命令
     usage: /<command> task [gui|on|off|publish <name>|clear|info]
     permission: bwpro.task.use
+  bwbot:
+    description: BedwarsPRO Bot管理命令
+    usage: /<command> [add|remove|list|reload]
+    permission: bwbot.admin
 
 permissions:
   bw.base:
@@ -230,3 +234,9 @@ permissions:
   bwpro.task.reload:
     description: 允许重载 tasks.yml 配置
     default: op
+  bwbot.admin:
+    description: 允许管理Bot系统（添加/移除Bot）
+    default: op
+  bwbot.use:
+    description: 允许使用Bot基础命令
+    default: true

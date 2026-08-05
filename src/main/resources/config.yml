@@ -898,3 +898,9 @@ team_shop:
 itemaddon_update_check:
   enabled: false
   report: true
+
+# === Bot系统配置 ===
+# 详细配置请查看 bot-config.yml
+bot:
+  enabled: true
+  max-bots-per-game: 4

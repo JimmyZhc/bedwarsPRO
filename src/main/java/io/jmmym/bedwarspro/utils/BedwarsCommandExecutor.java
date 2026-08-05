@@ -23,7 +23,13 @@ public class BedwarsCommandExecutor implements CommandExecutor {
 
   @Override
   public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-    if (!cmd.getName().equals("bw")) {
+    // Handle /bwbot command
+    if (cmd.getName().equals("bwbot")) {
+      String[] newArgs = new String[args.length + 1];
+      newArgs[0] = "bot";
+      System.arraycopy(args, 0, newArgs, 1, args.length);
+      args = newArgs;
+    } else if (!cmd.getName().equals("bw")) {
       // Handle Bukkit treating "bw addteam" as a separate command
       if (cmd.getName().startsWith("bw ")) {
         String subCmd = cmd.getName().substring(3);

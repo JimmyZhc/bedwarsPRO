@@ -1,0 +1,43 @@
+# BedwarsPRO Bot Configuration
+
+bot:
+  # 是否启用机器人系统
+  enabled: true
+
+  # 每个游戏最大Bot数量
+  max-bots-per-game: 16
+
+  # 少于多少玩家时自动添加Bot
+  min-players-to-add-bot: 2
+
+  # 是否自动加入空游戏
+  auto-join: true
+
+  # AI设置
+  ai:
+    # AI难度 (0.0-1.0)，影响反应速度和决策质量
+    difficulty: 0.5
+    # 反应时间（毫秒）
+    reaction-time: 200
+    # 攻击准确度 (0.0-1.0)
+    accuracy: 0.8
+
+  # 战斗设置
+  combat:
+    # 攻击检测范围（方块）
+    target-range: 16
+    # 逃跑血量（低于此值时撤退）
+    flee-health: 6
+    # 攻击间隔（tick，20=1秒）
+    attack-delay: 10
+
+  # 物品设置
+  items:
+    # 自动购物
+    auto-buy: true
+    # 购买优先级
+    buy-priority:
+      - IRON_SWORD
+      - CHAINMAIL_CHESTPLATE
+      - ENDER_PEARL
+      - IRON_PICKAXE

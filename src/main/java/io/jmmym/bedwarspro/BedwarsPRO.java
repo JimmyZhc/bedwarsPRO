@@ -5,6 +5,8 @@ import com.bugsnag.Report;
 import com.bugsnag.callbacks.Callback;
 import com.google.common.collect.ImmutableMap;
 import io.jmmym.bedwarspro.commands.*;
+import io.jmmym.bedwarspro.bot.BotConfig;
+import io.jmmym.bedwarspro.bot.BotManager;
 import io.jmmym.bedwarspro.database.DatabaseManager;
 import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.game.GameManager;
@@ -94,6 +96,10 @@ public class BedwarsPRO extends JavaPlugin {
   private io.jmmym.bedwarspro.itemaddon.Main itemAddon;
   @Getter
   private TaskManager taskManager = null;
+  @Getter
+  private BotManager botManager = null;
+  @Getter
+  private BotConfig botConfig = null;
 
   public static String _l(CommandSender commandSender, String key, String singularValue,
                           Map<String, String> params) {
@@ -705,6 +711,15 @@ public class BedwarsPRO extends JavaPlugin {
       this.gameManager.unloadGames();
     }
 
+    // 关闭Bot系统
+    if (this.botManager != null) {
+      try {
+        this.botManager.shutdown();
+      } catch (Exception e) {
+        this.getLogger().warning("关闭Bot系统失败: " + e.getMessage());
+      }
+    }
+
     // 保存每日任务系统状态
     if (this.taskManager != null) {
       try {
@@ -873,6 +888,16 @@ public class BedwarsPRO extends JavaPlugin {
       e.printStackTrace();
     }
 
+    // ---- Bot系统初始化 ----
+    try {
+      this.botConfig = new BotConfig(this);
+      this.botManager = new BotManager(this);
+      this.getLogger().info("Bot系统初始化完成。");
+    } catch (Exception e) {
+      this.getLogger().severe("Bot系统初始化失败: " + e.getMessage());
+      e.printStackTrace();
+    }
+
     // ---- 启动时显示定制信息（已修正类型转换） ----
     String pluginVersion = this.getDescription().getVersion();
     LocalizationConfig loc = getLocaleConfig();
@@ -977,7 +1002,13 @@ public class BedwarsPRO extends JavaPlugin {
     this.commands.add(new ItemsPasteCommand(this));
     this.commands.add(new AutoConnectCommand(this));
     this.commands.add(new AuthorCommand(this));
+    this.commands.add(new BotCommand(this));
     this.getCommand("bw").setExecutor(executor);
+
+    // Register bwbot command
+    if (this.getCommand("bwbot") != null) {
+      this.getCommand("bwbot").setExecutor(executor);
+    }
   }
 
   private void registerConfigurationClasses() {
