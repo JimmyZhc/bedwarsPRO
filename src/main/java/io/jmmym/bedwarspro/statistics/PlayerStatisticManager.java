@@ -1,6 +1,7 @@
 package io.jmmym.bedwarspro.statistics;
 
 import io.jmmym.bedwarspro.BedwarsPRO;
+import io.jmmym.bedwarspro.database.DatabaseManager;
 import io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent;
 import io.jmmym.bedwarspro.utils.ChatWriter;
 import java.io.File;
@@ -139,69 +140,102 @@ public class PlayerStatisticManager {
     return line;
   }
 
-  public void initialize() {
-    if (!BedwarsPRO.getInstance().getBooleanConfig("statistics.enabled", false)) {
-      return;
+  /**
+   * 实际生效的存储类型：配置为 DATABASE 但数据库连接不可用时，
+   * 自动降级为本地文件（YAML），避免统计数据无法写入/读取导致全部为 0。
+   */
+  public StorageType getEffectiveStorageType() {
+    StorageType configured = BedwarsPRO.getInstance().getStatisticStorageType();
+    if (configured == StorageType.DATABASE
+        && BedwarsPRO.getInstance().getDatabaseManager() == null) {
+      return StorageType.YAML;
     }
+    return configured;
+  }
 
-    if (BedwarsPRO.getInstance().getStatisticStorageType() == StorageType.YAML) {
+  public void initialize() {
+    StorageType storage = getEffectiveStorageType();
+    if (storage == StorageType.YAML) {
+      if (!BedwarsPRO.getInstance().getBooleanConfig("statistics.enabled", false)) {
+        return;
+      }
       File file = new File(
           BedwarsPRO.getInstance().getDataFolder() + "/database/bw_stats_players.yml");
       this.loadYml(file);
     }
-
-    if (BedwarsPRO.getInstance().getStatisticStorageType() == StorageType.DATABASE) {
-      this.initializeDatabase();
+    if (storage == StorageType.DATABASE) {
+      // 插件启用时自动检查并创建统计数据表
+      // （不依赖 statistics.enabled 开关：只要存储类型为 DATABASE 就确保表存在，
+      //   否则 /bw stats 读取时会报 Table doesn't exist）
+      this.ensureTableExists();
     }
   }
 
-  public void initializeDatabase() {
-    BedwarsPRO.getInstance().getServer().getConsoleSender().sendMessage(
-        ChatWriter.pluginMessage(ChatColor.GREEN + "Loading statistics from database ..."));
-
-    try {
-      Connection connection = BedwarsPRO.getInstance().getDatabaseManager().getConnection();
+  /**
+   * 确保统计数据表存在。
+   *
+   * <p>使用 CREATE TABLE IF NOT EXISTS，表已存在时自动跳过；
+   * 若数据库未配置或连接失败（FILE/YAML 模式）则静默忽略，不影响插件运行。</p>
+   */
+  public void ensureTableExists() {
+    DatabaseManager db = BedwarsPRO.getInstance().getDatabaseManager();
+    if (db == null) {
+      // 数据库未启用/未配置：FILE 模式，忽略数据库相关错误
+      return;
+    }
+    try (Connection connection = db.getConnection()) {
+      if (connection == null) {
+        BedwarsPRO.getInstance().getLogger().warning(
+            "[BedwarsPRO] 统计数据表创建失败: 无法获取数据库连接，已跳过建表。");
+        return;
+      }
       connection.setAutoCommit(false);
-      PreparedStatement preparedStatement = connection
-          .prepareStatement(BedwarsPRO.getInstance().getDatabaseManager().getCreateTableSql());
-      preparedStatement.executeUpdate();
+      try (PreparedStatement preparedStatement =
+          connection.prepareStatement(db.getCreateTableSql())) {
+        preparedStatement.executeUpdate();
+      }
       connection.commit();
-      preparedStatement.close();
-      connection.close();
     } catch (Exception ex) {
-      BedwarsPRO.getInstance().getBugsnag().notify(ex);
+      BedwarsPRO.getInstance().getLogger().warning(
+          "[BedwarsPRO] 统计数据表创建失败: " + ex.getMessage());
       ex.printStackTrace();
     }
-
   }
 
   private PlayerStatistic loadDatabaseStatistic(UUID uuid) {
     if (this.playerStatistic.containsKey(uuid)) {
       return this.playerStatistic.get(uuid);
     }
+    // 读取前确保统计表存在（缺失时自动创建，避免 Table doesn't exist）
+    this.ensureTableExists();
     HashMap<String, Object> deserialize = new HashMap<>();
 
-    try {
-      Connection connection = BedwarsPRO.getInstance().getDatabaseManager().getConnection();
-      PreparedStatement preparedStatement = connection
-          .prepareStatement(BedwarsPRO.getInstance().getDatabaseManager().getReadObjectSql());
-      preparedStatement.setString(1, uuid.toString());
-      ResultSet resultSet = preparedStatement.executeQuery();
-
-      ResultSetMetaData meta = resultSet.getMetaData();
-      while (resultSet.next()) {
-        for (int i = 1; i <= meta.getColumnCount(); i++) {
-          String key = meta.getColumnName(i);
-          Object value = resultSet.getObject(key);
-          deserialize.put(key, value);
+    DatabaseManager db = BedwarsPRO.getInstance().getDatabaseManager();
+    if (db != null) {
+      try (Connection connection = db.getConnection()) {
+        if (connection == null) {
+          // 数据库不可用（FILE 模式/连接失败），返回空统计，忽略数据库错误
+          PlayerStatistic empty = new PlayerStatistic(uuid);
+          this.playerStatistic.put(uuid, empty);
+          return empty;
         }
+        try (PreparedStatement preparedStatement = connection
+            .prepareStatement(db.getReadObjectSql())) {
+          preparedStatement.setString(1, uuid.toString());
+          try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            ResultSetMetaData meta = resultSet.getMetaData();
+            while (resultSet.next()) {
+              for (int i = 1; i <= meta.getColumnCount(); i++) {
+                String key = meta.getColumnName(i);
+                Object value = resultSet.getObject(key);
+                deserialize.put(key, value);
+              }
+            }
+          }
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
       }
-
-      resultSet.close();
-      preparedStatement.close();
-      connection.close();
-    } catch (SQLException e) {
-      e.printStackTrace();
     }
 
     PlayerStatistic playerStatistic;
@@ -221,7 +255,7 @@ public class PlayerStatisticManager {
   }
 
   public PlayerStatistic loadStatistic(UUID uuid) {
-    if (BedwarsPRO.getInstance().getStatisticStorageType() == StorageType.YAML) {
+    if (getEffectiveStorageType() == StorageType.YAML) {
       return this.loadYamlStatistic(uuid);
     } else {
       return this.loadDatabaseStatistic(uuid);
@@ -229,8 +263,13 @@ public class PlayerStatisticManager {
   }
 
   private PlayerStatistic loadYamlStatistic(UUID uuid) {
-
-    if (this.fileDatabase == null || !this.fileDatabase.contains("data." + uuid.toString())) {
+    // 懒加载：initialize 未初始化（如数据库降级场景）时自动加载本地文件
+    if (this.fileDatabase == null) {
+      File file = new File(
+          BedwarsPRO.getInstance().getDataFolder() + "/database/bw_stats_players.yml");
+      this.loadYml(file);
+    }
+    if (!this.fileDatabase.contains("data." + uuid.toString())) {
       PlayerStatistic playerStatistic = new PlayerStatistic(uuid);
       this.playerStatistic.put(uuid, playerStatistic);
       return playerStatistic;
@@ -282,25 +321,33 @@ public class PlayerStatisticManager {
   }
 
   private void storeDatabaseStatistic(PlayerStatistic playerStatistic) {
-    try {
-      Connection connection = BedwarsPRO.getInstance().getDatabaseManager().getConnection();
+    // 写入前确保统计表存在（缺失时自动创建，避免 Table doesn't exist）
+    this.ensureTableExists();
+    DatabaseManager db = BedwarsPRO.getInstance().getDatabaseManager();
+    if (db == null) {
+      // 数据库未启用（FILE 模式）：忽略数据库相关错误
+      return;
+    }
+    try (Connection connection = db.getConnection()) {
+      if (connection == null) {
+        // 数据库不可用，忽略保存（FILE 模式/连接失败）
+        return;
+      }
       connection.setAutoCommit(false);
 
-      PreparedStatement preparedStatement = connection
-          .prepareStatement(BedwarsPRO.getInstance().getDatabaseManager().getWriteObjectSql());
-
-      preparedStatement.setString(1, playerStatistic.getId().toString());
-      preparedStatement.setString(2, playerStatistic.getName());
-      preparedStatement.setInt(3, playerStatistic.getCurrentDeaths());
-      preparedStatement.setInt(4, playerStatistic.getCurrentDestroyedBeds());
-      preparedStatement.setInt(5, playerStatistic.getCurrentKills());
-      preparedStatement.setInt(6, playerStatistic.getCurrentLoses());
-      preparedStatement.setInt(7, playerStatistic.getCurrentScore());
-      preparedStatement.setInt(8, playerStatistic.getCurrentWins());
-      preparedStatement.executeUpdate();
+      try (PreparedStatement preparedStatement = connection
+          .prepareStatement(db.getWriteObjectSql())) {
+        preparedStatement.setString(1, playerStatistic.getId().toString());
+        preparedStatement.setString(2, playerStatistic.getName());
+        preparedStatement.setInt(3, playerStatistic.getCurrentDeaths());
+        preparedStatement.setInt(4, playerStatistic.getCurrentDestroyedBeds());
+        preparedStatement.setInt(5, playerStatistic.getCurrentKills());
+        preparedStatement.setInt(6, playerStatistic.getCurrentLoses());
+        preparedStatement.setInt(7, playerStatistic.getCurrentScore());
+        preparedStatement.setInt(8, playerStatistic.getCurrentWins());
+        preparedStatement.executeUpdate();
+      }
       connection.commit();
-      preparedStatement.close();
-      connection.close();
       playerStatistic.addCurrentValues();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -317,7 +364,7 @@ public class PlayerStatisticManager {
       return;
     }
 
-    if (BedwarsPRO.getInstance().getStatisticStorageType() == StorageType.YAML) {
+    if (getEffectiveStorageType() == StorageType.YAML) {
       this.storeYamlStatistic(statistic);
     } else {
       this.storeDatabaseStatistic(statistic);
@@ -349,8 +396,55 @@ public class PlayerStatisticManager {
   }
 
   public void unloadStatistic(OfflinePlayer player) {
-    if (BedwarsPRO.getInstance().getStatisticStorageType() != StorageType.YAML) {
+    if (getEffectiveStorageType() != StorageType.YAML) {
       this.playerStatistic.remove(player.getUniqueId());
+    }
+  }
+
+  /**
+   * 清除玩家全部统计（本地 YAML 或数据库），同时移除内存缓存。
+   * 供 /bwpro clearstats 指令调用，执行后玩家统计将归零。
+   */
+  public void resetStatistic(OfflinePlayer player) {
+    if (player == null || player.getUniqueId() == null) {
+      return;
+    }
+    UUID uuid = player.getUniqueId();
+    // 先移除内存缓存，避免清除后仍显示旧数据
+    this.playerStatistic.remove(uuid);
+    if (getEffectiveStorageType() == StorageType.YAML) {
+      if (this.fileDatabase == null) {
+        File file = new File(
+            BedwarsPRO.getInstance().getDataFolder() + "/database/bw_stats_players.yml");
+        this.loadYml(file);
+      }
+      if (this.fileDatabase != null) {
+        this.fileDatabase.set("data." + uuid.toString(), null);
+        try {
+          this.fileDatabase.save(this.databaseFile);
+        } catch (Exception ex) {
+          BedwarsPRO.getInstance().getBugsnag().notify(ex);
+          ex.printStackTrace();
+        }
+      }
+    } else {
+      DatabaseManager db = BedwarsPRO.getInstance().getDatabaseManager();
+      if (db != null) {
+        try (Connection connection = db.getConnection()) {
+          if (connection == null) {
+            // 数据库不可用，忽略清除（FILE 模式/连接失败）
+            return;
+          }
+          try (PreparedStatement ps = connection
+              .prepareStatement("DELETE FROM " + db.getTablePrefix()
+                  + "stats_players WHERE uuid = ?")) {
+            ps.setString(1, uuid.toString());
+            ps.executeUpdate();
+          }
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 

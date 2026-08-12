@@ -1,0 +1,42 @@
+# ===================================================
+# BedwarsPRO 计分板配置
+# ===================================================
+# 注意：
+#   本功能仅在「一端多图」模式（即 config.yml 中 bungeecord.enabled: false，
+#   非 BungeeCord 单服模式）下生效。
+#
+# 功能说明：
+#   - 玩家加入服务器 / 切换世界时自动检测所在世界，按黑白名单规则显示/隐藏计分板
+#   - 支持 & 颜色代码 与 PlaceholderAPI 占位符（如 %qyx_level%、%player_name% 等）
+#   - 定时刷新，实时更新占位符内容（金币、经验等动态数值）
+# ===================================================
+
+# 总开关（默认关闭）
+enabled: false
+
+# 世界模式：
+#   whitelist = 白名单：仅 worlds 列表中的世界显示计分板
+#   blacklist = 黑名单：worlds 列表中的世界不显示计分板，其余世界显示
+world-mode: whitelist
+
+# 生效世界列表（填写世界文件夹名，例如 world、lobby、survival）
+worlds:
+  - world
+  - lobby
+
+# 计分板刷新间隔（tick，20 tick = 1 秒）
+# 用于实时更新 PlaceholderAPI 占位符（如金币、经验、在线人数等）
+update-interval: 20
+
+# 计分板标题（支持 & 颜色代码 与 PlaceholderAPI 占位符，最长 32 字符）
+title: "&6&l起床战争"
+
+# 计分板内容（从上到下排列，最多 15 行，支持 & 颜色代码 与 PlaceholderAPI 占位符）
+lines:
+  - ""
+  - "&l&6⚫&f 会  员："
+  - "&l&6⚫&f 等  级：&r  &e%qyx_level%"
+  - "&l&6⚫&f 经  验：&r  &e%qyx_current_exp%/%qyx_next_exp%"
+  - "&l&6⚫&f 栖云币：&r  &e%qyx_coins%"
+  - ""
+  - "      c✿ &b栖云居 &c✿"

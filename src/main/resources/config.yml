@@ -1,7 +1,8 @@
 # BedwarsPRO Main Configuration
-# Merged from BedwarsRel + BedwarsScoreBoardAddon + BedwarsItemAddon
-
-license-key: ""
+#   Original BedwarsRel (C) 2015 Sebastian Binder (and other contributors)
+#   Original BedwarsScoreBoardAddon (C) 2015 Ram
+#   Original BedwarsItemAddon (C) 2015 Ram
+#   Original BedwarsPRO (C) 2026 JmmYm
 
 # -------- 基础设置 --------
 chat-prefix: '&b起床战争§7>>'
@@ -107,7 +108,7 @@ seperate-spectator-chat: true
 # -------- 统计系统 --------
 statistics:
   enabled: false
-  show-on-game-end: true
+  show-on-game-end: false
   storage: database
   bed-destroyed-kills: false
   scores:
@@ -127,6 +128,16 @@ database:
   user: root
   password: root
   table-prefix: bw_
+
+# -------- 任务系统数据库同步（多服共享任务进度，需连接以上数据库） --------
+# 启用后，玩家的任务领取时间、领取的任务、完成进度等会写入数据库，并在启动时读取
+task-database:
+  enabled: false
+
+# -------- 快捷存储数据库同步（多服共享玩家快捷存入开关，需连接以上数据库） --------
+# 启用后，玩家快捷存入的开/关状态写入数据库，跨服同步；关闭则仅保存在本地 QuickStash/players.yml
+quickstash-database:
+  enabled: false
 
 # -------- 观战与复活 --------
 spectation-enabled: true
@@ -286,8 +297,17 @@ lobbytime-full: 30
 hearts-in-halfs: true
 spawn-resources-in-chest: true
 global-autobalance: false
+auth-server-id: ""
+auth-check: true
 
-# === 以下为 BedwarsScoreBoardAddon 配置（原 bwsba 扁平） ===
+# -------- 远程配置（授权后台下发） --------
+# 在授权后台「插件配置」页为该授权码保存 config.yml / tasks.yml 后，
+# 插件每个心跳周期（约 30 秒）自动拉取并应用，无需重启服务器。
+# 注意：开启后，后台下发的 config.yml 会覆盖本机 config.yml（auth-server-id 自动保留）。
+remote-config:
+  enabled: true
+
+# === 以下为 BedwarsScoreBoardAddon 配置 ===
 
 #配置版本 (请勿修改!)
 version: 23
@@ -534,12 +554,6 @@ shop:
     name:
       - "&f商店"
     look: false
-  team_shop:
-    type: BLAZE
-    skin: Steve
-    name:
-      - "&f商店"
-    look: false
 
 #倒计时重生设置
 respawn:
@@ -780,117 +794,6 @@ date_format: "MM/dd/yy"
 lobby_scoreboard:
   enabled: true
   interval: 2
-
-#队伍商店
-team_shop:
-  trap_shop:
-    title: "&6陷阱商店"
-    back:
-      - "&7返回"
-  upgrade_shop:
-    title: "&e升级商店"
-    frame:
-      - "&7----------------------------"
-    trap:
-      item: "TRAP"
-      name: "陷阱"
-      lore:
-        - "&f点击装备陷阱"
-    message:
-      upgrade: "&a已购买升级！"
-      no_resource: "&c资源不足！"
-    state:
-      no_resource: "&c资源不足"
-      lock: "&c锁定"
-      unlock: "&a可用"
-  upgrade:
-    sword_sharpness:
-      enabled: true
-      item: "IRON_SWORD"
-      name: "锋利"
-      level_1:
-        cost: "20"
-        lore:
-          - "&7等级 I"
-          - "&f增加剑的伤害"
-      level_2:
-        cost: "40"
-        lore:
-          - "&7等级 II"
-          - "&f增加剑的伤害"
-      level_3:
-        cost: "80"
-        lore:
-          - "&7等级 III"
-          - "&f增加剑的伤害"
-      level_full:
-        lore:
-          - "&7已满级"
-    armor_protection:
-      enabled: true
-      item: "IRON_CHESTPLATE"
-      name: "护甲"
-      level_1:
-        cost: "30"
-        lore:
-          - "&7等级 I"
-          - "&f增加护甲"
-      level_2:
-        cost: "60"
-        lore:
-          - "&7等级 II"
-          - "&f增加护甲"
-      level_3:
-        cost: "90"
-        lore:
-          - "&7等级 III"
-          - "&f增加护甲"
-      level_4:
-        cost: "120"
-        lore:
-          - "&7等级 IV"
-          - "&f增加护甲"
-      level_full:
-        lore:
-          - "&7已满级"
-    counter_offensive_trap:
-      enabled: false
-      item: "TRIPWIRE_HOOK"
-      name: "陷阱"
-      trigger_range: 1.0
-      effect_range: 2.0
-      level_1:
-        lore:
-          - "&f等级 I"
-      level_full:
-        lore:
-          - "&f已满级"
-    alarm_trap:
-      enabled: false
-      item: "BELL"
-      name: "警报陷阱"
-      trigger_range: 1.0
-      trigger:
-        title: "&c警报!"
-        subtitle: "&e有人接近!"
-        message: "&c警报: &f有人接近你的床!"
-      level_1:
-        lore:
-          - "&f等级 I"
-      level_full:
-        lore:
-          - "&f已满级"
-    defense:
-      enabled: false
-      item: "SHIELD"
-      name: "防御"
-      trigger_range: 1.0
-      level_1:
-        lore:
-          - "&f等级 I"
-      level_full:
-        lore:
-          - "&f已满级"
 
 # === BWIA Item Addon 配置 ===
 

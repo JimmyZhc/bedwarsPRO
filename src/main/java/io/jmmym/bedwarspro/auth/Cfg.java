@@ -1,0 +1,26 @@
+package io.jmmym.bedwarspro.auth;
+
+/**
+ * 混淆配置常量（静态明文不会出现在 class 文件中）。
+ * 修改服务器地址 / HMAC 密钥后，请用 auth-tools/StrGen.java 重新生成并替换本文件。
+ */
+public final class Cfg {
+
+    /** 主授权服务器地址：https://bwpro.top/api.php（优先连接） */
+    public static final char[] URL    = {(char)0x006B,(char)0x0096,(char)0x00B5,(char)0x00D0,(char)0x0091,(char)0x0077,(char)0x008B,(char)0x0049,(char)0x009B,(char)0x00CF,(char)0x0086,(char)0x00A7,(char)0x00C3,(char)0x0040,(char)0x00A5,(char)0x00BF,(char)0x007E,(char)0x005C,(char)0x00AD,(char)0x007A,(char)0x0092,(char)0x0076,(char)0x0076,(char)0x008D,(char)0x00B4};
+    /** 备用授权服务器地址：https://bwpro.vxni.ink/api.php（主地址连接失败时使用） */
+    public static final char[] URL_BACKUP = {(char)0x006b,(char)0x0096,(char)0x00b5,(char)0x00d0,(char)0x0058,(char)0x006c,(char)0x008b,(char)0x007c,(char)0x00b0,(char)0x00c8,(char)0x0088,(char)0x00a4,(char)0x0082,(char)0x0088,(char)0x00a9,(char)0x00be,(char)0x0077,(char)0x005b,(char)0x00b5,(char)0x0078,(char)0x0094,(char)0x0077,(char)0x0067,(char)0x0095,(char)0x00ad,(char)0x0091,(char)0x0091,(char)0x00a8,(char)0x00cf};
+    public static final char[] SECRET = {(char)0x0065,(char)0x0087,(char)0x00a5,(char)0x00d7,(char)0x007f,(char)0x00af,(char)0x00cf,(char)0x008a,(char)0x00ab,(char)0x00c7,(char)0x0043,(char)0x0067,(char)0x0084,(char)0x0044,(char)0x0067,(char)0x007d,(char)0x0078,(char)0x009a,(char)0x00b9,(char)0x0083,(char)0x0096};
+    public static final char[] K_MD5  = {(char)0x0070,(char)0x0086,(char)0x0076};
+    public static final char[] K_TS   = {(char)0x0077,(char)0x0095};
+    public static final char[] K_SIG  = {(char)0x0076,(char)0x008b,(char)0x00a8};
+    public static final char[] K_SID  = {(char)0x0076,(char)0x008b,(char)0x00a5};
+    public static final char[] K_AC   = {(char)0x0064,(char)0x0085};
+    public static final char[] K_ACTION = {(char)0x0064,(char)0x0085,(char)0x00b5,(char)0x00c9,(char)0x008d,(char)0x00ab};
+    public static final char[] K_CFG_VER = {(char)0x0066,(char)0x0088,(char)0x00a8,(char)0x00bf,(char)0x0094,(char)0x00a2,(char)0x00ce};
+    public static final char[] K_OK   = {(char)0x0072,(char)0x008d};
+    public static final char[] UA     = {(char)0x0045,(char)0x0087,(char)0x00a5,(char)0x00d7,(char)0x007f,(char)0x00af,(char)0x00cf,(char)0x006a,(char)0x008b,(char)0x00a7,(char)0x0043,(char)0x0076,(char)0x00c9,(char)0x0086,(char)0x0099,(char)0x007f,(char)0x003f,(char)0x005b,(char)0x007c};
+
+    private Cfg() {
+    }
+}

@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import io.jmmym.bedwarspro.itemaddon.Main;
 import io.jmmym.bedwarspro.itemaddon.utils.ColorUtil;
+import io.jmmym.bedwarspro.utils.ChatWriter;
 
 public class Config {
 
@@ -104,7 +105,8 @@ public class Config {
         FileConfiguration config = Main.getInstance().getConfig();
         update_check_enabled = config.getBoolean("update_check.enabled");
         update_check_report = config.getBoolean("update_check.report");
-        message_cooling = getLanguage("item.cooling");
+        // 冷却提示与主插件 BedwarsPRO 的其他提示一致，使用 chat-prefix 前缀
+        message_cooling = ChatWriter.pluginMessage(getLanguage("item.cooling"));
         items_fireball_enabled = items_config.getBoolean("fireball.enabled");
         items_fireball_ejection_enabled = items_config.getBoolean("fireball.ejection.enabled");
         items_fireball_ejection_no_fall = items_config.getBoolean("fireball.ejection.no_fall");
@@ -190,13 +192,19 @@ public class Config {
     }
 
     private static File getLanguageFile() {
-        File folder = new File(Main.getInstance().getPlugin().getDataFolder(), "/");
+        File folder = new File(Main.getInstance().getPlugin().getDataFolder(), "/locale");
         if (!folder.exists()) {
             folder.mkdirs();
         }
-        File file = new File(folder.getAbsolutePath() + "/language.yml");
+        // 使用独立的 bwia-language.yml，避免与主插件 BWSBA 的 language.yml 互相覆盖
+        File file = new File(folder.getAbsolutePath() + "/bwia-language.yml");
+        // 迁移旧版根目录 bwia-language.yml 到 locale/ 下，保留用户自定义内容
+        File oldFile = new File(Main.getInstance().getPlugin().getDataFolder(), "/bwia-language.yml");
+        if (!file.exists() && oldFile.exists()) {
+            oldFile.renameTo(file);
+        }
         if (!file.exists()) {
-            Main.getInstance().getLocaleConfig().saveResource("language.yml");
+            Main.getInstance().getLocaleConfig().saveResource("language.yml", "locale/bwia-language.yml");
         }
         return file;
     }

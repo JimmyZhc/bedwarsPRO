@@ -103,10 +103,15 @@ public class LocaleConfig {
     }
 
     public void saveResource(String resourcePath) {
+        saveResource(resourcePath, resourcePath);
+    }
+
+    /** 将 locale/bwia 下的资源保存到插件目录，可指定不同的目标文件名。 */
+    public void saveResource(String resourcePath, String targetPath) {
         try {
-            InputStream input = Main.getInstance().getPlugin().getResource("bwia-locale/" + getPluginLocale().getName() + "/" + resourcePath);
+            InputStream input = Main.getInstance().getPlugin().getResource("locale/bwia/" + getPluginLocale().getName() + "/" + resourcePath);
             if (input != null) {
-                writeToLocal(Main.getInstance().getPlugin().getDataFolder().getPath() + "/" + resourcePath, input);
+                writeToLocal(Main.getInstance().getPlugin().getDataFolder().getPath() + "/" + targetPath, input);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,7 +129,7 @@ public class LocaleConfig {
                 }
                 for (String file : new String[] { "config.yml" }) {
                     try {
-                        InputStream input = Main.getInstance().getPlugin().getResource("bwia-locale/" + locale.getName() + "/" + file);
+                        InputStream input = Main.getInstance().getPlugin().getResource("locale/bwia/" + locale.getName() + "/" + file);
                         if (input != null) {
                             writeToLocal(folder.getPath() + "/" + locale.getName() + "/" + file, input);
                         }

@@ -24,7 +24,6 @@ import io.jmmym.bedwarspro.game.Team;
 import io.jmmym.bedwarspro.itemaddon.Main;
 import io.jmmym.bedwarspro.itemaddon.config.Config;
 import io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent;
-import io.jmmym.bedwarspro.scoreboard.arena.Arena;
 
 public class MagicMilk implements Listener {
     private final Map<Player, Long> cooldown;
@@ -43,10 +42,6 @@ public class MagicMilk implements Listener {
                     Entry<Player, Long> entry = iterator.next();
                     if ((System.currentTimeMillis() - entry.getValue()) >= Config.items_magic_milk_duration * 1000) {
                         Player player = entry.getKey();
-                        Arena arena = io.jmmym.bedwarspro.scoreboard.Main.getInstance().getArenaManager().getArena(game);
-                        if (arena != null) {
-                            arena.getTeamShop().removeImmunePlayer(player);
-                        }
                         iterator.remove();
                         player.sendMessage(Config.getLanguage("item.magic_milk_off"));
                     }
@@ -116,10 +111,6 @@ public class MagicMilk implements Listener {
             return;
         }
         cooldown.put(player, System.currentTimeMillis());
-        Arena arena = io.jmmym.bedwarspro.scoreboard.Main.getInstance().getArenaManager().getArena(game.getName());
-        if (arena == null) {
-            return;
-        }
         BedwarsUseItemEvent bedwarsUseItemEvent = new BedwarsUseItemEvent(game, player, EnumItem.MAGIC_MILK, item);
         Bukkit.getPluginManager().callEvent(bedwarsUseItemEvent);
         if (bedwarsUseItemEvent.isCancelled()) {
@@ -135,7 +126,6 @@ public class MagicMilk implements Listener {
                 player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
             }
         }
-        arena.getTeamShop().addImmunePlayer(player);
         immune_players.get(game.getName()).put(player, System.currentTimeMillis());
     }
 }

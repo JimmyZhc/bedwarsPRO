@@ -1,0 +1,1466 @@
+io.jmmym.bedwarspro.BedwarsPRO
+io.jmmym.bedwarspro.auth.AuthManager$Result
+io.jmmym.bedwarspro.auth.AuthManager$Result: io.jmmym.bedwarspro.auth.AuthManager$Result OK
+io.jmmym.bedwarspro.auth.AuthManager$Result: io.jmmym.bedwarspro.auth.AuthManager$Result NOT_LICENSED
+io.jmmym.bedwarspro.auth.AuthManager$Result: io.jmmym.bedwarspro.auth.AuthManager$Result BANNED
+io.jmmym.bedwarspro.auth.AuthManager$Result: io.jmmym.bedwarspro.auth.AuthManager$Result UNREACHABLE
+io.jmmym.bedwarspro.auth.AuthManager$Result: io.jmmym.bedwarspro.auth.AuthManager$Result[] ENUM$VALUES
+io.jmmym.bedwarspro.auth.AuthManager$Result: void <clinit>()
+io.jmmym.bedwarspro.auth.AuthManager$Result: AuthManager$Result(java.lang.String,int)
+io.jmmym.bedwarspro.auth.AuthManager$Result: io.jmmym.bedwarspro.auth.AuthManager$Result[] values()
+io.jmmym.bedwarspro.auth.AuthManager$Result: io.jmmym.bedwarspro.auth.AuthManager$Result valueOf(java.lang.String)
+io.jmmym.bedwarspro.com.fallback.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.fallback.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.fallback.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.fallback.PerformRespawnRunnable: java.lang.Object getPacketObject(java.lang.String,java.lang.Class[],java.lang.Object[])
+io.jmmym.bedwarspro.com.fallback.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_10_r1.ActionBar
+io.jmmym.bedwarspro.com.v1_10_r1.ActionBar: ActionBar()
+io.jmmym.bedwarspro.com.v1_10_r1.ActionBar: void sendActionBar(org.bukkit.entity.Player,java.lang.String)
+io.jmmym.bedwarspro.com.v1_10_r1.ParticleSpawner
+io.jmmym.bedwarspro.com.v1_10_r1.ParticleSpawner: ParticleSpawner()
+io.jmmym.bedwarspro.com.v1_10_r1.ParticleSpawner: void spawnParticle(java.util.List,java.lang.String,float,float,float)
+io.jmmym.bedwarspro.com.v1_10_r1.PathfinderGoalBedwarsPlayer
+io.jmmym.bedwarspro.com.v1_10_r1.PathfinderGoalBedwarsPlayer: net.minecraft.server.v1_10_R1.EntityCreature creature
+io.jmmym.bedwarspro.com.v1_10_r1.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_10_R1.EntityCreature,double,boolean)
+io.jmmym.bedwarspro.com.v1_10_r1.PathfinderGoalBedwarsPlayer: void e()
+io.jmmym.bedwarspro.com.v1_10_r1.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.v1_10_r1.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_10_r1.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_10_r1.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: org.bukkit.entity.EntityType type
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: SpawnEgg1_10(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10 fromItemStack(org.bukkit.inventory.ItemStack)
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10 clone()
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: org.bukkit.entity.EntityType getSpawnedType()
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: void setSpawnedType(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: org.bukkit.inventory.ItemStack toItemStack()
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: org.bukkit.inventory.ItemStack toItemStack(int)
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: java.lang.String toString()
+io.jmmym.bedwarspro.com.v1_10_r1.SpawnEgg1_10: java.lang.Object clone()
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: org.bukkit.entity.TNTPrimed primedTnt
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: org.bukkit.World world
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: TNTSheep(net.minecraft.server.v1_10_R1.World)
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: TNTSheep(org.bukkit.Location,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: org.bukkit.entity.TNTPrimed getTNT()
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: void setTNT(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: void remove()
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: void setPassenger(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep: void setTNTSource(org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister: TNTSheepRegister()
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister: void registerEntities(int)
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister: io.jmmym.bedwarspro.shop.Specials.ITNTSheep spawnCreature(io.jmmym.bedwarspro.shop.Specials.TNTSheep,org.bukkit.Location,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister$1
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister this$0
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister$1: org.bukkit.Location val$location
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep val$sheep
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister$1: org.bukkit.entity.Player val$owner
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.shop.Specials.TNTSheep val$specialItem
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister$1: TNTSheepRegister$1(io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister,org.bukkit.Location,io.jmmym.bedwarspro.com.v1_10_r1.TNTSheep,org.bukkit.entity.Player,io.jmmym.bedwarspro.shop.Specials.TNTSheep)
+io.jmmym.bedwarspro.com.v1_10_r1.TNTSheepRegister$1: void run()
+io.jmmym.bedwarspro.com.v1_10_r1.Title
+io.jmmym.bedwarspro.com.v1_10_r1.Title: Title()
+io.jmmym.bedwarspro.com.v1_10_r1.Title: void showSubTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_10_r1.Title: void showTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory category
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: VillagerItemShop(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.villager.MerchantCategory)
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: net.minecraft.server.v1_10_R1.EntityVillager createVillager()
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: net.minecraft.server.v1_10_R1.EntityHuman getEntityHuman()
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: void openTrading()
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: net.minecraft.server.v1_10_R1.EntityVillager access$0(io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: net.minecraft.server.v1_10_R1.EntityHuman access$1(io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory access$2(io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game access$3(io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop: org.bukkit.entity.Player access$4(io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop$1
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop$1: io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop this$0
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop$1: VillagerItemShop$1(io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_10_r1.VillagerItemShop$1: void run()
+io.jmmym.bedwarspro.com.v1_11_r1.ActionBar
+io.jmmym.bedwarspro.com.v1_11_r1.ActionBar: ActionBar()
+io.jmmym.bedwarspro.com.v1_11_r1.ActionBar: void sendActionBar(org.bukkit.entity.Player,java.lang.String)
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry instance
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: com.google.common.collect.BiMap customEntities
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: com.google.common.collect.BiMap customEntityClasses
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: java.util.Map customEntityIds
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: net.minecraft.server.v1_11_R1.RegistryMaterials wrapped
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: void <clinit>()
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: CustomEntityRegistry(net.minecraft.server.v1_11_R1.RegistryMaterials)
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: void addCustomEntity(int,java.lang.String,java.lang.Class)
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry getInstance()
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: int a(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: net.minecraft.server.v1_11_R1.MinecraftKey b(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: java.lang.Class get(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: void putCustomEntity(int,java.lang.String,java.lang.Class)
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: java.lang.Object b(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_11_r1.CustomEntityRegistry: java.lang.Object get(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_11_r1.ParticleSpawner
+io.jmmym.bedwarspro.com.v1_11_r1.ParticleSpawner: ParticleSpawner()
+io.jmmym.bedwarspro.com.v1_11_r1.ParticleSpawner: void spawnParticle(java.util.List,java.lang.String,float,float,float)
+io.jmmym.bedwarspro.com.v1_11_r1.PathfinderGoalBedwarsPlayer
+io.jmmym.bedwarspro.com.v1_11_r1.PathfinderGoalBedwarsPlayer: net.minecraft.server.v1_11_R1.EntityCreature creature
+io.jmmym.bedwarspro.com.v1_11_r1.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_11_R1.EntityCreature,double,boolean)
+io.jmmym.bedwarspro.com.v1_11_r1.PathfinderGoalBedwarsPlayer: void e()
+io.jmmym.bedwarspro.com.v1_11_r1.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.v1_11_r1.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_11_r1.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_11_r1.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: org.bukkit.entity.EntityType type
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: SpawnEgg1_11(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11 fromItemStack(org.bukkit.inventory.ItemStack)
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11 clone()
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: org.bukkit.entity.EntityType getSpawnedType()
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: void setSpawnedType(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: org.bukkit.inventory.ItemStack toItemStack()
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: org.bukkit.inventory.ItemStack toItemStack(int)
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: java.lang.String toString()
+io.jmmym.bedwarspro.com.v1_11_r1.SpawnEgg1_11: java.lang.Object clone()
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: org.bukkit.entity.TNTPrimed primedTnt
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: org.bukkit.World world
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: TNTSheep(net.minecraft.server.v1_11_R1.World)
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: TNTSheep(org.bukkit.Location,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: org.bukkit.entity.TNTPrimed getTNT()
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: void setTNT(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: void remove()
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: void setPassenger(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep: void setTNTSource(org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister: TNTSheepRegister()
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister: void registerEntities(int)
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister: io.jmmym.bedwarspro.shop.Specials.ITNTSheep spawnCreature(io.jmmym.bedwarspro.shop.Specials.TNTSheep,org.bukkit.Location,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister$1
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister this$0
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister$1: org.bukkit.Location val$location
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep val$sheep
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister$1: org.bukkit.entity.Player val$owner
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.shop.Specials.TNTSheep val$specialItem
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister$1: TNTSheepRegister$1(io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister,org.bukkit.Location,io.jmmym.bedwarspro.com.v1_11_r1.TNTSheep,org.bukkit.entity.Player,io.jmmym.bedwarspro.shop.Specials.TNTSheep)
+io.jmmym.bedwarspro.com.v1_11_r1.TNTSheepRegister$1: void run()
+io.jmmym.bedwarspro.com.v1_11_r1.Title
+io.jmmym.bedwarspro.com.v1_11_r1.Title: Title()
+io.jmmym.bedwarspro.com.v1_11_r1.Title: void showSubTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_11_r1.Title: void showTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory category
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: VillagerItemShop(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.villager.MerchantCategory)
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: net.minecraft.server.v1_11_R1.EntityVillager createVillager()
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: net.minecraft.server.v1_11_R1.EntityHuman getEntityHuman()
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: void openTrading()
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: net.minecraft.server.v1_11_R1.EntityVillager access$0(io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: net.minecraft.server.v1_11_R1.EntityHuman access$1(io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory access$2(io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game access$3(io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop: org.bukkit.entity.Player access$4(io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop$1
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop$1: io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop this$0
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop$1: VillagerItemShop$1(io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_11_r1.VillagerItemShop$1: void run()
+io.jmmym.bedwarspro.com.v1_12_r1.ActionBar
+io.jmmym.bedwarspro.com.v1_12_r1.ActionBar: ActionBar()
+io.jmmym.bedwarspro.com.v1_12_r1.ActionBar: void sendActionBar(org.bukkit.entity.Player,java.lang.String)
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry instance
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: com.google.common.collect.BiMap customEntities
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: com.google.common.collect.BiMap customEntityClasses
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: java.util.Map customEntityIds
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: net.minecraft.server.v1_12_R1.RegistryMaterials wrapped
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: void <clinit>()
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: CustomEntityRegistry(net.minecraft.server.v1_12_R1.RegistryMaterials)
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: void addCustomEntity(int,java.lang.String,java.lang.Class)
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry getInstance()
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: int a(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: net.minecraft.server.v1_12_R1.MinecraftKey b(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: java.lang.Class get(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: void putCustomEntity(int,java.lang.String,java.lang.Class)
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: java.lang.Object b(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_12_r1.CustomEntityRegistry: java.lang.Object get(java.lang.Object)
+io.jmmym.bedwarspro.com.v1_12_r1.ParticleSpawner
+io.jmmym.bedwarspro.com.v1_12_r1.ParticleSpawner: ParticleSpawner()
+io.jmmym.bedwarspro.com.v1_12_r1.ParticleSpawner: void spawnParticle(java.util.List,java.lang.String,float,float,float)
+io.jmmym.bedwarspro.com.v1_12_r1.PathfinderGoalBedwarsPlayer
+io.jmmym.bedwarspro.com.v1_12_r1.PathfinderGoalBedwarsPlayer: net.minecraft.server.v1_12_R1.EntityCreature creature
+io.jmmym.bedwarspro.com.v1_12_r1.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_12_R1.EntityCreature,double,boolean)
+io.jmmym.bedwarspro.com.v1_12_r1.PathfinderGoalBedwarsPlayer: void e()
+io.jmmym.bedwarspro.com.v1_12_r1.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.v1_12_r1.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_12_r1.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_12_r1.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: org.bukkit.entity.EntityType type
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: SpawnEgg1_12(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12 fromItemStack(org.bukkit.inventory.ItemStack)
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12 clone()
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: org.bukkit.entity.EntityType getSpawnedType()
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: void setSpawnedType(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: org.bukkit.inventory.ItemStack toItemStack()
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: org.bukkit.inventory.ItemStack toItemStack(int)
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: java.lang.String toString()
+io.jmmym.bedwarspro.com.v1_12_r1.SpawnEgg1_12: java.lang.Object clone()
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: org.bukkit.entity.TNTPrimed primedTnt
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: org.bukkit.World world
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: TNTSheep(net.minecraft.server.v1_12_R1.World)
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: TNTSheep(org.bukkit.Location,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: org.bukkit.entity.TNTPrimed getTNT()
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: void setTNT(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: void remove()
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: void setPassenger(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep: void setTNTSource(org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister: TNTSheepRegister()
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister: void registerEntities(int)
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister: io.jmmym.bedwarspro.shop.Specials.ITNTSheep spawnCreature(io.jmmym.bedwarspro.shop.Specials.TNTSheep,org.bukkit.Location,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister$1
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister this$0
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister$1: org.bukkit.Location val$location
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep val$sheep
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister$1: org.bukkit.entity.Player val$owner
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.shop.Specials.TNTSheep val$specialItem
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister$1: TNTSheepRegister$1(io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister,org.bukkit.Location,io.jmmym.bedwarspro.com.v1_12_r1.TNTSheep,org.bukkit.entity.Player,io.jmmym.bedwarspro.shop.Specials.TNTSheep)
+io.jmmym.bedwarspro.com.v1_12_r1.TNTSheepRegister$1: void run()
+io.jmmym.bedwarspro.com.v1_12_r1.Title
+io.jmmym.bedwarspro.com.v1_12_r1.Title: Title()
+io.jmmym.bedwarspro.com.v1_12_r1.Title: void showSubTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_12_r1.Title: void showTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory category
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: VillagerItemShop(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.villager.MerchantCategory)
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: net.minecraft.server.v1_12_R1.EntityVillager createVillager()
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: net.minecraft.server.v1_12_R1.EntityHuman getEntityHuman()
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: void openTrading()
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: net.minecraft.server.v1_12_R1.EntityVillager access$0(io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: net.minecraft.server.v1_12_R1.EntityHuman access$1(io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory access$2(io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game access$3(io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop: org.bukkit.entity.Player access$4(io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop$1
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop$1: io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop this$0
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop$1: VillagerItemShop$1(io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_12_r1.VillagerItemShop$1: void run()
+io.jmmym.bedwarspro.com.v1_8_r1.ActionBar
+io.jmmym.bedwarspro.com.v1_8_r1.ActionBar: ActionBar()
+io.jmmym.bedwarspro.com.v1_8_r1.ActionBar: void sendActionBar(org.bukkit.entity.Player,java.lang.String)
+io.jmmym.bedwarspro.com.v1_8_r1.ParticleSpawner
+io.jmmym.bedwarspro.com.v1_8_r1.ParticleSpawner: ParticleSpawner()
+io.jmmym.bedwarspro.com.v1_8_r1.ParticleSpawner: void spawnParticle(java.util.List,java.lang.String,float,float,float)
+io.jmmym.bedwarspro.com.v1_8_r1.PathfinderGoalBedwarsPlayer
+io.jmmym.bedwarspro.com.v1_8_r1.PathfinderGoalBedwarsPlayer: net.minecraft.server.v1_8_R1.EntityCreature creature
+io.jmmym.bedwarspro.com.v1_8_r1.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_8_R1.EntityCreature,java.lang.Class,double,boolean)
+io.jmmym.bedwarspro.com.v1_8_r1.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_8_R1.EntityCreature,double,boolean)
+io.jmmym.bedwarspro.com.v1_8_r1.PathfinderGoalBedwarsPlayer: void e()
+io.jmmym.bedwarspro.com.v1_8_r1.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.v1_8_r1.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_8_r1.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_8_r1.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: org.bukkit.entity.TNTPrimed primedTnt
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: org.bukkit.World world
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: TNTSheep(net.minecraft.server.v1_8_R1.World)
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: TNTSheep(org.bukkit.Location,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: org.bukkit.entity.TNTPrimed getTNT()
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: void setTNT(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: void remove()
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: void setPassenger(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep: void setTNTSource(org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister: TNTSheepRegister()
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister: void registerEntities(int)
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister: io.jmmym.bedwarspro.shop.Specials.ITNTSheep spawnCreature(io.jmmym.bedwarspro.shop.Specials.TNTSheep,org.bukkit.Location,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister$1
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister this$0
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister$1: org.bukkit.Location val$location
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep val$sheep
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister$1: org.bukkit.entity.Player val$owner
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.shop.Specials.TNTSheep val$specialItem
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister$1: TNTSheepRegister$1(io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister,org.bukkit.Location,io.jmmym.bedwarspro.com.v1_8_r1.TNTSheep,org.bukkit.entity.Player,io.jmmym.bedwarspro.shop.Specials.TNTSheep)
+io.jmmym.bedwarspro.com.v1_8_r1.TNTSheepRegister$1: void run()
+io.jmmym.bedwarspro.com.v1_8_r1.Title
+io.jmmym.bedwarspro.com.v1_8_r1.Title: Title()
+io.jmmym.bedwarspro.com.v1_8_r1.Title: void showSubTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_8_r1.Title: void showTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory category
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: VillagerItemShop(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.villager.MerchantCategory)
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: net.minecraft.server.v1_8_R1.EntityVillager createVillager()
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: net.minecraft.server.v1_8_R1.EntityHuman getEntityHuman()
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: void openTrading()
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: net.minecraft.server.v1_8_R1.EntityVillager access$0(io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: net.minecraft.server.v1_8_R1.EntityHuman access$1(io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory access$2(io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game access$3(io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop: org.bukkit.entity.Player access$4(io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop$1
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop$1: io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop this$0
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop$1: VillagerItemShop$1(io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r1.VillagerItemShop$1: void run()
+io.jmmym.bedwarspro.com.v1_8_r2.ActionBar
+io.jmmym.bedwarspro.com.v1_8_r2.ActionBar: ActionBar()
+io.jmmym.bedwarspro.com.v1_8_r2.ActionBar: void sendActionBar(org.bukkit.entity.Player,java.lang.String)
+io.jmmym.bedwarspro.com.v1_8_r2.ParticleSpawner
+io.jmmym.bedwarspro.com.v1_8_r2.ParticleSpawner: ParticleSpawner()
+io.jmmym.bedwarspro.com.v1_8_r2.ParticleSpawner: void spawnParticle(java.util.List,java.lang.String,float,float,float)
+io.jmmym.bedwarspro.com.v1_8_r2.PathfinderGoalBedwarsPlayer
+io.jmmym.bedwarspro.com.v1_8_r2.PathfinderGoalBedwarsPlayer: net.minecraft.server.v1_8_R2.EntityCreature creature
+io.jmmym.bedwarspro.com.v1_8_r2.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_8_R2.EntityCreature,java.lang.Class,double,boolean)
+io.jmmym.bedwarspro.com.v1_8_r2.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_8_R2.EntityCreature,double,boolean)
+io.jmmym.bedwarspro.com.v1_8_r2.PathfinderGoalBedwarsPlayer: void e()
+io.jmmym.bedwarspro.com.v1_8_r2.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.v1_8_r2.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_8_r2.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_8_r2.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: org.bukkit.entity.TNTPrimed primedTnt
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: org.bukkit.World world
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: TNTSheep(net.minecraft.server.v1_8_R2.World)
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: TNTSheep(org.bukkit.Location,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: org.bukkit.entity.TNTPrimed getTNT()
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: void setTNT(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: void remove()
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: void setPassenger(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep: void setTNTSource(org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister: TNTSheepRegister()
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister: void registerEntities(int)
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister: io.jmmym.bedwarspro.shop.Specials.ITNTSheep spawnCreature(io.jmmym.bedwarspro.shop.Specials.TNTSheep,org.bukkit.Location,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister$1
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister this$0
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister$1: org.bukkit.Location val$location
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep val$sheep
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister$1: org.bukkit.entity.Player val$owner
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister$1: io.jmmym.bedwarspro.shop.Specials.TNTSheep val$specialItem
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister$1: TNTSheepRegister$1(io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister,org.bukkit.Location,io.jmmym.bedwarspro.com.v1_8_r2.TNTSheep,org.bukkit.entity.Player,io.jmmym.bedwarspro.shop.Specials.TNTSheep)
+io.jmmym.bedwarspro.com.v1_8_r2.TNTSheepRegister$1: void run()
+io.jmmym.bedwarspro.com.v1_8_r2.Title
+io.jmmym.bedwarspro.com.v1_8_r2.Title: Title()
+io.jmmym.bedwarspro.com.v1_8_r2.Title: void showSubTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_8_r2.Title: void showTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory category
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: VillagerItemShop(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.villager.MerchantCategory)
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: net.minecraft.server.v1_8_R2.EntityVillager createVillager()
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: net.minecraft.server.v1_8_R2.EntityHuman getEntityHuman()
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: void openTrading()
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: net.minecraft.server.v1_8_R2.EntityVillager access$0(io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: net.minecraft.server.v1_8_R2.EntityHuman access$1(io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory access$2(io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: io.jmmym.bedwarspro.game.Game access$3(io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop: org.bukkit.entity.Player access$4(io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop$1
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop$1: io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop this$0
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop$1: VillagerItemShop$1(io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r2.VillagerItemShop$1: void run()
+io.jmmym.bedwarspro.com.v1_8_r3.ActionBar
+io.jmmym.bedwarspro.com.v1_8_r3.ActionBar: ActionBar()
+io.jmmym.bedwarspro.com.v1_8_r3.ActionBar: void sendActionBar(org.bukkit.entity.Player,java.lang.String)
+io.jmmym.bedwarspro.com.v1_8_r3.ParticleSpawner
+io.jmmym.bedwarspro.com.v1_8_r3.ParticleSpawner: ParticleSpawner()
+io.jmmym.bedwarspro.com.v1_8_r3.ParticleSpawner: void spawnParticle(java.util.List,java.lang.String,float,float,float)
+io.jmmym.bedwarspro.com.v1_8_r3.PathfinderGoalBedwarsPlayer
+io.jmmym.bedwarspro.com.v1_8_r3.PathfinderGoalBedwarsPlayer: net.minecraft.server.v1_8_R3.EntityCreature creature
+io.jmmym.bedwarspro.com.v1_8_r3.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_8_R3.EntityCreature,java.lang.Class,double,boolean)
+io.jmmym.bedwarspro.com.v1_8_r3.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_8_R3.EntityCreature,double,boolean)
+io.jmmym.bedwarspro.com.v1_8_r3.PathfinderGoalBedwarsPlayer: void e()
+io.jmmym.bedwarspro.com.v1_8_r3.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.v1_8_r3.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_8_r3.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_8_r3.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: org.bukkit.entity.TNTPrimed primedTnt
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: org.bukkit.World world
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: TNTSheep(net.minecraft.server.v1_8_R3.World)
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: TNTSheep(org.bukkit.Location,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: org.bukkit.entity.TNTPrimed getTNT()
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: void setTNT(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: void remove()
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: void setPassenger(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep: void setTNTSource(org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister: TNTSheepRegister()
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister: void registerEntities(int)
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister: io.jmmym.bedwarspro.shop.Specials.ITNTSheep spawnCreature(io.jmmym.bedwarspro.shop.Specials.TNTSheep,org.bukkit.Location,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister$1
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister this$0
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister$1: org.bukkit.Location val$location
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep val$sheep
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister$1: org.bukkit.entity.Player val$owner
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister$1: io.jmmym.bedwarspro.shop.Specials.TNTSheep val$specialItem
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister$1: TNTSheepRegister$1(io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister,org.bukkit.Location,io.jmmym.bedwarspro.com.v1_8_r3.TNTSheep,org.bukkit.entity.Player,io.jmmym.bedwarspro.shop.Specials.TNTSheep)
+io.jmmym.bedwarspro.com.v1_8_r3.TNTSheepRegister$1: void run()
+io.jmmym.bedwarspro.com.v1_8_r3.Title
+io.jmmym.bedwarspro.com.v1_8_r3.Title: Title()
+io.jmmym.bedwarspro.com.v1_8_r3.Title: void showSubTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_8_r3.Title: void showTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory category
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: VillagerItemShop(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.villager.MerchantCategory)
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: net.minecraft.server.v1_8_R3.EntityVillager createVillager()
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: net.minecraft.server.v1_8_R3.EntityHuman getEntityHuman()
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: void openTrading()
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: net.minecraft.server.v1_8_R3.EntityVillager access$0(io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: net.minecraft.server.v1_8_R3.EntityHuman access$1(io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory access$2(io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: io.jmmym.bedwarspro.game.Game access$3(io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop: org.bukkit.entity.Player access$4(io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop$1
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop$1: io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop this$0
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop$1: VillagerItemShop$1(io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_8_r3.VillagerItemShop$1: void run()
+io.jmmym.bedwarspro.com.v1_9_r1.ActionBar
+io.jmmym.bedwarspro.com.v1_9_r1.ActionBar: ActionBar()
+io.jmmym.bedwarspro.com.v1_9_r1.ActionBar: void sendActionBar(org.bukkit.entity.Player,java.lang.String)
+io.jmmym.bedwarspro.com.v1_9_r1.ParticleSpawner
+io.jmmym.bedwarspro.com.v1_9_r1.ParticleSpawner: ParticleSpawner()
+io.jmmym.bedwarspro.com.v1_9_r1.ParticleSpawner: void spawnParticle(java.util.List,java.lang.String,float,float,float)
+io.jmmym.bedwarspro.com.v1_9_r1.PathfinderGoalBedwarsPlayer
+io.jmmym.bedwarspro.com.v1_9_r1.PathfinderGoalBedwarsPlayer: net.minecraft.server.v1_9_R1.EntityCreature creature
+io.jmmym.bedwarspro.com.v1_9_r1.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_9_R1.EntityCreature,double,boolean)
+io.jmmym.bedwarspro.com.v1_9_r1.PathfinderGoalBedwarsPlayer: void e()
+io.jmmym.bedwarspro.com.v1_9_r1.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.v1_9_r1.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_9_r1.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_9_r1.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: org.bukkit.entity.EntityType type
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: SpawnEgg1_9(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9 fromItemStack(org.bukkit.inventory.ItemStack)
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9 clone()
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: org.bukkit.entity.EntityType getSpawnedType()
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: void setSpawnedType(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: org.bukkit.inventory.ItemStack toItemStack()
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: org.bukkit.inventory.ItemStack toItemStack(int)
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: java.lang.String toString()
+io.jmmym.bedwarspro.com.v1_9_r1.SpawnEgg1_9: java.lang.Object clone()
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: org.bukkit.entity.TNTPrimed primedTnt
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: org.bukkit.World world
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: TNTSheep(net.minecraft.server.v1_9_R1.World)
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: TNTSheep(org.bukkit.Location,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: org.bukkit.entity.TNTPrimed getTNT()
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: void setTNT(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: void remove()
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: void setPassenger(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep: void setTNTSource(org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister: TNTSheepRegister()
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister: void registerEntities(int)
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister: io.jmmym.bedwarspro.shop.Specials.ITNTSheep spawnCreature(io.jmmym.bedwarspro.shop.Specials.TNTSheep,org.bukkit.Location,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister$1
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister this$0
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister$1: org.bukkit.Location val$location
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep val$sheep
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister$1: org.bukkit.entity.Player val$owner
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister$1: io.jmmym.bedwarspro.shop.Specials.TNTSheep val$specialItem
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister$1: TNTSheepRegister$1(io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister,org.bukkit.Location,io.jmmym.bedwarspro.com.v1_9_r1.TNTSheep,org.bukkit.entity.Player,io.jmmym.bedwarspro.shop.Specials.TNTSheep)
+io.jmmym.bedwarspro.com.v1_9_r1.TNTSheepRegister$1: void run()
+io.jmmym.bedwarspro.com.v1_9_r1.Title
+io.jmmym.bedwarspro.com.v1_9_r1.Title: Title()
+io.jmmym.bedwarspro.com.v1_9_r1.Title: void showSubTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_9_r1.Title: void showTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory category
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: VillagerItemShop(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.villager.MerchantCategory)
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: net.minecraft.server.v1_9_R1.EntityVillager createVillager()
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: net.minecraft.server.v1_9_R1.EntityHuman getEntityHuman()
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: void openTrading()
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: net.minecraft.server.v1_9_R1.EntityVillager access$0(io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: net.minecraft.server.v1_9_R1.EntityHuman access$1(io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory access$2(io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: io.jmmym.bedwarspro.game.Game access$3(io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop: org.bukkit.entity.Player access$4(io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop$1
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop$1: io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop this$0
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop$1: VillagerItemShop$1(io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r1.VillagerItemShop$1: void run()
+io.jmmym.bedwarspro.com.v1_9_r2.ActionBar
+io.jmmym.bedwarspro.com.v1_9_r2.ActionBar: ActionBar()
+io.jmmym.bedwarspro.com.v1_9_r2.ActionBar: void sendActionBar(org.bukkit.entity.Player,java.lang.String)
+io.jmmym.bedwarspro.com.v1_9_r2.ParticleSpawner
+io.jmmym.bedwarspro.com.v1_9_r2.ParticleSpawner: ParticleSpawner()
+io.jmmym.bedwarspro.com.v1_9_r2.ParticleSpawner: void spawnParticle(java.util.List,java.lang.String,float,float,float)
+io.jmmym.bedwarspro.com.v1_9_r2.PathfinderGoalBedwarsPlayer
+io.jmmym.bedwarspro.com.v1_9_r2.PathfinderGoalBedwarsPlayer: net.minecraft.server.v1_9_R2.EntityCreature creature
+io.jmmym.bedwarspro.com.v1_9_r2.PathfinderGoalBedwarsPlayer: PathfinderGoalBedwarsPlayer(net.minecraft.server.v1_9_R2.EntityCreature,double,boolean)
+io.jmmym.bedwarspro.com.v1_9_r2.PathfinderGoalBedwarsPlayer: void e()
+io.jmmym.bedwarspro.com.v1_9_r2.PerformRespawnRunnable
+io.jmmym.bedwarspro.com.v1_9_r2.PerformRespawnRunnable: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_9_r2.PerformRespawnRunnable: PerformRespawnRunnable(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_9_r2.PerformRespawnRunnable: void run()
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: org.bukkit.entity.EntityType type
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: SpawnEgg1_9(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9 fromItemStack(org.bukkit.inventory.ItemStack)
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9 clone()
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: org.bukkit.entity.EntityType getSpawnedType()
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: void setSpawnedType(org.bukkit.entity.EntityType)
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: org.bukkit.inventory.ItemStack toItemStack()
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: org.bukkit.inventory.ItemStack toItemStack(int)
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: java.lang.String toString()
+io.jmmym.bedwarspro.com.v1_9_r2.SpawnEgg1_9: java.lang.Object clone()
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: org.bukkit.entity.TNTPrimed primedTnt
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: org.bukkit.World world
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: TNTSheep(net.minecraft.server.v1_9_R2.World)
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: TNTSheep(org.bukkit.Location,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: org.bukkit.entity.TNTPrimed getTNT()
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: void setTNT(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: void remove()
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: void setPassenger(org.bukkit.entity.TNTPrimed)
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep: void setTNTSource(org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister: TNTSheepRegister()
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister: void registerEntities(int)
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister: io.jmmym.bedwarspro.shop.Specials.ITNTSheep spawnCreature(io.jmmym.bedwarspro.shop.Specials.TNTSheep,org.bukkit.Location,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister$1
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister this$0
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister$1: org.bukkit.Location val$location
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister$1: io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep val$sheep
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister$1: org.bukkit.entity.Player val$owner
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister$1: io.jmmym.bedwarspro.shop.Specials.TNTSheep val$specialItem
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister$1: TNTSheepRegister$1(io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister,org.bukkit.Location,io.jmmym.bedwarspro.com.v1_9_r2.TNTSheep,org.bukkit.entity.Player,io.jmmym.bedwarspro.shop.Specials.TNTSheep)
+io.jmmym.bedwarspro.com.v1_9_r2.TNTSheepRegister$1: void run()
+io.jmmym.bedwarspro.com.v1_9_r2.Title
+io.jmmym.bedwarspro.com.v1_9_r2.Title: Title()
+io.jmmym.bedwarspro.com.v1_9_r2.Title: void showSubTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_9_r2.Title: void showTitle(org.bukkit.entity.Player,java.lang.String,double,double,double)
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory category
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: VillagerItemShop(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.villager.MerchantCategory)
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: net.minecraft.server.v1_9_R2.EntityVillager createVillager()
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: net.minecraft.server.v1_9_R2.EntityHuman getEntityHuman()
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: void openTrading()
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: net.minecraft.server.v1_9_R2.EntityVillager access$0(io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: net.minecraft.server.v1_9_R2.EntityHuman access$1(io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: io.jmmym.bedwarspro.villager.MerchantCategory access$2(io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: io.jmmym.bedwarspro.game.Game access$3(io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop: org.bukkit.entity.Player access$4(io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop$1
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop$1: io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop this$0
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop$1: VillagerItemShop$1(io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop)
+io.jmmym.bedwarspro.com.v1_9_r2.VillagerItemShop$1: void run()
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: io.jmmym.bedwarspro.commands.BaseCommand command
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: java.util.ArrayList params
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: boolean result
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: org.bukkit.command.CommandSender sender
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: BedwarsCommandExecutedEvent(org.bukkit.command.CommandSender,io.jmmym.bedwarspro.commands.BaseCommand,java.util.ArrayList,boolean)
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: io.jmmym.bedwarspro.commands.BaseCommand getCommand()
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: java.util.ArrayList getParameter()
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: org.bukkit.command.CommandSender getSender()
+io.jmmym.bedwarspro.events.BedwarsCommandExecutedEvent: boolean isSuccess()
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: io.jmmym.bedwarspro.commands.BaseCommand command
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: java.util.ArrayList params
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: org.bukkit.command.CommandSender sender
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: BedwarsExecuteCommandEvent(org.bukkit.command.CommandSender,io.jmmym.bedwarspro.commands.BaseCommand,java.util.ArrayList)
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: io.jmmym.bedwarspro.commands.BaseCommand getCommand()
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: java.util.ArrayList getParameter()
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: org.bukkit.command.CommandSender getSender()
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsExecuteCommandEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsGameEndEvent
+io.jmmym.bedwarspro.events.BedwarsGameEndEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsGameEndEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsGameEndEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsGameEndEvent: BedwarsGameEndEvent(io.jmmym.bedwarspro.game.Game)
+io.jmmym.bedwarspro.events.BedwarsGameEndEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsGameEndEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsGameEndEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: io.jmmym.bedwarspro.game.Team winner
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: BedwarsGameOverEvent(io.jmmym.bedwarspro.game.Game,io.jmmym.bedwarspro.game.Team)
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: io.jmmym.bedwarspro.game.Team getWinner()
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsGameOverEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: BedwarsGameStartEvent(io.jmmym.bedwarspro.game.Game)
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsGameStartEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsGameStartedEvent
+io.jmmym.bedwarspro.events.BedwarsGameStartedEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsGameStartedEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsGameStartedEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsGameStartedEvent: BedwarsGameStartedEvent(io.jmmym.bedwarspro.game.Game)
+io.jmmym.bedwarspro.events.BedwarsGameStartedEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsGameStartedEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsGameStartedEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: org.bukkit.entity.Entity clickedEntity
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: java.util.HashMap itemshop
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: BedwarsOpenShopEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,java.util.HashMap,org.bukkit.entity.Entity)
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: org.bukkit.entity.Entity getEntity()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: java.util.HashMap getItemshop()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: org.bukkit.command.CommandSender getPlayer()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsOpenShopEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: BedwarsOpenTeamSelectionEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: org.bukkit.command.CommandSender getPlayer()
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: java.lang.Boolean kickOnCancel
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: BedwarsPlayerJoinEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: java.lang.Boolean getKickOnCancel()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: void setKickOnCancel(java.lang.Boolean)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinEvent: void setPlayerLocale(java.lang.String)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: io.jmmym.bedwarspro.game.Team team
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: BedwarsPlayerJoinTeamEvent(io.jmmym.bedwarspro.game.Team,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: io.jmmym.bedwarspro.game.Team getTeam()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: void setTeam(io.jmmym.bedwarspro.game.Team)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinTeamEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: io.jmmym.bedwarspro.game.Team team
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: BedwarsPlayerJoinedEvent(io.jmmym.bedwarspro.game.Game,io.jmmym.bedwarspro.game.Team,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent: io.jmmym.bedwarspro.game.Team getTeam()
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: org.bukkit.entity.Player killer
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: BedwarsPlayerKilledEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: org.bukkit.entity.Player getKiller()
+io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: io.jmmym.bedwarspro.game.Team team
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: BedwarsPlayerLeaveEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.game.Team)
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.events.BedwarsPlayerLeaveEvent: io.jmmym.bedwarspro.game.Team getTeam()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: java.lang.String displayName
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: java.lang.String playerListName
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: io.jmmym.bedwarspro.game.Team team
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: BedwarsPlayerSetNameEvent(io.jmmym.bedwarspro.game.Team,java.lang.String,java.lang.String,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: java.lang.String getDisplayName()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: void setDisplayName(java.lang.String)
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: java.lang.String getPlayerListName()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: void setPlayerListName(java.lang.String)
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: io.jmmym.bedwarspro.game.Team getTeam()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsPlayerSetNameEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: org.bukkit.Location location
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: org.bukkit.inventory.ItemStack resource
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: BedwarsResourceSpawnEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.Location,org.bukkit.inventory.ItemStack)
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: org.bukkit.inventory.ItemStack getResource()
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: void setResource(org.bukkit.inventory.ItemStack)
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsResourceSpawnEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: org.bukkit.command.CommandSender sender
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: BedwarsSaveGameEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.command.CommandSender)
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: org.bukkit.command.CommandSender getSender()
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsSaveGameEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: io.jmmym.bedwarspro.statistics.PlayerStatistic playerStatistic
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: BedwarsSavePlayerStatisticEvent(io.jmmym.bedwarspro.statistics.PlayerStatistic)
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: io.jmmym.bedwarspro.statistics.PlayerStatistic getPlayerStatistic()
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsSavePlayerStatisticEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: io.jmmym.bedwarspro.game.Team team
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: BedwarsTargetBlockDestroyedEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.game.Team)
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent: io.jmmym.bedwarspro.game.Team getTeam()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: boolean cancelled
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.Location startLocation
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.entity.Player targetPlayer
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: void <clinit>()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: BedwarsUseTNTSheepEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,org.bukkit.entity.Player,org.bukkit.Location)
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.command.CommandSender getPlayer()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.Location getStartLocation()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: void setStartLocation(org.bukkit.Location)
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: org.bukkit.entity.Player getTargetPlayer()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: void setTargetPlayer(org.bukkit.entity.Player)
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: boolean isCancelled()
+io.jmmym.bedwarspro.events.BedwarsUseTNTSheepEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.game.GameCheckCode
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode OK
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode LOC_NOT_SET_ERROR
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode TEAM_SIZE_LOW_ERROR
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode NO_RES_SPAWNER_ERROR
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode NO_LOBBY_SET
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode TEAMS_WITHOUT_SPAWNS
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode NO_ITEMSHOP_CATEGORIES
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode TEAM_NO_WRONG_BED
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode NO_MAIN_LOBBY_SET
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode TEAM_NO_WRONG_TARGET
+io.jmmym.bedwarspro.game.GameCheckCode: java.util.HashMap GameCheckCodeMessages
+io.jmmym.bedwarspro.game.GameCheckCode: int code
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode[] ENUM$VALUES
+io.jmmym.bedwarspro.game.GameCheckCode: void <clinit>()
+io.jmmym.bedwarspro.game.GameCheckCode: GameCheckCode(java.lang.String,int,int)
+io.jmmym.bedwarspro.game.GameCheckCode: int getCode()
+io.jmmym.bedwarspro.game.GameCheckCode: java.lang.String getCodeMessage(com.google.common.collect.ImmutableMap)
+io.jmmym.bedwarspro.game.GameCheckCode: java.lang.String getCodeMessage()
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode[] values()
+io.jmmym.bedwarspro.game.GameCheckCode: io.jmmym.bedwarspro.game.GameCheckCode valueOf(java.lang.String)
+io.jmmym.bedwarspro.game.GameState
+io.jmmym.bedwarspro.game.GameState: io.jmmym.bedwarspro.game.GameState RUNNING
+io.jmmym.bedwarspro.game.GameState: io.jmmym.bedwarspro.game.GameState WAITING
+io.jmmym.bedwarspro.game.GameState: io.jmmym.bedwarspro.game.GameState STOPPED
+io.jmmym.bedwarspro.game.GameState: io.jmmym.bedwarspro.game.GameState[] ENUM$VALUES
+io.jmmym.bedwarspro.game.GameState: void <clinit>()
+io.jmmym.bedwarspro.game.GameState: GameState(java.lang.String,int)
+io.jmmym.bedwarspro.game.GameState: io.jmmym.bedwarspro.game.GameState[] values()
+io.jmmym.bedwarspro.game.GameState: io.jmmym.bedwarspro.game.GameState valueOf(java.lang.String)
+io.jmmym.bedwarspro.game.TeamColor
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor GREEN
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor RED
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor BLUE
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor YELLOW
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor AQUA
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor BLACK
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor GOLD
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor DARK_BLUE
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor DARK_GREEN
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor DARK_RED
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor DARK_PURPLE
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor GRAY
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor DARK_GRAY
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor LIGHT_PURPLE
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor WHITE
+io.jmmym.bedwarspro.game.TeamColor: org.bukkit.ChatColor chatColor
+io.jmmym.bedwarspro.game.TeamColor: org.bukkit.Color color
+io.jmmym.bedwarspro.game.TeamColor: org.bukkit.DyeColor dyeColor
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor[] ENUM$VALUES
+io.jmmym.bedwarspro.game.TeamColor: void <clinit>()
+io.jmmym.bedwarspro.game.TeamColor: TeamColor(java.lang.String,int,org.bukkit.Color,org.bukkit.ChatColor,org.bukkit.DyeColor)
+io.jmmym.bedwarspro.game.TeamColor: org.bukkit.ChatColor getChatColor()
+io.jmmym.bedwarspro.game.TeamColor: org.bukkit.Color getColor()
+io.jmmym.bedwarspro.game.TeamColor: org.bukkit.DyeColor getDyeColor()
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor[] values()
+io.jmmym.bedwarspro.game.TeamColor: io.jmmym.bedwarspro.game.TeamColor valueOf(java.lang.String)
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: io.jmmym.bedwarspro.itemaddon.config.EnumLocale EN_US
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: io.jmmym.bedwarspro.itemaddon.config.EnumLocale ZH_CN
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: io.jmmym.bedwarspro.itemaddon.config.EnumLocale ZH_TW
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: java.lang.String name
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: io.jmmym.bedwarspro.itemaddon.config.EnumLocale[] ENUM$VALUES
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: void <clinit>()
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: EnumLocale(java.lang.String,int,java.lang.String)
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: java.lang.String getName()
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: io.jmmym.bedwarspro.itemaddon.config.EnumLocale getByName(java.lang.String)
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: io.jmmym.bedwarspro.itemaddon.config.EnumLocale[] values()
+io.jmmym.bedwarspro.itemaddon.config.EnumLocale: io.jmmym.bedwarspro.itemaddon.config.EnumLocale valueOf(java.lang.String)
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: org.bukkit.Location location
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: void <clinit>()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: BedwarsFishSpawnEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.Location)
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: org.bukkit.Location getLocation()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: boolean isCancelled()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsFishSpawnEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: io.jmmym.bedwarspro.itemaddon.items.EnumItem itemtype
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: org.bukkit.inventory.ItemStack consumeitem
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: void <clinit>()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: BedwarsUseItemEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.itemaddon.items.EnumItem,org.bukkit.inventory.ItemStack)
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: io.jmmym.bedwarspro.itemaddon.items.EnumItem getItemType()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: org.bukkit.inventory.ItemStack getConsumeItem()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: boolean isCancelled()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.itemaddon.event.BedwarsUseItemEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.itemaddon.items.EnumItem
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem BRIDGE_EGG
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem ENDER_PEARL_CHAIR
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem FIRE_BALL
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem LIGHT_TNT
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem PARACHUTE
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem TEAM_IRON_GOLEM
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem TNT_LAUNCH
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem TRAMPOLINE
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem WALK_PLATFORM
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem MAGIC_MILK
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: java.lang.String name
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem[] ENUM$VALUES
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: void <clinit>()
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: EnumItem(java.lang.String,int,java.lang.String)
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: java.lang.String getName()
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem getByName(java.lang.String)
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem[] values()
+io.jmmym.bedwarspro.itemaddon.items.EnumItem: io.jmmym.bedwarspro.itemaddon.items.EnumItem valueOf(java.lang.String)
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType SUCCESS
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType PARTIAL
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType FAIL_BLACKLIST
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType FAIL_EMPTY
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType FAIL_TARGET
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType[] ENUM$VALUES
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: void <clinit>()
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: DepositHandler$ResultType(java.lang.String,int)
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType[] values()
+io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType: io.jmmym.bedwarspro.quickstash.DepositHandler$ResultType valueOf(java.lang.String)
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: io.jmmym.bedwarspro.scoreboard.config.EnumLocale ZH_CN
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: java.lang.String name
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: io.jmmym.bedwarspro.scoreboard.config.EnumLocale[] ENUM$VALUES
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: EnumLocale(java.lang.String,int,java.lang.String)
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: java.lang.String getName()
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: io.jmmym.bedwarspro.scoreboard.config.EnumLocale getByName(java.lang.String)
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: io.jmmym.bedwarspro.scoreboard.config.EnumLocale[] values()
+io.jmmym.bedwarspro.scoreboard.config.EnumLocale: io.jmmym.bedwarspro.scoreboard.config.EnumLocale valueOf(java.lang.String)
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: io.jmmym.bedwarspro.game.Team team
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: BedwarsTeamDeadEvent(io.jmmym.bedwarspro.game.Game,io.jmmym.bedwarspro.game.Team)
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: io.jmmym.bedwarspro.game.Team getTeam()
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BedwarsTeamDeadEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: BoardAddonDeathModeEvent(io.jmmym.bedwarspro.game.Game)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: boolean isCancelled()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonDeathModeEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: io.jmmym.bedwarspro.scoreboard.addon.Rejoin rejoin
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: BoardAddonPlayerAddRejoinEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.scoreboard.addon.Rejoin)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: io.jmmym.bedwarspro.scoreboard.addon.Rejoin getRejoin()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: boolean isCancelled()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerAddRejoinEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: BoardAddonPlayerInvisibilityEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: boolean isCancelled()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerInvisibilityEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: BoardAddonPlayerOpenItemShopEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: boolean isCancelled()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: io.jmmym.bedwarspro.scoreboard.addon.Rejoin rejoin
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: BoardAddonPlayerRejoinEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.scoreboard.addon.Rejoin)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: io.jmmym.bedwarspro.scoreboard.addon.Rejoin getRejoin()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: boolean isCancelled()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: io.jmmym.bedwarspro.scoreboard.addon.Rejoin rejoin
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: BoardAddonPlayerRejoinedEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,io.jmmym.bedwarspro.scoreboard.addon.Rejoin)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: io.jmmym.bedwarspro.scoreboard.addon.Rejoin getRejoin()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRejoinedEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: java.lang.String player
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: io.jmmym.bedwarspro.scoreboard.addon.Rejoin rejoin
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: BoardAddonPlayerRemoveRejoinEvent(io.jmmym.bedwarspro.game.Game,java.lang.String,io.jmmym.bedwarspro.scoreboard.addon.Rejoin)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: java.lang.String getPlayer()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: io.jmmym.bedwarspro.scoreboard.addon.Rejoin getRejoin()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRemoveRejoinEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: BoardAddonPlayerRespawnEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerRespawnEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: org.bukkit.entity.Player player
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: org.bukkit.entity.WitherSkull witherSkull
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: BoardAddonPlayerShootWitherBowEvent(io.jmmym.bedwarspro.game.Game,org.bukkit.entity.Player,org.bukkit.entity.WitherSkull)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: org.bukkit.entity.Player getPlayer()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: org.bukkit.entity.WitherSkull getWitherSkull()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: boolean isCancelled()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerShootWitherBowEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: java.util.List upgrade
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: BoardAddonResourceUpgradeEvent(io.jmmym.bedwarspro.game.Game,java.util.List)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: java.util.List getUpgrade()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: void setUpgrade(java.util.List)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: boolean isCancelled()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonResourceUpgradeEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: org.bukkit.event.HandlerList handlers
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: io.jmmym.bedwarspro.game.Game game
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: java.lang.Boolean cancelled
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: BoardAddonSetHealthEvent(io.jmmym.bedwarspro.game.Game)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: io.jmmym.bedwarspro.game.Game getGame()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: boolean isCancelled()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: void setCancelled(boolean)
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: org.bukkit.event.HandlerList getHandlers()
+io.jmmym.bedwarspro.scoreboard.events.BoardAddonSetHealthEvent: org.bukkit.event.HandlerList getHandlerList()
+io.jmmym.bedwarspro.scoreboard.menu.MenuType
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType EDIT
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType EDIT_TEAM
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType EDIT_TEAM_BED
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType EDIT_TEAM_SPAWN
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType EDIT_SPAWNER
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType EDIT_TEAM_SPAWNER
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType EDIT_GAME_SPAWNER
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType[] ENUM$VALUES
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: void <clinit>()
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: MenuType(java.lang.String,int)
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType[] values()
+io.jmmym.bedwarspro.scoreboard.menu.MenuType: io.jmmym.bedwarspro.scoreboard.menu.MenuType valueOf(java.lang.String)
+io.jmmym.bedwarspro.statistics.StorageType
+io.jmmym.bedwarspro.statistics.StorageType: io.jmmym.bedwarspro.statistics.StorageType DATABASE
+io.jmmym.bedwarspro.statistics.StorageType: io.jmmym.bedwarspro.statistics.StorageType YAML
+io.jmmym.bedwarspro.statistics.StorageType: java.lang.String name
+io.jmmym.bedwarspro.statistics.StorageType: io.jmmym.bedwarspro.statistics.StorageType[] ENUM$VALUES
+io.jmmym.bedwarspro.statistics.StorageType: void <clinit>()
+io.jmmym.bedwarspro.statistics.StorageType: StorageType(java.lang.String,int,java.lang.String)
+io.jmmym.bedwarspro.statistics.StorageType: io.jmmym.bedwarspro.statistics.StorageType getByName(java.lang.String)
+io.jmmym.bedwarspro.statistics.StorageType: java.lang.String getName()
+io.jmmym.bedwarspro.statistics.StorageType: io.jmmym.bedwarspro.statistics.StorageType[] values()
+io.jmmym.bedwarspro.statistics.StorageType: io.jmmym.bedwarspro.statistics.StorageType valueOf(java.lang.String)
+io.jmmym.bedwarspro.task.TaskType
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType PARTICIPATE
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType KILL
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType DESTROY_BED
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType COLLECT_RESOURCE
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType WIN
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType FINAL_KILL
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType QUICK_WIN
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType BOW_KILL
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType KILL_STREAK
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType COUNTER_ATTACK
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType PEARL_KILL
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType TNT_KILL
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType VOID_KILL
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType SURVIVOR
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType COMEBACK
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType UNDEFEATED
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType FIRST_BLOOD
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType BOUNTY
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType WEEKLY_KILL
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType WEEKLY_WIN
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType WEEKLY_DESTROY_BED
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType WEEKLY_GENERAL_WIN
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType[] ENUM$VALUES
+io.jmmym.bedwarspro.task.TaskType: void <clinit>()
+io.jmmym.bedwarspro.task.TaskType: TaskType(java.lang.String,int)
+io.jmmym.bedwarspro.task.TaskType: boolean isWeekly()
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType safeValueOf(java.lang.String)
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType[] values()
+io.jmmym.bedwarspro.task.TaskType: io.jmmym.bedwarspro.task.TaskType valueOf(java.lang.String)
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType: io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType ALPHA
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType: io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType BETA
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType: io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType RELEASE
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType: io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType[] ENUM$VALUES
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType: void <clinit>()
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType: PluginUpdater$ReleaseType(java.lang.String,int)
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType: io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType[] values()
+io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType: io.jmmym.bedwarspro.updater.PluginUpdater$ReleaseType valueOf(java.lang.String)
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult SUCCESS
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult NO_UPDATE
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult DISABLED
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult FAIL_DOWNLOAD
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult FAIL_DBO
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult FAIL_NOVERSION
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult FAIL_BADID
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult FAIL_APIKEY
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult UPDATE_AVAILABLE
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult[] ENUM$VALUES
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: void <clinit>()
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: PluginUpdater$UpdateResult(java.lang.String,int)
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult[] values()
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateResult valueOf(java.lang.String)
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType DEFAULT
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType NO_VERSION_CHECK
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType NO_DOWNLOAD
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType[] ENUM$VALUES
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType: void <clinit>()
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType: PluginUpdater$UpdateType(java.lang.String,int)
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType[] values()
+io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType: io.jmmym.bedwarspro.updater.PluginUpdater$UpdateType valueOf(java.lang.String)
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country AUTO_DETECT
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ANDORRA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country UNITED_ARAB_EMIRATES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country AFGHANISTAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ANTIGUA_AND_BARBUDA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ANGUILLA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ALBANIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ARMENIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NETHERLANDS_ANTILLES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ANGOLA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ANTARCTICA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ARGENTINA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country AMERICAN_SAMOA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country AUSTRIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country AUSTRALIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ARUBA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ÅLAND_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country AZERBAIJAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BOSNIA_AND_HERZEGOVINA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BARBADOS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BANGLADESH
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BELGIUM
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BURKINA_FASO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BULGARIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BAHRAIN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BURUNDI
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BENIN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAINT_BARTHÉLEMY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BERMUDA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BRUNEI
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BOLIVIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BONAIRE_SINT_EUSTATIUS_AND_SABA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BRAZIL
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BAHAMAS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BHUTAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BOUVET_ISLAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BOTSWANA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BELARUS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BELIZE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CANADA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country COCOS_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country THE_DEMOCRATIC_REPUBLIC_OF_CONGO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CENTRAL_AFRICAN_REPUBLIC
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CONGO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SWITZERLAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CÔTE_D_IVOIRE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country COOK_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CHILE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CAMEROON
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CHINA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country COLOMBIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country COSTA_RICA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CUBA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CAPE_VERDE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CURAÇAO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CHRISTMAS_ISLAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CYPRUS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CZECH_REPUBLIC
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GERMANY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country DJIBOUTI
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country DENMARK
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country DOMINICA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country DOMINICAN_REPUBLIC
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ALGERIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ECUADOR
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ESTONIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country EGYPT
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country WESTERN_SAHARA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ERITREA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SPAIN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ETHIOPIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country FINLAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country FIJI
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country FALKLAND_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MICRONESIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country FAROE_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country FRANCE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GABON
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country UNITED_KINGDOM
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GRENADA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GEORGIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country FRENCH_GUIANA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GUERNSEY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GHANA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GIBRALTAR
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GREENLAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GAMBIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GUINEA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GUADELOUPE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country EQUATORIAL_GUINEA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GREECE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SOUTH_GEORGIA_AND_THE_SOUTH_SANDWICH_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GUATEMALA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GUAM
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GUINEA_BISSAU
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country GUYANA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country HONG_KONG
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country HEARD_ISLAND_AND_MCDONALD_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country HONDURAS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CROATIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country HAITI
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country HUNGARY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country INDONESIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country IRELAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ISRAEL
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ISLE_OF_MAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country INDIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BRITISH_INDIAN_OCEAN_TERRITORY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country IRAQ
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country IRAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ICELAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ITALY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country JERSEY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country JAMAICA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country JORDAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country JAPAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country KENYA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country KYRGYZSTAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CAMBODIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country KIRIBATI
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country COMOROS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAINT_KITTS_AND_NEVIS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NORTH_KOREA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SOUTH_KOREA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country KUWAIT
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CAYMAN_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country KAZAKHSTAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LAOS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LEBANON
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAINT_LUCIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LIECHTENSTEIN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SRI_LANKA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LIBERIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LESOTHO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LITHUANIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LUXEMBOURG
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LATVIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country LIBYA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MOROCCO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MONACO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MOLDOVA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MONTENEGRO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAINT_MARTIN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MADAGASCAR
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MARSHALL_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MACEDONIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MALI
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MYANMAR
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MONGOLIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MACAO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NORTHERN_MARIANA_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MARTINIQUE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MAURITANIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MONTSERRAT
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MALTA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MAURITIUS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MALDIVES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MALAWI
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MEXICO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MALAYSIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MOZAMBIQUE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NAMIBIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NEW_CALEDONIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NIGER
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NORFOLK_ISLAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NIGERIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NICARAGUA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NETHERLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NORWAY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NEPAL
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NAURU
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NIUE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country NEW_ZEALAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country OMAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PANAMA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PERU
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country FRENCH_POLYNESIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PAPUA_NEW_GUINEA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PHILIPPINES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PAKISTAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country POLAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAINT_PIERRE_AND_MIQUELON
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PITCAIRN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PUERTO_RICO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PALESTINE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PORTUGAL
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PALAU
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country PARAGUAY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country QATAR
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country REUNION
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ROMANIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SERBIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country RUSSIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country RWANDA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAUDI_ARABIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SOLOMON_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SEYCHELLES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SUDAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SWEDEN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SINGAPORE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAINT_HELENA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SLOVENIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SVALBARD_AND_JAN_MAYEN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SLOVAKIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SIERRA_LEONE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAN_MARINO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SENEGAL
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SOMALIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SURINAME
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SOUTH_SUDAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAO_TOME_AND_PRINCIPE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country EL_SALVADOR
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SINT_MAARTEN_DUTCH_PART
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SYRIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SWAZILAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TURKS_AND_CAICOS_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country CHAD
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country FRENCH_SOUTHERN_TERRITORIES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TOGO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country THAILAND
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TAJIKISTAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TOKELAU
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TIMOR_LESTE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TURKMENISTAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TUNISIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TONGA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TURKEY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TRINIDAD_AND_TOBAGO
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TUVALU
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TAIWAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country TANZANIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country UKRAINE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country UGANDA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country UNITED_STATES_MINOR_OUTLYING_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country UNITED_STATES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country URUGUAY
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country UZBEKISTAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country VATICAN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAINT_VINCENT_AND_THE_GRENADINES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country VENEZUELA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country BRITISH_VIRGIN_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country U_S__VIRGIN_ISLANDS
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country VIETNAM
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country VANUATU
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country WALLIS_AND_FUTUNA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SAMOA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country YEMEN
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country MAYOTTE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country SOUTH_AFRICA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ZAMBIA
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country ZIMBABWE
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: java.lang.String isoTag
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: java.lang.String name
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country[] ENUM$VALUES
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: void <clinit>()
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: BStatsMetrics$Country(java.lang.String,int,java.lang.String,java.lang.String)
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country byIsoTag(java.lang.String)
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country byLocale(java.util.Locale)
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: java.lang.String getCountryIsoTag()
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: java.lang.String getCountryName()
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country[] values()
+io.jmmym.bedwarspro.utils.BStatsMetrics$Country: io.jmmym.bedwarspro.utils.BStatsMetrics$Country valueOf(java.lang.String)

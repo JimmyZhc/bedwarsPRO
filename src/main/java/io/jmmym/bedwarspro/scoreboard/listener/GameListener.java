@@ -20,7 +20,6 @@ import io.jmmym.bedwarspro.BedwarsPRO;
 import io.jmmym.bedwarspro.events.BedwarsGameEndEvent;
 import io.jmmym.bedwarspro.events.BedwarsGameOverEvent;
 import io.jmmym.bedwarspro.events.BedwarsGameStartedEvent;
-import io.jmmym.bedwarspro.events.BedwarsOpenShopEvent;
 import io.jmmym.bedwarspro.events.BedwarsOpenTeamSelectionEvent;
 import io.jmmym.bedwarspro.events.BedwarsPlayerJoinedEvent;
 import io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent;
@@ -150,14 +149,6 @@ public class GameListener implements Listener {
 				}
 			});
 		});
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onOpenShop(BedwarsOpenShopEvent e) {
-		Game game = e.getGame();
-		if (Main.getInstance().getArenaManager().getArenas().containsKey(game.getName())) {
-			Main.getInstance().getArenaManager().getArenas().get(game.getName()).onOpenShop(e);
-		}
 	}
 
 	@EventHandler

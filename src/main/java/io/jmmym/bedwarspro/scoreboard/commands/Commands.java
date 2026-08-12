@@ -157,7 +157,6 @@ public class Commands implements CommandExecutor {
 					if (args.length == 2) {
 						sender.sendMessage("");
 						sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.set_item_shop"));
-						sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.set_team_shop"));
 						return true;
 					}
 					if (args[2].equalsIgnoreCase("item")) {
@@ -177,26 +176,8 @@ public class Commands implements CommandExecutor {
 							return true;
 						}
 					}
-					if (args[2].equalsIgnoreCase("team")) {
-						if (args.length == 4) {
-							if (Bukkit.getPluginManager().isPluginEnabled("Citizens")) {
-								Config.setShop(args[3], player.getLocation(), "team");
-								player.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.set_item_shop"));
-								Main.getInstance().getEditHolographicManager().displayGameLocation(player, args[3]);
-							} else {
-								player.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.set_shop_error"));
-								player.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.failed_set_shop"));
-							}
-							return true;
-						} else {
-							sender.sendMessage("");
-							sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.set_team_shop"));
-							return true;
-						}
-					}
 					sender.sendMessage("");
 					sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.set_item_shop"));
-					sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.set_team_shop"));
 					return true;
 
 				}
@@ -210,7 +191,7 @@ public class Commands implements CommandExecutor {
 						sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.shop_list"));
 						return true;
 					}
-					if (!Config.game_shop_item.containsKey(args[2]) && !Config.game_shop_team.containsKey(args[2])) {
+					if (!Config.game_shop_item.containsKey(args[2])) {
 						player.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.shop_list_error"));
 						return true;
 					}
@@ -248,7 +229,6 @@ public class Commands implements CommandExecutor {
 				sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.shop_list"));
 				sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.remove_shop"));
 				sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.set_item_shop"));
-				sender.sendMessage(Config.getLanguage("commands.message.prefix") + Config.getLanguage("commands.message.help.set_team_shop"));
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("edit")) {
@@ -312,20 +292,6 @@ public class Commands implements CommandExecutor {
 				try {
 					Config.game_shop_shops.forEach((id, pl) -> {
 						if (pl.equals(game + ".shop.item - " + loc)) {
-							player.sendMessage("§f ID: §a" + id + " §f[§e" + loc.replace(",", "§f,§e") + "§f]");
-							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.getName() + " {\"text\":\" \",\"extra\":[{\"text\":\"" + Config.getLanguage("button.list_teleport") + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/bwsbatp " + game + " " + loc + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"" + Config.getLanguage("show_text.list_teleport") + "\"}},{\"text\":\"  \"},{\"text\":\"" + Config.getLanguage("button.list_remove") + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/BedwarsPRO:bwsba shop remove " + id + " true\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"" + Config.getLanguage("show_text.list_remove") + "\"}}]}");
-							player.sendMessage("");
-						}
-					});
-				} catch (Exception e) {
-				}
-			}
-		}
-		if (Config.game_shop_team.containsKey(game)) {
-			for (String loc : Config.game_shop_team.get(game)) {
-				try {
-					Config.game_shop_shops.forEach((id, pl) -> {
-						if (pl.equals(game + ".shop.team - " + loc)) {
 							player.sendMessage("§f ID: §a" + id + " §f[§e" + loc.replace(",", "§f,§e") + "§f]");
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.getName() + " {\"text\":\" \",\"extra\":[{\"text\":\"" + Config.getLanguage("button.list_teleport") + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/bwsbatp " + game + " " + loc + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"" + Config.getLanguage("show_text.list_teleport") + "\"}},{\"text\":\"  \"},{\"text\":\"" + Config.getLanguage("button.list_remove") + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/BedwarsPRO:bwsba shop remove " + id + " true\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"" + Config.getLanguage("show_text.list_remove") + "\"}}]}");
 							player.sendMessage("");

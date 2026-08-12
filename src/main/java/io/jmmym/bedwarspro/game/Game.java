@@ -223,6 +223,7 @@ public class Game {
     newTeam.setPrefix(color.getChatColor().toString());
 
     Team theTeam = new Team(name, color, maxPlayers, newTeam);
+    theTeam.setGame(this);
     this.teams.put(name, theTeam);
   }
 
@@ -232,6 +233,7 @@ public class Game {
     newTeam.setPrefix(team.getChatColor().toString());
 
     team.setScoreboardTeam(newTeam);
+    team.setGame(this);
 
     this.teams.put(team.getName(), team);
   }
@@ -1168,7 +1170,9 @@ public class Game {
       }
 
       if (!this.isAutobalanceEnabled()) {
-        this.freePlayers.add(p);
+        if (!this.freePlayers.contains(p)) {
+          this.freePlayers.add(p);
+        }
       } else {
         Team team = this.getLowestTeam();
         team.addPlayer(p);
@@ -1289,6 +1293,9 @@ public class Game {
           }
         }
       }
+    }
+    // 无论是否观战者，离开时都从队伍计分板 entries 移除，防止人数残留
+    if (team != null) {
       team.removePlayer(p);
     }
 
@@ -1323,6 +1330,11 @@ public class Game {
       storage.clean();
       storage.restore();
     }
+
+    // 补发加入物品：游戏结束回大厅的路径是先传送到大厅再 playerLeave，
+    // 传送时玩家仍在游戏中导致世界切换事件里的 apply 被跳过，且同世界再传送不会触发事件。
+    // 此时玩家已从游戏中移除（removeGamePlayer），主动补发快捷物品（apply 幂等，已持有则跳过）
+    io.jmmym.bedwarspro.joinitem.JoinItem.getInstance().apply(p);
 
     this.playerSettings.remove(p);
     this.updateScoreboard();
@@ -1843,6 +1855,12 @@ public class Game {
 
   public void toSpectator(Player player) {
     final Player p = player;
+
+    // 观战前先从原队伍移出，避免玩家名残留在队伍计分板 entries 中
+    Team oldTeam = this.getPlayerTeam(player);
+    if (oldTeam != null) {
+      oldTeam.removePlayer(player);
+    }
 
     if (!this.freePlayers.contains(player)) {
       this.freePlayers.add(player);

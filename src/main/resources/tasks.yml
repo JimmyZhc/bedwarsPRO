@@ -6,9 +6,10 @@
 daily:
   enabled: true
   # true = 每天随机分配 count 个任务供玩家选择
-  # false = 玩家可从任务池自由选择（全部显示）
+  # false = 玩家可从任务池自由选择（至多显示九个）
   random-assign: true
-  count: 3
+  # 每天随机分配给玩家的任务数量
+  count: 5
 
 # -------- 每周任务开关 --------
 weekly:
@@ -25,27 +26,22 @@ timed:
   duration-minutes: 60
 
 # -------- 对局内行为奖励（实时发放）--------
-# 玩家在游戏对局中完成对应行为时立即给予经验和栖云币
+# 玩家在游戏对局中完成对应行为时立即给予经验
 ingame-rewards:
   normal-kill:
     exp: 1
-    coins: 3
   final-kill:
     exp: 3
-    coins: 1
   destroy-bed:
     exp: 5
-    coins: 1
   win:
     exp: 6
-    coins: 2
 
 # -------- 追杀令（限时任务专用）--------
 # 通过 /bwpro task publish 击杀令 <玩家名> 发布
 # 接取后在游戏中击杀指定目标玩家即可获得奖励
 bounty:
   reward-exp: 15
-  reward-coins: 2
 
 # -------- 调试时间加速倍率 --------
 # 1 = 真实时间（1天=24小时, 1周=7天）
@@ -63,59 +59,121 @@ debug:
 #   WIN               获胜对局
 #   FINAL_KILL        最终击杀（床被破坏后击杀）
 #   QUICK_WIN         快速获胜（5分钟内获胜）
+#   BOW_KILL          弓箭手（用弓击杀）
+#   KILL_STREAK       连杀达人（连续击杀未死亡）
+#   COUNTER_ATTACK    反击者（生命值低于5颗心时击杀）
+#   PEARL_KILL        偷袭者（末影珍珠传送后5秒内击杀）
+#   TNT_KILL          TNT狂人（用TNT击杀）
+#   VOID_KILL         虚空猎手（将玩家击入虚空）
+#   SURVIVOR          生存专家（一局游戏存活N分钟）
+#   COMEBACK          逆风翻盘（队伍只剩1人时击杀敌人）
+#   UNDEFEATED        无伤获胜（未死亡并获胜）
+#   FIRST_BLOOD       首杀（一场游戏获得首杀）
 # 奖励字段：
 #   reward-exp    完成时给予的经验数量
-#   reward-coins  完成时给予的栖云币数量
+# 目标字段（二选一）：
+#   target        固定目标值
+#   target-min / target-max   随机目标范围（每天选任务时随机一个值）
 daily-tasks:
   - type: PARTICIPATE
     target: 3
     name: "参与对局"
     description: "参与3场起床战争对局"
     reward-exp: 15
-    reward-coins: 2
   - type: KILL
     target: 5
     name: "猎手"
     description: "击杀5名玩家"
     reward-exp: 20
-    reward-coins: 2
   - type: DESTROY_BED
     target: 2
     name: "破床专家"
     description: "破坏2张床"
     reward-exp: 25
-    reward-coins: 3
   - type: COLLECT_RESOURCE
     target: 64
     name: "资源收集者"
     description: "收集64个资源"
     reward-exp: 15
-    reward-coins: 1
   - type: WIN
     target: 1
     name: "胜利者"
     description: "获得1场对局胜利"
     reward-exp: 30
-    reward-coins: 4
   - type: FINAL_KILL
     target: 3
     name: "终结者"
     description: "完成3次最终击杀"
     reward-exp: 25
-    reward-coins: 3
   - type: QUICK_WIN
     target: 1
     name: "速胜大师"
     description: "在5分钟内获得1场对局胜利"
     reward-exp: 40
-    reward-coins: 5
+  - type: BOW_KILL
+    target-min: 1
+    target-max: 3
+    name: "弓箭手"
+    description: "用弓击杀1-3名玩家"
+    reward-exp: 20
+  - type: KILL_STREAK
+    target-min: 2
+    target-max: 4
+    name: "连杀达人"
+    description: "连续击杀2-4名玩家未死亡"
+    reward-exp: 25
+  - type: COUNTER_ATTACK
+    target-min: 1
+    target-max: 2
+    name: "反击者"
+    description: "在生命值低于5颗心时击杀1-2名玩家"
+    reward-exp: 25
+  - type: PEARL_KILL
+    target-min: 1
+    target-max: 2
+    name: "偷袭者"
+    description: "使用末影珍珠传送后5秒内击杀1-2名玩家"
+    reward-exp: 25
+  - type: TNT_KILL
+    target-min: 1
+    target-max: 2
+    name: "TNT狂人"
+    description: "用TNT击杀1-2名玩家"
+    reward-exp: 20
+  - type: VOID_KILL
+    target-min: 1
+    target-max: 3
+    name: "虚空猎手"
+    description: "将1-3名玩家击入虚空"
+    reward-exp: 20
+  - type: SURVIVOR
+    target-min: 8
+    target-max: 12
+    name: "生存专家"
+    description: "在一局游戏中存活8-12分钟"
+    reward-exp: 30
+  - type: COMEBACK
+    target-min: 1
+    target-max: 2
+    name: "逆风翻盘"
+    description: "在队伍只剩1人时击杀1-2名敌人"
+    reward-exp: 30
+  - type: UNDEFEATED
+    target: 1
+    name: "无伤获胜"
+    description: "在一场游戏中未死亡并获胜"
+    reward-exp: 40
+  - type: FIRST_BLOOD
+    target: 1
+    name: "首杀"
+    description: "在一场游戏中获得首杀"
+    reward-exp: 35
 
 # -------- 每周任务定义池 --------
 # 每周任务自动跟踪所有玩家进度，无需接受。
 # target-min ~ target-max: 每周开始时随机选取目标值
 # 奖励字段：
 #   reward-exp    完成时给予的经验数量
-#   reward-coins  完成时给予的栖云币数量
 weekly-tasks:
   - type: WEEKLY_KILL
     target-min: 50
@@ -123,18 +181,21 @@ weekly-tasks:
     name: "累计击杀"
     description: "一周内累计击杀50名玩家"
     reward-exp: 120
-    reward-coins: 15
   - type: WEEKLY_WIN
     target-min: 5
     target-max: 10
     name: "累计胜场"
     description: "一周内赢得5-10场游戏胜利"
     reward-exp: 150
-    reward-coins: 20
   - type: WEEKLY_DESTROY_BED
     target-min: 10
     target-max: 25
     name: "累计拆床"
     description: "一周内摧毁10-25张床"
     reward-exp: 120
-    reward-coins: 15
+  - type: WEEKLY_GENERAL_WIN
+    target-min: 15
+    target-max: 25
+    name: "百胜将军"
+    description: "一周内赢得15-25场胜利"
+    reward-exp: 200

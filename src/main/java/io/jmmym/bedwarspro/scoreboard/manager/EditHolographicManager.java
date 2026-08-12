@@ -94,23 +94,6 @@ public class EditHolographicManager {
 				}
 			}
 		}
-		if (Config.game_shop_team.containsKey(g)) {
-			for (String loc : Config.game_shop_team.get(g)) {
-				Location location = toLocation(loc);
-				if (location != null) {
-					try {
-						Config.game_shop_shops.forEach((id, pl) -> {
-							if (pl.equals(g + ".shop.team - " + loc)) {
-								HolographicAPI holo = new HolographicAPI(location.clone().add(0, -1.75, 0), Config.getLanguage("holographic.shop.team").replace("{id}", id));
-								list.add(holo);
-								holo.display(player);
-							}
-						});
-					} catch (Exception e) {
-					}
-				}
-			}
-		}
 	}
 
 	public void remove(Player player) {

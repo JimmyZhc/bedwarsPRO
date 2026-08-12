@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
  * <p>用法:
  * <pre>
  *   TaskMessages.msg(player, "daily-complete", "task", "猎手");
- *   TaskMessages.msg(player, "reward-line", "exp", 20, "coins", 2);
+ *   TaskMessages.msg(player, "reward-line", "exp", 20);
  * </pre>
  */
 public class TaskMessages {
@@ -136,26 +136,6 @@ public class TaskMessages {
             return;
         }
         sender.sendMessage(get(key, replacements));
-    }
-
-    /**
-     * 构建一行奖励文本（经验+栖云币），可嵌入到其他消息中。
-     */
-    public static String rewardLine(int exp, int coins) {
-        StringBuilder sb = new StringBuilder();
-        if (exp > 0) {
-            sb.append(get("gui-exp", "exp", exp));
-        }
-        if (coins > 0) {
-            if (exp > 0) {
-                sb.append(ChatColor.GRAY).append("  ");
-            }
-            sb.append(get("gui-coins", "coins", coins));
-        }
-        if (sb.length() == 0) {
-            sb.append(get("gui-no-reward"));
-        }
-        return sb.toString();
     }
 
     // ===== 内部工具 =====

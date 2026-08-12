@@ -19,7 +19,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import io.jmmym.bedwarspro.BedwarsPRO;
 import io.jmmym.bedwarspro.events.BedwarsGameOverEvent;
-import io.jmmym.bedwarspro.events.BedwarsOpenShopEvent;
 import io.jmmym.bedwarspro.events.BedwarsPlayerKilledEvent;
 import io.jmmym.bedwarspro.events.BedwarsTargetBlockDestroyedEvent;
 import io.jmmym.bedwarspro.game.Game;
@@ -43,7 +42,6 @@ import io.jmmym.bedwarspro.scoreboard.addon.Respawn;
 import io.jmmym.bedwarspro.scoreboard.addon.ScoreBoard;
 import io.jmmym.bedwarspro.scoreboard.addon.Shop;
 import io.jmmym.bedwarspro.scoreboard.addon.TimeTask;
-import io.jmmym.bedwarspro.scoreboard.addon.teamshop.TeamShop;
 import io.jmmym.bedwarspro.scoreboard.config.Config;
 import io.jmmym.bedwarspro.scoreboard.storage.PlayerGameStorage;
 import io.jmmym.bedwarspro.scoreboard.utils.BedwarsUtil;
@@ -67,8 +65,6 @@ public class Arena {
 	private ResourceUpgrade resourceUpgrade;
 	@Getter
 	private Holographic holographic;
-	@Getter
-	private TeamShop teamShop;
 	@Getter
 	private InvisibilityPlayer invisiblePlayer;
 	@Getter
@@ -140,13 +136,6 @@ public class Arena {
 		}
 		
 		try {
-			teamShop = new TeamShop(this);
-		} catch (Exception e) {
-			BedwarsPRO.getInstance().getLogger().warning("初始化 TeamShop 失败: " + e.getMessage());
-			e.printStackTrace();
-		}
-		
-		try {
 			invisiblePlayer = new InvisibilityPlayer(this);
 		} catch (Exception e) {
 			BedwarsPRO.getInstance().getLogger().warning("初始化 InvisibilityPlayer 失败: " + e.getMessage());
@@ -202,6 +191,8 @@ public class Arena {
 				BedwarsPRO.getInstance().getLogger().warning("初始化 Shop 失败: " + e.getMessage());
 				e.printStackTrace();
 			}
+		} else {
+			BedwarsPRO.getInstance().getLogger().warning("未检测到 Citizens 插件，物品商店/队伍商店 NPC 不会生成（" + game.getName() + "）");
 		}
 		
 		try {
@@ -244,11 +235,15 @@ public class Arena {
 		} else {
 			beds.put(player.getName(), 1);
 		}
-		holographic.onTargetBlockDestroyed(e);
+		if (holographic != null) {
+			holographic.onTargetBlockDestroyed(e);
+		}
 	}
 
 	public void onDeath(Player player) {
-		invisiblePlayer.removePlayer(player);
+		if (invisiblePlayer != null) {
+			invisiblePlayer.removePlayer(player);
+		}
 		if (!isGamePlayer(player)) {
 			return;
 		}
@@ -259,30 +254,39 @@ public class Arena {
 			dies.put(player.getName(), 1);
 		}
 		PlaySound.playSound(player, Config.play_sound_sound_death);
-		teamShop.removeImmunePlayer(player);
 	}
 
 	public void onDamage(EntityDamageEvent e) {
-		respawn.onDamage(e);
+		if (respawn != null) {
+			respawn.onDamage(e);
+		}
 	}
 
 	public void onInteractEntity(PlayerInteractEntityEvent e) {
-		graffiti.onInteractEntity(e);
+		if (graffiti != null) {
+			graffiti.onInteractEntity(e);
+		}
 	}
 
 	public void onInteract(PlayerInteractEvent e) {
-		gameChest.onInteract(e);
+		if (gameChest != null) {
+			gameChest.onInteract(e);
+		}
 	}
 
 	public void onHangingBreak(HangingBreakEvent e) {
-		graffiti.onHangingBreak(e);
+		if (graffiti != null) {
+			graffiti.onHangingBreak(e);
+		}
 	}
 
 	public void onRespawn(Player player) {
 		if (!isGamePlayer(player)) {
 			return;
 		}
-		respawn.onRespawn(player, false);
+		if (respawn != null) {
+			respawn.onRespawn(player, false);
+		}
 	}
 
 	public void onPlayerKilled(BedwarsPlayerKilledEvent e) {
@@ -331,31 +335,42 @@ public class Arena {
 		gameTasks.forEach(task -> {
 			task.cancel();
 		});
-		teamShop.onEnd();
-		noBreakBed.onEnd();
-		holographic.remove();
-		if (Main.getInstance().isEnabledCitizens()) {
+		if (noBreakBed != null) {
+			noBreakBed.onEnd();
+		}
+		if (holographic != null) {
+			holographic.remove();
+		}
+		if (Main.getInstance().isEnabledCitizens() && shop != null) {
 			shop.remove();
 		}
-		graffiti.reset();
-		gameChest.clearChest();
+		if (graffiti != null) {
+			graffiti.reset();
+		}
+		if (gameChest != null) {
+			gameChest.clearChest();
+		}
 	}
 
 	public void onDisable() {
-		holographic.remove();
-		if (Main.getInstance().isEnabledCitizens()) {
+		if (holographic != null) {
+			holographic.remove();
+		}
+		if (Main.getInstance().isEnabledCitizens() && shop != null) {
 			shop.remove();
 		}
-		graffiti.reset();
-		gameChest.clearChest();
+		if (graffiti != null) {
+			graffiti.reset();
+		}
+		if (gameChest != null) {
+			gameChest.clearChest();
+		}
 	}
 
 	public void onArmorStandManipulate(PlayerArmorStandManipulateEvent e) {
-		holographic.onArmorStandManipulate(e);
-	}
-
-	public void onClick(InventoryClickEvent e) {
-		teamShop.onClick(e);
+		if (holographic != null) {
+			holographic.onArmorStandManipulate(e);
+		}
 	}
 
 	public void onItemMerge(ItemMergeEvent e) {
@@ -365,8 +380,10 @@ public class Arena {
 	}
 
 	public void onPlayerLeave(Player player) {
-		holographic.onPlayerLeave(player);
-		if (Config.rejoin_enabled) {
+		if (holographic != null) {
+			holographic.onPlayerLeave(player);
+		}
+		if (Config.rejoin_enabled && rejoin != null) {
 			if (game.getState() == GameState.RUNNING && !game.isSpectator(player)) {
 				Team team = game.getPlayerTeam(player);
 				if (team != null) {
@@ -378,26 +395,26 @@ public class Arena {
 			}
 			rejoin.removePlayer(player.getName());
 		}
-		respawn.onPlayerLeave(player);
-		// teamShop.removeTriggeredPlayer(player);
-		teamShop.removeImmunePlayer(player);
+		if (respawn != null) {
+			respawn.onPlayerLeave(player);
+		}
 	}
 
 	public void onPlayerJoined(Player player) {
-		if (Config.rejoin_enabled) {
+		if (Config.rejoin_enabled && rejoin != null) {
 			rejoin.rejoin(player);
 		}
-		respawn.onPlayerJoined(player);
-		holographic.onPlayerJoin(player);
-		graffiti.onPlayerJoin(player);
-		if (Main.getInstance().isEnabledCitizens()) {
-			shop.onPlayerJoined(player);
+		if (respawn != null) {
+			respawn.onPlayerJoined(player);
 		}
-	}
-
-	public void onOpenShop(BedwarsOpenShopEvent e) {
-		if (Main.getInstance().isEnabledCitizens()) {
-			shop.onOpenShop(e);
+		if (holographic != null) {
+			holographic.onPlayerJoin(player);
+		}
+		if (graffiti != null) {
+			graffiti.onPlayerJoin(player);
+		}
+		if (Main.getInstance().isEnabledCitizens() && shop != null) {
+			shop.onPlayerJoined(player);
 		}
 	}
 

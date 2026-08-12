@@ -181,7 +181,7 @@ sign:
     running: "&9正在运行!"
     full: "已满!"
 stats:
-  header: "护床战争统计"
+  header: "起床数据统计"
   kd: "击杀/死亡"
   statsnotfound: "没有找到 $player$ 的游戏统计信息!"
   name: "名字"

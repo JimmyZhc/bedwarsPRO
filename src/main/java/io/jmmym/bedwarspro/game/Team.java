@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,12 +27,16 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import java.util.Map;
 import java.util.HashMap;
 
+// game 字段必须从 equals/hashCode/toString 排除，否则 Team.game → Game.teams → Team 无限递归
 @Data
+@EqualsAndHashCode(exclude = {"game"})
+@ToString(exclude = {"game"})
 @SerializableAs("Team")
 public class Team implements ConfigurationSerializable {
 
   private List<Block> chests = null;
   private TeamColor color = null;
+  private Game game = null;
   private Inventory inventory = null;
   private int maxPlayers = 0;
   private String name = null;
@@ -74,6 +80,15 @@ public class Team implements ConfigurationSerializable {
     this.setScoreboardTeam(scoreboardTeam);
     this.setChests(new ArrayList<Block>());
     this.upgrades = new HashMap<>(); // 初始化
+  }
+
+  /** 该队伍所属的游戏（用于 getPlayers 时隔离其他游戏的玩家）。 */
+  public Game getGame() {
+    return this.game;
+  }
+
+  public void setGame(Game game) {
+    this.game = game;
   }
   public int getWeaponEnchantLevel() {
     return this.upgrades.getOrDefault("weapon", 0);
@@ -202,29 +217,43 @@ public class Team implements ConfigurationSerializable {
   @SuppressWarnings("deprecation")
   public List<Player> getPlayers() {
     List<Player> players = new ArrayList<>();
+    // 防御：计分板队伍未初始化时返回空列表，避免 NPE
+    if (this.getScoreboardTeam() == null) {
+      return players;
+    }
     if (BedwarsPRO.getInstance().isSpigot()) {
       for (String aPlayer : this.getScoreboardTeam().getEntries()) {
         Player player = BedwarsPRO.getInstance().getServer().getPlayer(aPlayer);
-        if (player != null
-            && BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player) != null
-            && !BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player)
-            .isSpectator(player)) {
+        if (isValidPlayer(player)) {
           players.add(player);
         }
       }
     } else {
       for (OfflinePlayer offlinePlayer : this.getScoreboardTeam().getPlayers()) {
         Player player = BedwarsPRO.getInstance().getServer().getPlayer(offlinePlayer.getName());
-        if (player != null
-            && BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player) != null
-            && !BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player)
-            .isSpectator(player)) {
+        if (isValidPlayer(player)) {
           players.add(player);
         }
       }
     }
 
     return players;
+  }
+
+  /** 判断玩家是否应计入本队伍：必须在某游戏中、非观战者、且属于本队伍所属的游戏。 */
+  private boolean isValidPlayer(Player player) {
+    if (player == null) {
+      return false;
+    }
+    Game gameOfPlayer = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
+    if (gameOfPlayer == null) {
+      return false;
+    }
+    if (gameOfPlayer.isSpectator(player)) {
+      return false;
+    }
+    // 关键：玩家必须属于本队伍所属的游戏，避免把其他游戏的玩家计入本游戏人数
+    return this.getGame() == null || gameOfPlayer == this.getGame();
   }
 
   public boolean isDead(Game game) {

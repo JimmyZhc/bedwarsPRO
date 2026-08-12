@@ -182,6 +182,13 @@ public class ReturnLobbyListener implements Listener {
         player.teleport(game.getLobby());
       } else {
         player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "大厅未设置，无法传送"));
+        return;
+      }
+
+      // 单服模式下正确退出游戏并清理游戏状态，
+      // 避免倒计时结束后 onGameEnds 仍统计到该玩家并显示游戏统计
+      if (!BedwarsPRO.getInstance().isBungee()) {
+        game.playerLeave(player, false);
       }
     } catch (Exception e) {
       BedwarsPRO.getInstance().getBugsnag().notify(e);

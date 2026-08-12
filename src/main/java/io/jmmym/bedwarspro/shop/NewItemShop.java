@@ -446,7 +446,6 @@ public class NewItemShop {
           if (newLevel > oldLevel) {
             // 替换旧剑
             inventory.setItem(targetSlot, addingItem);
-            player.sendMessage(ChatColor.GREEN + "已替换为更高级的剑！");
             player.updateInventory();
             return true;
           } else if (newLevel == oldLevel) {

@@ -7,7 +7,7 @@ description: |
 author: Ram, Modified By JmmYm
 website: https://github.com/JimmyZhc/bedwarsPRO
 main: io.jmmym.bedwarspro.BedwarsPRO
-version: 1.0.0
+version: 1.1.4
 
 depend: [ProtocolLib]
 softdepend: [Multiverse-Core, Multiworld, HolographicDisplays, Citizens, PlaceholderAPI, ServerJoiner, WorldEdit, BedwarsXP]
@@ -148,8 +148,8 @@ commands:
     description: 重新加入游戏
     usage: /<command>
   bwpro:
-    description: BedwarsPRO 每日任务系统命令
-    usage: /<command> task [gui|on|off|publish <name>|clear|info]
+    description: BedwarsPRO 管理命令（任务系统/清除统计/清除地图记录等）
+    usage: /<command> task [gui|on|off|publish <name>|clear|info] | clearstats <玩家> [确认码] | clearrecord <地图> [确认码]
     permission: bwpro.task.use
 
 permissions:
@@ -229,4 +229,10 @@ permissions:
     default: op
   bwpro.task.reload:
     description: 允许重载 tasks.yml 配置
+    default: op
+  bwpro.quickstash.use:
+    description: 允许使用快捷存入功能与 /bwpro quickstash 命令
+    default: true
+  bwpro.quickstash.admin:
+    description: 允许重载快捷存入配置
     default: op
