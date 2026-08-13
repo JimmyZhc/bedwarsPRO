@@ -1719,6 +1719,12 @@ public class Game {
 
     this.isOver = false;
 
+    // 立即取消大厅倒计时，防止与强制开始产生竞态
+    if (this.gameLobbyCountdown != null) {
+      this.gameLobbyCountdown.cancel();
+      this.gameLobbyCountdown = null;
+    }
+
     // load shop categories again (if shop was changed)
     this.loadItemShopCategories();
 
@@ -1893,9 +1899,7 @@ public class Game {
   private void teleportPlayersToTeamSpawn() {
     for (Team team : this.teams.values()) {
       for (Player player : team.getPlayers()) {
-        if (!player.getWorld().equals(team.getSpawnLocation().getWorld())) {
-          this.getPlayerSettings(player).setTeleporting(true);
-        }
+        this.getPlayerSettings(player).setTeleporting(true);
         player.setVelocity(new Vector(0, 0, 0));
         player.setFallDistance(0.0F);
         player.teleport(team.getSpawnLocation());

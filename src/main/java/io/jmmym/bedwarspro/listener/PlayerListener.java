@@ -1452,19 +1452,23 @@ public class PlayerListener extends BaseListener {
     }
     Game game = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(change.getPlayer());
     if (game != null) {
+      io.jmmym.bedwarspro.game.PlayerSettings settings = game.getPlayerSettings(change.getPlayer());
+      if (settings == null) {
+        return;
+      }
       if (game.getState() == GameState.RUNNING) {
         if (!game.getCycle().isEndGameRunning()) {
-          if (!game.getPlayerSettings(change.getPlayer()).isTeleporting()) {
+          if (!settings.isTeleporting()) {
             game.playerLeave(change.getPlayer(), false);
           } else {
-            game.getPlayerSettings(change.getPlayer()).setTeleporting(false);
+            settings.setTeleporting(false);
           }
         }
       } else if (game.getState() == GameState.WAITING) {
-        if (!game.getPlayerSettings(change.getPlayer()).isTeleporting()) {
+        if (!settings.isTeleporting()) {
           game.playerLeave(change.getPlayer(), false);
         } else {
-          game.getPlayerSettings(change.getPlayer()).setTeleporting(false);
+          settings.setTeleporting(false);
         }
       }
     }

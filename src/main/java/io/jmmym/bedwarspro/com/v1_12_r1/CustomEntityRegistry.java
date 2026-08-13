@@ -44,12 +44,12 @@ public class CustomEntityRegistry extends RegistryMaterials {
       Field registryMaterialsField = EntityTypes.class.getDeclaredField("b");
       registryMaterialsField.setAccessible(true);
 
-      Field modifiersField = Field.class.getDeclaredField("modifiers");
-      modifiersField.setAccessible(true);
-      modifiersField.setInt(registryMaterialsField,
-          registryMaterialsField.getModifiers() & ~Modifier.FINAL);
-
-      registryMaterialsField.set(null, instance);
+      // Java 17+ 移除了 Field.modifiers，改用 Unsafe 绕过 final 限制
+      Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+      unsafeField.setAccessible(true);
+      sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+      long offset = unsafe.objectFieldOffset(registryMaterialsField);
+      unsafe.putObject(null, offset, instance);
     } catch (Exception e) {
       instance = null;
 
