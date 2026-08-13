@@ -388,7 +388,7 @@ public class EditGame implements Listener {
 			packet.getIntegers().write(2, 0);
 			packet.getStrings().write(0, "minecraft:anvil");
 			pm.sendServerPacket(player, packet);
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		new BukkitRunnable() {
@@ -787,7 +787,7 @@ public class EditGame implements Listener {
 			itemStack.setItemMeta(itemMeta);
 			pack.getItemModifier().write(0, itemStack);
 			pm.sendServerPacket(player, pack);
-		} catch (InvocationTargetException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}

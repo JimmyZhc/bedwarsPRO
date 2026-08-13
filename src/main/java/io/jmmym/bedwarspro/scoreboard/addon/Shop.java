@@ -172,22 +172,26 @@ public class Shop {
 
 	private void hideEntityTag(Entity entity) {
 		Bukkit.getScheduler().runTaskLater(Main.getPlugin(), () -> {
-			ProtocolManager man = ProtocolLibrary.getProtocolManager();
-			PacketContainer packet = man.createPacket(PacketType.Play.Server.ENTITY_METADATA);
-			packet.getIntegers().write(0, entity.getEntityId());
-			WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
-			if (BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
-				wrappedDataWatcher.setObject(3, (byte) 0);
-			} else {
-				wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, booleanserializer), false);
-			}
-			packet.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
-			for (Player player : game.getPlayers()) {
-				try {
-					man.sendServerPacket(player, packet, false);
-				} catch (InvocationTargetException e) {
+			try {
+				ProtocolManager man = ProtocolLibrary.getProtocolManager();
+				PacketContainer packet = man.createPacket(PacketType.Play.Server.ENTITY_METADATA);
+				packet.getIntegers().write(0, entity.getEntityId());
+				WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
+				if (BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
+					wrappedDataWatcher.setObject(3, (byte) 0);
+				} else {
+					wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, booleanserializer), false);
+				}
+				packet.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
+				for (Player player : game.getPlayers()) {
+					try {
+						man.sendServerPacket(player, packet, false);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				}
+			} catch (Exception e) {
+				// ProtocolLib WrappedDataWatcher 在部分服务器版本上不可用，忽略隐藏标签失败
 			}
 		}, 1L);
 	}

@@ -101,7 +101,7 @@ public class Respawn {
 		packet.getFloat().write(0, (float) mode);
 		try {
 			man.sendServerPacket(player, packet, false);
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -292,7 +292,7 @@ public class Respawn {
 		packet.getItemModifier().write(0, new ItemStack(Material.AIR));
 		try {
 			man.sendServerPacket(player, packet);
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

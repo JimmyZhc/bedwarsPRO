@@ -153,9 +153,9 @@ public class HolographicAPI {
 						}
 						try {
 							protocolManager.sendServerPacket(player, packet);
-						} catch (InvocationTargetException e) {
-							e.printStackTrace();
-						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					}
 				}
 			}
