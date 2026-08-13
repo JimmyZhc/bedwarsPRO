@@ -6,7 +6,7 @@
 
     <groupId>io.jmmym</groupId>
     <artifactId>BedwarsPRO</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.4</version>
     <packaging>jar</packaging>
 
     <name>BedwarsPRO</name>
@@ -56,12 +56,109 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <!-- 排除 log4j 依赖自带的 log4j.xml：
+                                     XML 配置会把插件路径当 URL 解析，路径含中文时
+                                     DOMConfigurator 报 MalformedURIException。
+                                     插件改用 src/main/resources/log4j.properties（Properties 格式不解析 URL）。 -->
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>log4j.xml</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>io.jmmym.bedwarspro.BedwarsPRO</mainClass>
                                 </transformer>
                             </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- ProGuard 混淆：在 prepare-package 阶段直接混淆编译产物 target/classes，
+                 只处理 io.jmmym.bedwarspro.** 自己的类，第三方库不进 ProGuard 输入，
+                 之后 shade 再合并第三方依赖，最终 BedwarsPRO.jar 即混淆版。 -->
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <injar>classes</injar>
+                    <outjar>classes-obf</outjar>
+                    <obfuscate>true</obfuscate>
+                    <!-- 关键点：preverify 阶段需要完整类层次才能生成 StackMapTable
+                         （Java 6+ 的 class 缺 StackMapTable 时，JVM 加载会报
+                         VerifyError: Expecting a stackmap frame）。
+                         必须把全部编译依赖（spigot-api / craftbukkit 等）和 JDK rt.jar
+                         作为 libraryjars 传给 ProGuard，否则合并帧找不到共同父类报
+                         IncompleteClassHierarchyException。 -->
+                    <includeDependency>true</includeDependency>
+                    <libs>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                    </libs>
+                    <options>
+                        <!-- 只混淆不改结构，避免误删/误优化 -->
+                        <option>-dontshrink</option>
+                        <option>-dontoptimize</option>
+                        <option>-dontwarn</option>
+                        <option>-ignorewarnings</option>
+                        <!-- 修复 Windows 上的 NoClassDefFoundError: (wrong name:)：
+                             混淆生成的类名若只有大小写不同（如 L 与 l），在大小写不敏感的文件系统上
+                             类文件会互相覆盖，JVM 加载时报 wrong name。该选项强制生成不含
+                             大小写歧义的类名（仅小写字母）。 -->
+                        <option>-dontusemixedcaseclassnames</option>
+                        <!-- 输出混淆映射表，便于排查类名问题（生成于 target/proguard/mapping.txt） -->
+                        <option>-printmapping mapping.txt</option>
+                        <!-- preverify 保持默认开启（不写 -dontpreverify），输出含 StackMapTable -->
+                        <option>-keepattributes *Annotation*,Signature,Exceptions,InnerClasses,EnclosingMethod,Deprecated,StackMapTable</option>
+                        <!-- plugin.yml 的 main 类：Bukkit 按名字加载，必须保名 -->
+                        <option>-keep class io.jmmym.bedwarspro.BedwarsPRO</option>
+                        <!-- com.* 版本兼容包：代码里用 Class.forName("io.jmmym.bedwarspro.com." + version + ...) 反射，必须保名 -->
+                        <option>-keep class io.jmmym.bedwarspro.com.** { *; }</option>
+                        <!-- Bukkit 自定义事件类：SimplePluginManager 通过反射按名字调用静态 getHandlerList()，
+                             混淆改名后报 IllegalPluginAccessException，整类保名保方法 -->
+                        <option>-keep class * extends org.bukkit.event.Event { *; }</option>
+                        <!-- 所有 enum 类：配置反序列化（ConfigurationSerializable）里用 Enum.valueOf(Class, String)
+                             反射读取，Bukkit 的 YamlConfiguration 加载时若 enum 被 ProGuard 转成普通类
+                             （ACC_ENUM 标志丢失）会抛 "xxx is not an enum class"，必须整类保名保成员 -->
+                        <option>-keep class * extends java.lang.Enum { *; }</option>
+                        <!-- 事件监听器：Bukkit 通过注解反射查找，保留方法便于稳定注册 -->
+                        <option>-keepclasseswithmembers class * { @org.bukkit.event.EventHandler *; }</option>
+                    </options>
+                </configuration>
+            </plugin>
+            <!-- 把混淆后的 class 复制回 classes，供 shade 打包（保留 plugin.yml 等资源） -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>apply-obfuscated-classes</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${project.build.outputDirectory}">
+                                    <include name="**/*.class"/>
+                                </delete>
+                                <copy todir="${project.build.outputDirectory}">
+                                    <fileset dir="${project.build.outputDirectory}-obf"/>
+                                </copy>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -122,6 +219,14 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP-java7</artifactId>
             <version>2.4.11</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- MySQL JDBC Driver（shade 打入 jar，兼容 MySQL 5.x/8.x） -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.49</version>
             <scope>compile</scope>
         </dependency>
 

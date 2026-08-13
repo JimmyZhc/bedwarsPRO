@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="maven-antrun-" default="main">
+  <target name="main">
+    <delete dir="C:\Users\14283\Desktop\BedwarsPRO - 全新升级\bedwarsPRO\target\classes">
+      <include name="**/*.class" />
+    </delete>
+    <copy todir="C:\Users\14283\Desktop\BedwarsPRO - 全新升级\bedwarsPRO\target\classes">
+      <fileset dir="C:\Users\14283\Desktop\BedwarsPRO - 全新升级\bedwarsPRO\target\classes-obf" />
+    </copy>
+  </target>
+</project>

@@ -126,6 +126,10 @@ public class SupportData {
   }
 
   public static File getShopConfigFile() {
-    return new File(BedwarsPRO.getInstance().getDataFolder(), "shop.yml");
+    File folder = new File(BedwarsPRO.getInstance().getDataFolder(), "shop");
+    if (!folder.exists()) {
+      folder.mkdirs();
+    }
+    return new File(folder, "shop.yml");
   }
 }

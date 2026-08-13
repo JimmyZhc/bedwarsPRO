@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
  * 任务域类。描述一个可被玩家接受的每日/每周任务定义。
  *
  * <p>奖励通过外部 HTTP API 发放：完成时由 TaskManager 调用 api.yml 配置的接口，
- * 给予玩家 {@link #rewardExp} 点经验和 {@link #rewardCoins} 枚栖云币。</p>
+ * 给予玩家 {@link #rewardExp} 点经验。</p>
  *
  * <p>追杀令（BOUNTY）任务通过 {@link #targetPlayer} 指定击杀目标玩家。</p>
  */
@@ -17,7 +17,6 @@ public class Task {
     private final String name;
     private final String description;
     private final int rewardExp;
-    private final int rewardCoins;
     /** 是否为管理员发布的限时任务（金色名） */
     private final boolean special;
     /** 是否为每周任务 */
@@ -26,33 +25,26 @@ public class Task {
     private final String targetPlayer;
 
     public Task(TaskType type, int target, String name, String description, int rewardExp) {
-        this(type, target, name, description, rewardExp, 0, false, type.isWeekly(), null);
+        this(type, target, name, description, rewardExp, false, type.isWeekly(), null);
     }
 
     public Task(TaskType type, int target, String name, String description, int rewardExp,
                 boolean special) {
-        this(type, target, name, description, rewardExp, 0, special, type.isWeekly(), null);
+        this(type, target, name, description, rewardExp, special, type.isWeekly(), null);
     }
 
     public Task(TaskType type, int target, String name, String description, int rewardExp,
                 boolean special, boolean weekly) {
-        this(type, target, name, description, rewardExp, 0, special, weekly, null);
+        this(type, target, name, description, rewardExp, special, weekly, null);
     }
 
-    public Task(TaskType type, int target, String name, String description,
-                int rewardExp, int rewardCoins, boolean special, boolean weekly) {
-        this(type, target, name, description, rewardExp, rewardCoins, special, weekly, null);
-    }
-
-    public Task(TaskType type, int target, String name, String description,
-                int rewardExp, int rewardCoins, boolean special, boolean weekly,
-                String targetPlayer) {
+    public Task(TaskType type, int target, String name, String description, int rewardExp,
+                boolean special, boolean weekly, String targetPlayer) {
         this.type = type;
         this.target = target;
         this.name = name;
         this.description = description;
         this.rewardExp = rewardExp;
-        this.rewardCoins = rewardCoins;
         this.special = special;
         this.weekly = weekly;
         this.targetPlayer = targetPlayer;
@@ -94,10 +86,6 @@ public class Task {
         return rewardExp;
     }
 
-    public int getRewardCoins() {
-        return rewardCoins;
-    }
-
     public boolean isSpecial() {
         return special;
     }
@@ -116,11 +104,11 @@ public class Task {
 
     /** 构造一个标记为限时任务的副本（保留原任务定义，仅切换 special 标记）。 */
     public Task asSpecial() {
-        return new Task(type, target, name, description, rewardExp, rewardCoins, true, weekly, targetPlayer);
+        return new Task(type, target, name, description, rewardExp, true, weekly, targetPlayer);
     }
 
     /** 构造一个替换 target 值的副本（用于每周任务随机选取目标）。 */
     public Task withTarget(int newTarget) {
-        return new Task(type, newTarget, name, description, rewardExp, rewardCoins, special, weekly, targetPlayer);
+        return new Task(type, newTarget, name, description, rewardExp, special, weekly, targetPlayer);
     }
 }

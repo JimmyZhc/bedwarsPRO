@@ -259,6 +259,7 @@ public class ConfigUpdater {
     // <1.3.5>
     BedwarsPRO.getInstance().getConfig().addDefault("spawn-resources-in-chest", true);
     BedwarsPRO.getInstance().getConfig().addDefault("database.table-prefix", "bw_");
+    BedwarsPRO.getInstance().getConfig().addDefault("quickstash-database.enabled", false);
     Object ressourceObject = BedwarsPRO.getInstance().getConfig().get("ressource");
     if (ressourceObject != null) {
       BedwarsPRO.getInstance().getConfig().set("resource", ressourceObject);

@@ -44,7 +44,7 @@ public class CommandTabCompleter implements TabCompleter {
 			}
 		} else if (args.length == 3) {
 			if (args[0].equalsIgnoreCase("shop") && args[1].equalsIgnoreCase("set")) {
-				return Arrays.asList("item", "team");
+				return Arrays.asList("item");
 			}
 			if (args[0].equalsIgnoreCase("shop") && args[1].equalsIgnoreCase("list") && sender.hasPermission("bedwarsscoreboardaddon.shop.list")) {
 				return getGames();
@@ -69,7 +69,7 @@ public class CommandTabCompleter implements TabCompleter {
 				return list;
 			}
 		} else if (args.length == 4) {
-			if (args[0].equalsIgnoreCase("shop") && args[1].equalsIgnoreCase("set") && (args[2].equalsIgnoreCase("item") || args[2].equalsIgnoreCase("team")) && sender.hasPermission("bedwarsscoreboardaddon.shop.set")) {
+			if (args[0].equalsIgnoreCase("shop") && args[1].equalsIgnoreCase("set") && args[2].equalsIgnoreCase("item") && sender.hasPermission("bedwarsscoreboardaddon.shop.set")) {
 				return getGames();
 			}
 			if (args[0].equalsIgnoreCase("spawner") && args[1].equalsIgnoreCase("add") && sender.hasPermission("bedwarsscoreboardaddon.spawner.add")) {

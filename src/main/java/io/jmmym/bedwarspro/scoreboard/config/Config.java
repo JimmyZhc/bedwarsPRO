@@ -30,7 +30,6 @@ import org.bukkit.map.MapView.Scale;
 
 import io.jmmym.bedwarspro.BedwarsPRO;
 import io.jmmym.bedwarspro.scoreboard.Main;
-import io.jmmym.bedwarspro.scoreboard.addon.teamshop.upgrades.UpgradeType;
 import io.jmmym.bedwarspro.scoreboard.utils.ColorUtil;
 
 public class Config {
@@ -139,11 +138,7 @@ public class Config {
 	public static String shop_item_shop_type;
 	public static String shop_item_shop_skin;
 	public static boolean shop_item_shop_look;
-	public static String shop_team_shop_type;
-	public static String shop_team_shop_skin;
-	public static boolean shop_team_shop_look;
 	public static List<String> shop_item_shop_name;
-	public static List<String> shop_team_shop_name;
 	public static boolean respawn_enabled;
 	public static boolean respawn_centre_enabled;
 	public static double respawn_centre_height;
@@ -189,45 +184,6 @@ public class Config {
 	public static String witherbow_title;
 	public static String witherbow_subtitle;
 	public static String witherbow_message;
-	public static boolean teamshop_enabled;
-	public static String teamshop_upgrade_shop_title;
-	public static List<String> teamshop_upgrade_shop_frame;
-	public static String teamshop_upgrade_shop_trap_item;
-	public static String teamshop_upgrade_shop_trap_name;
-	public static List<String> teamshop_upgrade_shop_trap_lore;
-	public static String teamshop_trap_shop_title;
-	public static List<String> teamshop_trap_shop_back;
-	public static String teamshop_message_upgrade;
-	public static String teamshop_message_no_resource;
-	public static String teamshop_state_no_resource;
-	public static String teamshop_state_lock;
-	public static String teamshop_state_unlock;
-	public static int teamshop_trap_cooldown;
-	public static List<String> teamshop_trap_trap_list_trap_1_lock;
-	public static List<String> teamshop_trap_trap_list_trap_1_unlock;
-	public static List<String> teamshop_trap_trap_list_trap_2_lock;
-	public static List<String> teamshop_trap_trap_list_trap_2_unlock;
-	public static List<String> teamshop_trap_trap_list_trap_3_lock;
-	public static List<String> teamshop_trap_trap_list_trap_3_unlock;
-	public static Map<Integer, String> teamshop_trap_level_cost;
-	public static Map<UpgradeType, Boolean> teamshop_upgrade_enabled;
-	public static Map<UpgradeType, String> teamshop_upgrade_item;
-	public static Map<UpgradeType, String> teamshop_upgrade_name;
-	public static Map<UpgradeType, Map<Integer, String>> teamshop_upgrade_level_cost;
-	public static Map<UpgradeType, Map<Integer, List<String>>> teamshop_upgrade_level_lore;
-	public static Map<Integer, List<String>> teamshop_upgrade_iron_forge_level_resources;
-	public static int teamshop_upgrade_defense_trigger_range;
-	public static int teamshop_upgrade_heal_trigger_range;
-	public static int teamshop_upgrade_trap_trigger_range;
-	public static String teamshop_upgrade_trap_trigger_title;
-	public static String teamshop_upgrade_trap_trigger_subtitle;
-	public static String teamshop_upgrade_trap_trigger_message;
-	public static int teamshop_upgrade_counter_offensive_trap_trigger_range;
-	public static int teamshop_upgrade_counter_offensive_trap_effect_range;
-	public static int teamshop_upgrade_alarm_trap_trigger_range;
-	public static String teamshop_upgrade_alarm_trap_trigger_title;
-	public static String teamshop_upgrade_alarm_trap_trigger_subtitle;
-	public static String teamshop_upgrade_alarm_trap_trigger_message;
 	public static boolean deathmode_enabled;
 	public static int deathmode_gametime;
 	public static String deathmode_title;
@@ -273,7 +229,6 @@ public class Config {
 	public static boolean lobby_scoreboard_enabled;
 	public static int lobby_scoreboard_interval;
 	public static Map<String, List<String>> game_shop_item;
-	public static Map<String, List<String>> game_shop_team;
 	public static Map<String, String> game_shop_shops;
 	public static Map<String, Map<String, List<Location>>> game_team_spawner;
 	public static Map<String, String> game_team_spawners;
@@ -283,8 +238,21 @@ public class Config {
 		Map<String, String> configVersion = new HashMap<String, String>();
 		configVersion.put("config.yml", "23");
 		configVersion.put("language.yml", "4");
-		configVersion.put("team_shop.yml", "6");
-		File file = new File(Main.getInstance().getDataFolder(), "/" + fileName);
+		configVersion.put("bwsba-language.yml", "4");
+		File file = new File(Main.getInstance().getDataFolder(), "/locale/" + fileName);
+		// 迁移旧文件名/旧位置到 locale/ 下（根目录 language.yml、locale/language.yml、根目录 bwsba-language.yml），保留用户自定义内容
+		if (!file.exists()) {
+			File[] oldFiles = new File[] {
+					new File(Main.getInstance().getDataFolder(), "/" + fileName),
+					new File(Main.getInstance().getDataFolder(), "/language.yml"),
+					new File(Main.getInstance().getDataFolder(), "/locale/language.yml") };
+			for (File oldFile : oldFiles) {
+				if (oldFile.exists()) {
+					oldFile.renameTo(file);
+					break;
+				}
+			}
+		}
 		if (!file.exists()) {
 			Main.getInstance().getLocaleConfig().saveResource(fileName);
 			// 等待文件创建完成
@@ -309,7 +277,7 @@ public class Config {
 		}
 		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 		if (!config.contains("version") || !config.getString("version").equals(configVersion.getOrDefault(fileName, ""))) {
-			file.renameTo(new File(Main.getInstance().getDataFolder(), "/" + fileName.split("\\.")[0] + "_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date()) + "_old.yml"));
+			file.renameTo(new File(Main.getInstance().getDataFolder(), "/locale/" + fileName.split("\\.")[0] + "_" + new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date()) + "_old.yml"));
 			Main.getInstance().getLocaleConfig().saveResource(fileName);
 			// 等待文件创建完成
 			int waitTicks = 0;
@@ -339,7 +307,6 @@ public class Config {
 		
 		// 在方法开始处声明变量，确保所有代码都能访问
 		FileConfiguration config = null;
-		FileConfiguration team_shop_config = null;
 		
 		try {
 			Bukkit.getConsoleSender().sendMessage(prefix + Main.getInstance().getLocaleConfig().getLanguage("loading_config"));
@@ -351,16 +318,9 @@ public class Config {
 			file_config = Main.getInstance().getConfig();
 			
 			try {
-				language_config = getVerifiedConfig("language.yml");
+				language_config = getVerifiedConfig("bwsba-language.yml");
 			} catch (Exception e) {
-				Bukkit.getConsoleSender().sendMessage(prefix + "加载 language.yml 失败: " + e.getMessage());
-				e.printStackTrace();
-			}
-			
-			try {
-				team_shop_config = getVerifiedConfig("team_shop.yml");
-			} catch (Exception e) {
-				Bukkit.getConsoleSender().sendMessage(prefix + "加载 team_shop.yml 失败: " + e.getMessage());
+				Bukkit.getConsoleSender().sendMessage(prefix + "加载 bwsba-language.yml 失败: " + e.getMessage());
 				e.printStackTrace();
 			}
 			
@@ -500,145 +460,6 @@ public class Config {
 		shop_item_shop_skin = config.getString("shop.item_shop.skin", "Steve");
 		shop_item_shop_look = config.getBoolean("shop.item_shop.look", false);
 		shop_item_shop_name = ColorUtil.colorList(config.getStringList("shop.item_shop.name"));
-		shop_team_shop_type = config.getString("shop.team_shop.type", "BLAZE");
-		shop_team_shop_skin = config.getString("shop.team_shop.skin", "Steve");
-		shop_team_shop_look = config.getBoolean("shop.team_shop.look", false);
-		shop_team_shop_name = ColorUtil.colorList(config.getStringList("shop.team_shop.name"));
-		teamshop_enabled = team_shop_config.getBoolean("enabled");
-		teamshop_upgrade_shop_title = ColorUtil.color(team_shop_config.getString("upgrade_shop.title"));
-		teamshop_upgrade_shop_frame = ColorUtil.colorList(team_shop_config.getStringList("upgrade_shop.frame"));
-		teamshop_upgrade_shop_trap_item = team_shop_config.getString("upgrade_shop.trap.item");
-		teamshop_upgrade_shop_trap_name = ColorUtil.color(team_shop_config.getString("upgrade_shop.trap.name"));
-		teamshop_upgrade_shop_trap_lore = ColorUtil.colorList(team_shop_config.getStringList("upgrade_shop.trap.lore"));
-		teamshop_trap_shop_title = ColorUtil.color(team_shop_config.getString("trap_shop.title"));
-		teamshop_trap_shop_back = ColorUtil.colorList(team_shop_config.getStringList("trap_shop.back"));
-		teamshop_message_upgrade = ColorUtil.color(team_shop_config.getString("message.upgrade"));
-		teamshop_message_no_resource = ColorUtil.color(team_shop_config.getString("message.no_resource"));
-		teamshop_state_no_resource = ColorUtil.color(team_shop_config.getString("state.no_resource"));
-		teamshop_state_lock = ColorUtil.color(team_shop_config.getString("state.lock"));
-		teamshop_state_unlock = ColorUtil.color(team_shop_config.getString("state.unlock"));
-		teamshop_trap_cooldown = team_shop_config.getInt("trap_cooldown");
-		teamshop_trap_trap_list_trap_1_lock = ColorUtil.colorList(team_shop_config.getStringList("trap.trap_list.trap_1.lock"));
-		teamshop_trap_trap_list_trap_1_unlock = ColorUtil.colorList(team_shop_config.getStringList("trap.trap_list.trap_1.unlock"));
-		teamshop_trap_trap_list_trap_2_lock = ColorUtil.colorList(team_shop_config.getStringList("trap.trap_list.trap_2.lock"));
-		teamshop_trap_trap_list_trap_2_unlock = ColorUtil.colorList(team_shop_config.getStringList("trap.trap_list.trap_2.unlock"));
-		teamshop_trap_trap_list_trap_3_lock = ColorUtil.colorList(team_shop_config.getStringList("trap.trap_list.trap_3.lock"));
-		teamshop_trap_trap_list_trap_3_unlock = ColorUtil.colorList(team_shop_config.getStringList("trap.trap_list.trap_3.unlock"));
-		teamshop_trap_level_cost = new HashMap<Integer, String>();
-		teamshop_trap_level_cost.put(1, team_shop_config.getString("trap.cost.level_1"));
-		teamshop_trap_level_cost.put(2, team_shop_config.getString("trap.cost.level_2"));
-		teamshop_trap_level_cost.put(3, team_shop_config.getString("trap.cost.level_3"));
-		teamshop_upgrade_enabled = new LinkedHashMap<UpgradeType, Boolean>();
-		teamshop_upgrade_item = new HashMap<UpgradeType, String>();
-		teamshop_upgrade_name = new HashMap<UpgradeType, String>();
-		teamshop_upgrade_level_cost = new HashMap<UpgradeType, Map<Integer, String>>();
-		teamshop_upgrade_level_lore = new HashMap<UpgradeType, Map<Integer, List<String>>>();
-		Map<Integer, List<String>> teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		Map<Integer, String> teamshop_upgrade_level_cost_map = new HashMap<Integer, String>();
-		teamshop_upgrade_enabled.put(UpgradeType.SHARPNESS, team_shop_config.getBoolean("upgrade.sword_sharpness.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.SHARPNESS, team_shop_config.getString("upgrade.sword_sharpness.item"));
-		teamshop_upgrade_name.put(UpgradeType.SHARPNESS, ColorUtil.color(team_shop_config.getString("upgrade.sword_sharpness.name")));
-		teamshop_upgrade_level_cost_map.put(1, team_shop_config.getString("upgrade.sword_sharpness.level_1.cost"));
-		teamshop_upgrade_level_cost_map.put(2, team_shop_config.getString("upgrade.sword_sharpness.level_2.cost"));
-		teamshop_upgrade_level_cost.put(UpgradeType.SHARPNESS, teamshop_upgrade_level_cost_map);
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_lore_map.put(1, ColorUtil.colorList(team_shop_config.getStringList("upgrade.sword_sharpness.level_1.lore")));
-		teamshop_upgrade_level_lore_map.put(2, ColorUtil.colorList(team_shop_config.getStringList("upgrade.sword_sharpness.level_2.lore")));
-		teamshop_upgrade_level_lore_map.put(3, ColorUtil.colorList(team_shop_config.getStringList("upgrade.sword_sharpness.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.SHARPNESS, teamshop_upgrade_level_lore_map);
-		teamshop_upgrade_enabled.put(UpgradeType.PROTECTION, team_shop_config.getBoolean("upgrade.armor_protection.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.PROTECTION, team_shop_config.getString("upgrade.armor_protection.item"));
-		teamshop_upgrade_name.put(UpgradeType.PROTECTION, ColorUtil.color(team_shop_config.getString("upgrade.armor_protection.name")));
-		teamshop_upgrade_level_cost_map = new HashMap<Integer, String>();
-		teamshop_upgrade_level_cost_map.put(1, team_shop_config.getString("upgrade.armor_protection.level_1.cost"));
-		teamshop_upgrade_level_cost_map.put(2, team_shop_config.getString("upgrade.armor_protection.level_2.cost"));
-		teamshop_upgrade_level_cost_map.put(3, team_shop_config.getString("upgrade.armor_protection.level_3.cost"));
-		teamshop_upgrade_level_cost_map.put(4, team_shop_config.getString("upgrade.armor_protection.level_4.cost"));
-		teamshop_upgrade_level_cost.put(UpgradeType.PROTECTION, teamshop_upgrade_level_cost_map);
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_lore_map.put(1, ColorUtil.colorList(team_shop_config.getStringList("upgrade.armor_protection.level_1.lore")));
-		teamshop_upgrade_level_lore_map.put(2, ColorUtil.colorList(team_shop_config.getStringList("upgrade.armor_protection.level_2.lore")));
-		teamshop_upgrade_level_lore_map.put(3, ColorUtil.colorList(team_shop_config.getStringList("upgrade.armor_protection.level_3.lore")));
-		teamshop_upgrade_level_lore_map.put(4, ColorUtil.colorList(team_shop_config.getStringList("upgrade.armor_protection.level_4.lore")));
-		teamshop_upgrade_level_lore_map.put(5, ColorUtil.colorList(team_shop_config.getStringList("upgrade.armor_protection.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.PROTECTION, teamshop_upgrade_level_lore_map);
-		teamshop_upgrade_enabled.put(UpgradeType.FAST_DIG, team_shop_config.getBoolean("upgrade.fast_dig.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.FAST_DIG, team_shop_config.getString("upgrade.fast_dig.item"));
-		teamshop_upgrade_name.put(UpgradeType.FAST_DIG, ColorUtil.color(team_shop_config.getString("upgrade.fast_dig.name")));
-		Map<Integer, String> teamshop_upgrade_fast_dig_level_cost = new HashMap<Integer, String>();
-		teamshop_upgrade_fast_dig_level_cost.put(1, team_shop_config.getString("upgrade.fast_dig.level_1.cost"));
-		teamshop_upgrade_fast_dig_level_cost.put(2, team_shop_config.getString("upgrade.fast_dig.level_2.cost"));
-		teamshop_upgrade_level_cost.put(UpgradeType.FAST_DIG, teamshop_upgrade_fast_dig_level_cost);
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_lore_map.put(1, ColorUtil.colorList(team_shop_config.getStringList("upgrade.fast_dig.level_1.lore")));
-		teamshop_upgrade_level_lore_map.put(2, ColorUtil.colorList(team_shop_config.getStringList("upgrade.fast_dig.level_2.lore")));
-		teamshop_upgrade_level_lore_map.put(3, ColorUtil.colorList(team_shop_config.getStringList("upgrade.fast_dig.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.FAST_DIG, teamshop_upgrade_level_lore_map);
-		teamshop_upgrade_enabled.put(UpgradeType.IRON_FORGE, team_shop_config.getBoolean("upgrade.iron_forge.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.IRON_FORGE, team_shop_config.getString("upgrade.iron_forge.item"));
-		teamshop_upgrade_name.put(UpgradeType.IRON_FORGE, ColorUtil.color(team_shop_config.getString("upgrade.iron_forge.name")));
-		teamshop_upgrade_iron_forge_level_resources = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_cost_map = new HashMap<Integer, String>();
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		for (int i = 1; i < 5; i++) {
-			teamshop_upgrade_level_cost_map.put(i, team_shop_config.getString("upgrade.iron_forge.level_" + i + ".cost"));
-			teamshop_upgrade_level_lore_map.put(i, ColorUtil.colorList(team_shop_config.getStringList("upgrade.iron_forge.level_" + i + ".lore")));
-			teamshop_upgrade_iron_forge_level_resources.put(i, team_shop_config.getStringList("upgrade.iron_forge.level_" + i + ".resources"));
-		}
-		teamshop_upgrade_iron_forge_level_resources.put(0, team_shop_config.getStringList("upgrade.iron_forge.level_0.resources"));
-		teamshop_upgrade_level_cost.put(UpgradeType.IRON_FORGE, teamshop_upgrade_level_cost_map);
-		teamshop_upgrade_level_lore_map.put(5, ColorUtil.colorList(team_shop_config.getStringList("upgrade.iron_forge.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.IRON_FORGE, teamshop_upgrade_level_lore_map);
-		teamshop_upgrade_enabled.put(UpgradeType.HEAL, team_shop_config.getBoolean("upgrade.heal.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.HEAL, team_shop_config.getString("upgrade.heal.item"));
-		teamshop_upgrade_name.put(UpgradeType.HEAL, ColorUtil.color(team_shop_config.getString("upgrade.heal.name")));
-		teamshop_upgrade_heal_trigger_range = team_shop_config.getInt("upgrade.heal.trigger_range");
-		teamshop_upgrade_level_cost_map = new HashMap<Integer, String>();
-		teamshop_upgrade_level_cost_map.put(1, team_shop_config.getString("upgrade.heal.level_1.cost"));
-		teamshop_upgrade_level_cost.put(UpgradeType.HEAL, teamshop_upgrade_level_cost_map);
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_lore_map.put(1, ColorUtil.colorList(team_shop_config.getStringList("upgrade.heal.level_1.lore")));
-		teamshop_upgrade_level_lore_map.put(2, ColorUtil.colorList(team_shop_config.getStringList("upgrade.heal.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.HEAL, teamshop_upgrade_level_lore_map);
-		teamshop_upgrade_enabled.put(UpgradeType.TRAP, team_shop_config.getBoolean("upgrade.trap.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.TRAP, team_shop_config.getString("upgrade.trap.item"));
-		teamshop_upgrade_name.put(UpgradeType.TRAP, ColorUtil.color(team_shop_config.getString("upgrade.trap.name")));
-		teamshop_upgrade_trap_trigger_range = team_shop_config.getInt("upgrade.trap.trigger_range");
-		teamshop_upgrade_trap_trigger_title = ColorUtil.color(team_shop_config.getString("upgrade.trap.trigger.title"));
-		teamshop_upgrade_trap_trigger_subtitle = ColorUtil.color(team_shop_config.getString("upgrade.trap.trigger.subtitle"));
-		teamshop_upgrade_trap_trigger_message = ColorUtil.color(team_shop_config.getString("upgrade.trap.trigger.message"));
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_lore_map.put(1, ColorUtil.colorList(team_shop_config.getStringList("upgrade.trap.level_1.lore")));
-		teamshop_upgrade_level_lore_map.put(2, ColorUtil.colorList(team_shop_config.getStringList("upgrade.trap.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.TRAP, teamshop_upgrade_level_lore_map);
-		teamshop_upgrade_enabled.put(UpgradeType.COUNTER_OFFENSIVE_TRAP, team_shop_config.getBoolean("upgrade.counter_offensive_trap.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.COUNTER_OFFENSIVE_TRAP, team_shop_config.getString("upgrade.counter_offensive_trap.item"));
-		teamshop_upgrade_name.put(UpgradeType.COUNTER_OFFENSIVE_TRAP, ColorUtil.color(team_shop_config.getString("upgrade.counter_offensive_trap.name")));
-		teamshop_upgrade_counter_offensive_trap_trigger_range = team_shop_config.getInt("upgrade.counter_offensive_trap.trigger_range");
-		teamshop_upgrade_counter_offensive_trap_effect_range = team_shop_config.getInt("upgrade.counter_offensive_trap.effect_range");
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_lore_map.put(1, ColorUtil.colorList(team_shop_config.getStringList("upgrade.counter_offensive_trap.level_1.lore")));
-		teamshop_upgrade_level_lore_map.put(2, ColorUtil.colorList(team_shop_config.getStringList("upgrade.counter_offensive_trap.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.COUNTER_OFFENSIVE_TRAP, teamshop_upgrade_level_lore_map);
-		teamshop_upgrade_enabled.put(UpgradeType.ALARM_TRAP, team_shop_config.getBoolean("upgrade.alarm_trap.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.ALARM_TRAP, team_shop_config.getString("upgrade.alarm_trap.item"));
-		teamshop_upgrade_name.put(UpgradeType.ALARM_TRAP, ColorUtil.color(team_shop_config.getString("upgrade.alarm_trap.name")));
-		teamshop_upgrade_alarm_trap_trigger_range = team_shop_config.getInt("upgrade.alarm_trap.trigger_range");
-		teamshop_upgrade_alarm_trap_trigger_title = ColorUtil.color(team_shop_config.getString("upgrade.alarm_trap.trigger.title"));
-		teamshop_upgrade_alarm_trap_trigger_subtitle = ColorUtil.color(team_shop_config.getString("upgrade.alarm_trap.trigger.subtitle"));
-		teamshop_upgrade_alarm_trap_trigger_message = ColorUtil.color(team_shop_config.getString("upgrade.alarm_trap.trigger.message"));
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_lore_map.put(1, ColorUtil.colorList(team_shop_config.getStringList("upgrade.alarm_trap.level_1.lore")));
-		teamshop_upgrade_level_lore_map.put(2, ColorUtil.colorList(team_shop_config.getStringList("upgrade.alarm_trap.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.ALARM_TRAP, teamshop_upgrade_level_lore_map);
-		teamshop_upgrade_enabled.put(UpgradeType.DEFENSE, team_shop_config.getBoolean("upgrade.defense.enabled"));
-		teamshop_upgrade_item.put(UpgradeType.DEFENSE, team_shop_config.getString("upgrade.defense.item"));
-		teamshop_upgrade_name.put(UpgradeType.DEFENSE, ColorUtil.color(team_shop_config.getString("upgrade.defense.name")));
-		teamshop_upgrade_defense_trigger_range = team_shop_config.getInt("upgrade.defense.trigger_range");
-		teamshop_upgrade_level_lore_map = new HashMap<Integer, List<String>>();
-		teamshop_upgrade_level_lore_map.put(1, ColorUtil.colorList(team_shop_config.getStringList("upgrade.defense.level_1.lore")));
-		teamshop_upgrade_level_lore_map.put(2, ColorUtil.colorList(team_shop_config.getStringList("upgrade.defense.level_full.lore")));
-		teamshop_upgrade_level_lore.put(UpgradeType.DEFENSE, teamshop_upgrade_level_lore_map);
 		deathmode_enabled = config.getBoolean("deathmode.enabled");
 		deathmode_gametime = config.getInt("deathmode.gametime");
 		deathmode_title = ColorUtil.color(config.getString("deathmode.title"));
@@ -774,13 +595,8 @@ public class Config {
 	}
 
 	private static void loadGameConfig() {
-		File folder = new File(Main.getInstance().getDataFolder(), "/");
-		if (!folder.exists()) {
-			folder.mkdirs();
-		}
-		File file = new File(folder.getAbsolutePath() + "/game.yml");
+		File file = getGameFile();
 		game_shop_item = new HashMap<String, List<String>>();
-		game_shop_team = new HashMap<String, List<String>>();
 		game_shop_shops = new HashMap<String, String>();
 		game_team_spawner = new HashMap<String, Map<String, List<Location>>>();
 		game_team_spawners = new HashMap<String, String>();
@@ -798,13 +614,6 @@ public class Config {
 					game_shop_item.put(game, configss.getStringList("item"));
 					for (String shop : configss.getStringList("item")) {
 						game_shop_shops.put(shopId + "", game + ".shop.item - " + shop);
-						shopId++;
-					}
-				}
-				if (configss.contains("team")) {
-					game_shop_team.put(game, configss.getStringList("team"));
-					for (String shop : configss.getStringList("team")) {
-						game_shop_shops.put(shopId + "", game + ".shop.team - " + shop);
 						shopId++;
 					}
 				}
@@ -868,9 +677,17 @@ public class Config {
 		File folder = new File(Main.getInstance().getDataFolder(), "/images");
 		if (!folder.exists()) {
 			folder.mkdirs();
+		}
+		// 版本日志 README.txt 每次启动都用 jar 内的最新内容覆盖，确保更新说明同步
+		try {
+			writeToLocal(folder.getPath() + "/README.txt", Main.getInstance().getResource("images/README.txt"));
+		} catch (Exception e) {
+		}
+		// 默认涂鸦图片仅在首次生成时写入，避免覆盖玩家已放入的图片
+		File defaultImage = new File(folder.getPath() + "/1.jpg");
+		if (!defaultImage.exists()) {
 			try {
-				writeToLocal(folder.getPath() + "/README.txt", Main.getInstance().getResource("images/README.txt"));
-				writeToLocal(folder.getPath() + "/1.jpg", Main.getInstance().getResource("images/1.jpg"));
+				writeToLocal(defaultImage.getPath(), Main.getInstance().getResource("images/1.jpg"));
 			} catch (Exception e) {
 			}
 		}
@@ -935,15 +752,21 @@ public class Config {
 	}
 
 	private static File getGameFile() {
-		File folder = new File(Main.getInstance().getDataFolder(), "/");
+		File folder = new File(Main.getInstance().getDataFolder(), "/shop");
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}
 		File file = new File(folder.getAbsolutePath() + "/game.yml");
 		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
+			// 兼容旧版：把位于根目录的 game.yml 迁移到 shop/game.yml
+			File oldFile = new File(Main.getInstance().getDataFolder(), "/game.yml");
+			if (oldFile.exists()) {
+				oldFile.renameTo(file);
+			} else {
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+				}
 			}
 		}
 		return file;

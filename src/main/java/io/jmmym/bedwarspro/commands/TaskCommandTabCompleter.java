@@ -1,6 +1,8 @@
 package io.jmmym.bedwarspro.commands;
 
-import io.jmmym.bedwarspro.task.Task;
+import io.jmmym.bedwarspro.BedwarsPRO;
+import io.jmmym.bedwarspro.game.Game;
+import io.jmmym.bedwarspro.game.GameManager;
 import io.jmmym.bedwarspro.task.TaskManager;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +66,87 @@ public class TaskCommandTabCompleter implements TabCompleter {
             if ("reload".startsWith(args[0].toLowerCase())) {
                 firstLevel.add("reload");
             }
+            if ("quickstash".startsWith(args[0].toLowerCase())) {
+                firstLevel.add("quickstash");
+            }
+            if ("scoreboard".startsWith(args[0].toLowerCase())) {
+                firstLevel.add("scoreboard");
+            }
+            if ("joinitem".startsWith(args[0].toLowerCase())) {
+                firstLevel.add("joinitem");
+            }
+            if (isAdmin(sender)) {
+                if ("clearstats".startsWith(args[0].toLowerCase())) {
+                    firstLevel.add("clearstats");
+                }
+                if ("clearrecord".startsWith(args[0].toLowerCase())) {
+                    firstLevel.add("clearrecord");
+                }
+            }
             return firstLevel;
+        }
+        // /bwpro clearstats <玩家> [确认码]
+        if (args[0].equalsIgnoreCase("clearstats")) {
+            if (!isAdmin(sender)) {
+                return new ArrayList<>();
+            }
+            if (args.length == 2) {
+                List<String> names = new ArrayList<>();
+                for (OfflinePlayer op : Bukkit.getOnlinePlayers()) {
+                    names.add(op.getName());
+                }
+                return names;
+            }
+            // 第3参数为随机生成的确认码，无法补全
+            return new ArrayList<>();
+        }
+        // /bwpro clearrecord <地图> [确认码]
+        if (args[0].equalsIgnoreCase("clearrecord")) {
+            if (!isAdmin(sender)) {
+                return new ArrayList<>();
+            }
+            if (args.length == 2) {
+                List<String> names = new ArrayList<>();
+                GameManager gm = BedwarsPRO.getInstance().getGameManager();
+                if (gm != null) {
+                    for (Game game : gm.getGames()) {
+                        names.add(game.getName());
+                    }
+                }
+                return names;
+            }
+            // 第3参数为随机生成的确认码，无法补全
+            return new ArrayList<>();
+        }
+        // /bwpro quickstash <gui|on|off|status|reload>
+        if (args[0].equalsIgnoreCase("quickstash")) {
+            if (args.length == 2) {
+                List<String> qs = new ArrayList<>();
+                qs.add("gui");
+                qs.add("on");
+                qs.add("off");
+                qs.add("status");
+                if (sender.hasPermission("bwpro.quickstash.admin") || sender.isOp()) {
+                    qs.add("reload");
+                }
+                return qs;
+            }
+            return new ArrayList<>();
+        }
+        // /bwpro scoreboard <reload>
+        if (args[0].equalsIgnoreCase("scoreboard") && args.length == 2) {
+            if (sender.hasPermission("bwpro.task.reload")
+                    || sender.hasPermission("bwpro.task.admin") || sender.isOp()) {
+                return Arrays.asList("reload");
+            }
+            return new ArrayList<>();
+        }
+        // /bwpro joinitem <reload>
+        if (args[0].equalsIgnoreCase("joinitem") && args.length == 2) {
+            if (sender.hasPermission("bwpro.joinitem.admin") || sender.isOp()) {
+                return Arrays.asList("reload");
+            }
+            return new ArrayList<>();
         }
         if (!args[0].equalsIgnoreCase("task")) {
             return new ArrayList<>();
@@ -88,27 +170,12 @@ public class TaskCommandTabCompleter implements TabCompleter {
             }
             return new ArrayList<>();
         }
-        // 第3级: publish <name|击杀令>
+        // 第3级: publish 击杀令 <目标玩家>
         if (args.length == 3 && args[1].equalsIgnoreCase("publish")) {
             if (!sender.hasPermission("bwpro.task.publish") && !sender.isOp()) {
                 return new ArrayList<>();
             }
-            TaskManager tm = TaskManager.getInstance();
-            if (tm == null) {
-                return new ArrayList<>();
-            }
-            List<String> names = new ArrayList<>();
-            // 追杀令关键词
-            names.add("击杀令");
-            for (Task t : tm.getSpecialTasks()) {
-                names.add(t.getName());
-            }
-            for (Task t : tm.getDailyTasks()) {
-                if (!names.contains(t.getName())) {
-                    names.add(t.getName());
-                }
-            }
-            return names;
+            return Arrays.asList("击杀令");
         }
         // 第4级: publish 击杀令 <目标玩家> — 补齐在线玩家名
         if (args.length == 4 && args[1].equalsIgnoreCase("publish")
@@ -164,5 +231,10 @@ public class TaskCommandTabCompleter implements TabCompleter {
             return Arrays.asList("daily", "weekly", "timed", "all");
         }
         return new ArrayList<>();
+    }
+
+    /** 是否拥有 bwpro 管理权限（clearstats/clearrecord 需要）。 */
+    private boolean isAdmin(CommandSender sender) {
+        return sender.hasPermission("bwpro.task.admin") || sender.isOp();
     }
 }

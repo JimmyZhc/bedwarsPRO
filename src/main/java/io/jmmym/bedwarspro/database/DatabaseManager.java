@@ -31,11 +31,20 @@ public class DatabaseManager {
 
   public void initialize() {
     HikariConfig config = new HikariConfig();
+    // useSSL=false: 兼容无 SSL 证书的数据库
+    // allowPublicKeyRetrieval=true: MySQL 8 caching_sha2_password 必需
+    // useUnicode/characterEncoding=utf8: 任务名称等中文不乱码
     config.setJdbcUrl("jdbc:mysql://" + this.host + ":" + String.valueOf(this.port) + "/"
-        + this.database + "?autoReconnect=true&serverTimezone=" + TimeZone
-        .getDefault().getID());
+        + this.database + "?autoReconnect=true&useSSL=false"
+        + "&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8"
+        + "&serverTimezone=" + TimeZone.getDefault().getID());
     config.setUsername(this.user);
     config.setPassword(this.password);
+    // 显式指定事务隔离级别：MySQL 8 移除了 @@tx_isolation 变量，
+    // 老驱动读取默认隔离级别会返回 -1，导致 "Unsupported transaction isolation level '-1'"
+    config.setTransactionIsolation("TRANSACTION_REPEATABLE_READ");
+    config.setConnectionTimeout(5000L);
+    config.setValidationTimeout(3000L);
     config.addDataSourceProperty("cachePrepStmts", "true");
     config.addDataSourceProperty("prepStmtCacheSize", "250");
     config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -50,6 +59,14 @@ public class DatabaseManager {
       e.printStackTrace();
     }
     return null;
+  }
+
+  /** 关闭连接池（插件卸载/重载时调用）。 */
+  public void close() {
+    if (this.dataSource != null) {
+      this.dataSource.close();
+      this.dataSource = null;
+    }
   }
 
   public String getCreateTableSql() {

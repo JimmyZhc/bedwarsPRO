@@ -20,17 +20,19 @@ import org.bukkit.inventory.meta.ItemMeta;
  * <p>布局：
  * <pre>
  *  行1 (slot  0-8)  : 每日任务（可点击接受）
- *  行2 (slot  9-17) : 灰色玻璃板分隔
+ *  行2 (slot  9-17) : 灰色玻璃板分隔（每周任务标签）
  *  行3 (slot 18-26) : 每周任务（仅展示进度）
- *  行4 (slot 27-35) : 灰色玻璃板分隔
+ *  行4 (slot 27-35) : 灰色玻璃板分隔（限时任务标签）
  *  行5 (slot 36-44) : 限时任务（可点击接受，金色名）
- *  行6 (slot 45-53) : 灰色玻璃板分隔
+ *  行6 (slot 45-53) : 灰色玻璃板分隔 + 时钟
  * </pre></p>
  */
 public class TaskGUI implements InventoryHolder {
 
     public static final int SIZE = 54;
     public static final int DAILY_START = 0;
+    /** 每日任务最大展示数量（1行，每行9个）。 */
+    public static final int DAILY_SLOTS = 9;
     public static final int WEEKLY_START = 18;
     public static final int SPECIAL_START = 36;
 
@@ -69,14 +71,16 @@ public class TaskGUI implements InventoryHolder {
         boolean hasAccepted = state.hasAcceptedToday(today);
         Task accepted = tm.getAcceptedTask(player);
 
-        // ===== 行1: 每日任务 (slot 0-8) =====
-        for (int i = 0; i < pureDailyTasks.size() && i < 9; i++) {
+        // ===== 行1: 每日任务 (slot 0-8，最多9个) =====
+        for (int i = 0; i < pureDailyTasks.size() && i < DAILY_SLOTS; i++) {
             Task t = pureDailyTasks.get(i);
             int dailyIdx = allDaily.indexOf(t);
             slotToDailyIndex.put(DAILY_START + i, dailyIdx);
             inventory.setItem(DAILY_START + i,
                     buildDailyItem(t, i + 1, hasAccepted, accepted, state));
         }
+        // 未使用的每日槽位用灰色玻璃填充，避免空位
+        fillSeparator(Math.min(pureDailyTasks.size(), DAILY_SLOTS), DAILY_SLOTS - 1, " ");
 
         // ===== 行2: 分隔 (slot 9-17) =====
         fillSeparator(9, 17, TaskMessages.get("gui-weekly-separator"));
@@ -208,13 +212,7 @@ public class TaskGUI implements InventoryHolder {
         if (t.getRewardExp() > 0) {
             sb.append(TaskMessages.get("gui-exp", "exp", t.getRewardExp()));
         }
-        if (t.getRewardCoins() > 0) {
-            if (t.getRewardExp() > 0) {
-                sb.append(ChatColor.GRAY).append("  ");
-            }
-            sb.append(TaskMessages.get("gui-coins", "coins", t.getRewardCoins()));
-        }
-        if (t.getRewardExp() <= 0 && t.getRewardCoins() <= 0) {
+        if (t.getRewardExp() <= 0) {
             sb.append(TaskMessages.get("gui-no-reward"));
         }
         return sb.toString();
@@ -294,9 +292,20 @@ public class TaskGUI implements InventoryHolder {
             case WIN:               return Material.GOLD_INGOT;
             case FINAL_KILL:        return Material.REDSTONE;
             case QUICK_WIN:         return Material.WATCH;
+            case BOW_KILL:          return Material.BOW;
+            case KILL_STREAK:       return Material.BLAZE_ROD;
+            case COUNTER_ATTACK:    return Material.APPLE;
+            case PEARL_KILL:        return Material.ENDER_PEARL;
+            case TNT_KILL:          return Material.TNT;
+            case VOID_KILL:         return Material.ENDER_PEARL;
+            case SURVIVOR:          return Material.BREAD;
+            case COMEBACK:          return Material.EMERALD;
+            case UNDEFEATED:        return Material.DIAMOND_CHESTPLATE;
+            case FIRST_BLOOD:       return Material.REDSTONE_BLOCK;
             case WEEKLY_KILL:       return Material.DIAMOND_SWORD;
             case WEEKLY_WIN:        return Material.GOLD_BLOCK;
             case WEEKLY_DESTROY_BED:return Material.OBSIDIAN;
+            case WEEKLY_GENERAL_WIN:return Material.DIAMOND_BLOCK;
             default:                return Material.PAPER;
         }
     }

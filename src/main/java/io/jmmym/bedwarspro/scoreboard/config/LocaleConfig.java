@@ -87,9 +87,13 @@ public class LocaleConfig {
 
 	public void saveResource(String resourcePath) {
 		try {
-			InputStream input = Main.getInstance().getResource("bwsba-locale/zh_CN/" + resourcePath);
+			// 优先从 locale/bwsba/zh_CN/ 下读取（老路径），找不到时回退到 locale/（当前资源实际位置）
+			InputStream input = Main.getInstance().getResource("locale/bwsba/zh_CN/" + resourcePath);
+			if (input == null) {
+				input = Main.getInstance().getResource("locale/" + resourcePath);
+			}
 			if (input != null) {
-				writeToLocal(Main.getInstance().getDataFolder().getPath() + "/" + resourcePath, input);
+				writeToLocal(Main.getInstance().getDataFolder().getPath() + "/locale/" + resourcePath, input);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -105,9 +109,9 @@ public class LocaleConfig {
 		if (!locale_folder.exists()) {
 			locale_folder.mkdirs();
 		}
-		for (String file : new String[] { "config.yml", "language.yml", "team_shop.yml" }) {
+		for (String file : new String[] { "config.yml", "language.yml" }) {
 			try {
-				InputStream input = Main.getInstance().getResource("bwsba-locale/zh_CN/" + file);
+				InputStream input = Main.getInstance().getResource("locale/bwsba/zh_CN/" + file);
 				if (input != null) {
 					writeToLocal(folder.getPath() + "/zh_CN/" + file, input);
 				}

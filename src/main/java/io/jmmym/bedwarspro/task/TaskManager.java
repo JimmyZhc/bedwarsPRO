@@ -1,6 +1,7 @@
 package io.jmmym.bedwarspro.task;
 
 import io.jmmym.bedwarspro.BedwarsPRO;
+import io.jmmym.bedwarspro.database.DatabaseManager;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -14,9 +15,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,7 +32,7 @@ import org.bukkit.entity.Player;
  * <p>持久化目录：plugins/BedwarsPRO/tasks/
  * <ul>
  *   <li>tasks.yml      — 任务池与开关配置</li>
- *   <li>api.yml        — 经验/栖云币奖励 HTTP API 配置（url + api-key）</li>
+ *   <li>api.yml        — 经验奖励 HTTP API 配置（url + api-key，位于插件根目录）</li>
  *   <li>state.yml      — 当日/周选中任务、限时任务、配置标志快照</li>
  *   <li>players/&lt;uuid&gt;.yml — 单个玩家的每日+每周进度</li>
  * </ul></p>
@@ -43,6 +46,9 @@ public class TaskManager {
     private final File playersDir;
     private final File stateFile;
 
+    // ===== 任务系统数据库同步（多服共享） =====
+    private TaskDatabase taskDatabase = null;
+
     // ===== 奖励 API 配置 =====
     private String apiUrl = "";
     private String apiKey = "";
@@ -54,6 +60,10 @@ public class TaskManager {
     // ===== 当日选中的任务 =====
     private final List<Task> dailyTasks = new ArrayList<>();
     private final List<String> dailyTaskNames = new ArrayList<>();
+    /** 当日选中任务的随机 target（与 dailyTaskNames 一一对应，用于跨重启恢复）。 */
+    private final List<Integer> dailyTaskTargets = new ArrayList<>();
+    /** 每日任务池中每个任务的 target-max（key=任务名），用于选任务时随机目标。 */
+    private final Map<String, Integer> dailyTargetMaxMap = new HashMap<>();
 
     // ===== 本周选中的任务（含随机 target） =====
     private final List<Task> weeklyTasks = new ArrayList<>();
@@ -70,24 +80,18 @@ public class TaskManager {
     private boolean weeklyEnabled = false;
     private boolean randomAssign = true;
     private boolean weeklyRandomAssign = false;
-    private int dailyCount = 3;
+    private int dailyCount = 5;
     private int weeklyCount = 3;
     private int timedDurationMinutes = 60;
     private long timeMultiplier = 1L;
 
     // ===== 对局内行为奖励 =====
     private int ingameNormalKillExp = 1;
-    private int ingameNormalKillCoins = 3;
     private int ingameFinalKillExp = 3;
-    private int ingameFinalKillCoins = 1;
     private int ingameDestroyBedExp = 5;
-    private int ingameDestroyBedCoins = 1;
     private int ingameWinExp = 6;
-    private int ingameWinCoins = 2;
 
-    // ===== 追杀令奖励 =====
     private int bountyRewardExp = 15;
-    private int bountyRewardCoins = 2;
 
     // ===== 持久化标志 =====
     private long currentDay = 0L;
@@ -131,6 +135,7 @@ public class TaskManager {
         loadApiConfig();
         loadConfig();
         loadState();
+        initTaskDatabase();
         refreshDailyIfNeeded();
         refreshWeeklyIfNeeded();
         plugin.getLogger().info("[TaskManager] 任务系统已加载: 每日池 " + dailyTaskPool.size()
@@ -139,7 +144,30 @@ public class TaskManager {
                 + ", 本周 " + weeklyTasks.size()
                 + ", 特殊 " + specialTasks.size()
                 + ", 天=" + currentDay + " 周=" + currentWeek
-                + ", 奖励API=" + (apiUrl.isEmpty() ? "未配置" : "已配置"));
+                + ", 奖励API=" + (apiUrl.isEmpty() ? "未配置" : "已配置")
+                + ", 数据库=" + (taskDatabase != null ? "已连接" : "未连接"));
+    }
+
+    // ==================== 数据库同步 ====================
+
+    private void initTaskDatabase() {
+        taskDatabase = null;
+        boolean enabled = plugin.getConfig().getBoolean("task-database.enabled", false);
+        if (!enabled) {
+            return;
+        }
+        DatabaseManager db = plugin.getDatabaseManager();
+        if (db == null) {
+            plugin.getLogger().warning("[TaskManager] 任务系统暂未连接数据库，更改只保存在本地！");
+            return;
+        }
+        taskDatabase = new TaskDatabase(db);
+        if (taskDatabase.initialize()) {
+            plugin.getLogger().info("[TaskManager] 任务数据库连接成功，任务进度将多服同步。");
+        } else {
+            taskDatabase = null;
+            plugin.getLogger().warning("[TaskManager] 任务系统暂未连接数据库，更改只保存在本地！");
+        }
     }
 
     // ==================== 配置加载 ====================
@@ -154,7 +182,7 @@ public class TaskManager {
         dailyEnabled = cfg.getBoolean("daily.enabled", true);
         weeklyEnabled = cfg.getBoolean("weekly.enabled", false);
         randomAssign = cfg.getBoolean("daily.random-assign", true);
-        dailyCount = cfg.getInt("daily.count", 3);
+        dailyCount = cfg.getInt("daily.count", 5);
         weeklyRandomAssign = cfg.getBoolean("weekly.random-assign", false);
         weeklyCount = cfg.getInt("weekly.count", 3);
         timedDurationMinutes = cfg.getInt("timed.duration-minutes", 60);
@@ -166,27 +194,26 @@ public class TaskManager {
             timeMultiplier = 1L;
         }
 
-        // 对局内行为奖励
+        // 对局内行为奖励（只发放经验）
         ingameNormalKillExp = cfg.getInt("ingame-rewards.normal-kill.exp", 1);
-        ingameNormalKillCoins = cfg.getInt("ingame-rewards.normal-kill.coins", 3);
         ingameFinalKillExp = cfg.getInt("ingame-rewards.final-kill.exp", 3);
-        ingameFinalKillCoins = cfg.getInt("ingame-rewards.final-kill.coins", 1);
         ingameDestroyBedExp = cfg.getInt("ingame-rewards.destroy-bed.exp", 5);
-        ingameDestroyBedCoins = cfg.getInt("ingame-rewards.destroy-bed.coins", 1);
         ingameWinExp = cfg.getInt("ingame-rewards.win.exp", 6);
-        ingameWinCoins = cfg.getInt("ingame-rewards.win.coins", 2);
 
         // 追杀令奖励
         bountyRewardExp = cfg.getInt("bounty.reward-exp", 15);
-        bountyRewardCoins = cfg.getInt("bounty.reward-coins", 2);
 
         // 加载每日任务池
         dailyTaskPool.clear();
+        dailyTargetMaxMap.clear();
         if (cfg.isList("daily-tasks")) {
             for (Map<?, ?> raw : cfg.getMapList("daily-tasks")) {
                 Task t = parseDailyTask(raw);
                 if (t != null) {
                     dailyTaskPool.add(t);
+                    int max = parseInt(raw.get("target-max"),
+                            parseInt(raw.get("target"), t.getTarget()));
+                    dailyTargetMaxMap.put(t.getName(), max);
                 }
             }
         }
@@ -196,6 +223,9 @@ public class TaskManager {
                 Task t = parseDailyTask(raw);
                 if (t != null) {
                     dailyTaskPool.add(t);
+                    int max = parseInt(raw.get("target-max"),
+                            parseInt(raw.get("target"), t.getTarget()));
+                    dailyTargetMaxMap.put(t.getName(), max);
                 }
             }
         }
@@ -222,14 +252,14 @@ public class TaskManager {
         if (type == null || type.isWeekly()) {
             return null;
         }
-        int target = parseInt(raw.get("target"), 1);
+        // 每日任务可用 target-min / target-max 表示随机目标范围（min 存入任务，max 用于选任务时随机）
+        int target = parseInt(raw.get("target-min"), parseInt(raw.get("target"), 1));
         String name = nameObj.toString();
         String desc = raw.get("description") == null ? "" : raw.get("description").toString();
         int rewardExp = parseInt(raw.get("reward-exp"), 0);
-        int rewardCoins = parseInt(raw.get("reward-coins"), 0);
         String targetPlayer = raw.get("target-player") == null
                 ? null : raw.get("target-player").toString();
-        return new Task(type, target, name, desc, rewardExp, rewardCoins, false, false, targetPlayer);
+        return new Task(type, target, name, desc, rewardExp, false, false, targetPlayer);
     }
 
     private Task parseWeeklyTask(Map<?, ?> raw) {
@@ -248,9 +278,8 @@ public class TaskManager {
         String name = nameObj.toString();
         String desc = raw.get("description") == null ? "" : raw.get("description").toString();
         int rewardExp = parseInt(raw.get("reward-exp"), 0);
-        int rewardCoins = parseInt(raw.get("reward-coins"), 0);
         // 存储时用 targetMin，max 在选任务时由 readWeeklyTargetMax 读取
-        return new Task(type, targetMin, name, desc, rewardExp, rewardCoins, false, true);
+        return new Task(type, targetMin, name, desc, rewardExp, false, true);
     }
 
     private int parseInt(Object o, int def) {
@@ -308,14 +337,23 @@ public class TaskManager {
     }
 
     /**
-     * 加载奖励 API 配置（url + api-key）。若文件不存在则从 JAR 释放。
+     * 加载奖励 API 配置（url + api-key）。
+     * 优先读取 plugins/BedwarsPRO/api.yml（根目录），
+     * 兼容读取旧版 plugins/BedwarsPRO/tasks/api.yml。
      */
     public void loadApiConfig() {
-        File file = getApiConfigFile();
-        if (!file.exists()) {
+        File file = null;
+        File rootFile = new File(plugin.getDataFolder(), "api.yml");
+        File tasksFile = getApiConfigFile();
+        if (rootFile.exists()) {
+            file = rootFile;
+        } else if (tasksFile.exists()) {
+            file = tasksFile;
+        } else {
             ensureApiConfigFile();
+            file = rootFile.exists() ? rootFile : tasksFile;
         }
-        if (!file.exists()) {
+        if (file == null || !file.exists()) {
             apiUrl = "";
             apiKey = "";
             return;
@@ -329,32 +367,22 @@ public class TaskManager {
         if (apiKey == null) {
             apiKey = "";
         }
+        plugin.getLogger().info("[TaskManager] 奖励API配置: " + file.getAbsolutePath()
+                + (apiUrl.isEmpty() ? "（未配置 url，任务将不发奖励）" : "（已配置）"));
     }
 
     /**
-     * 确保 api.yml 存在于 tasks/ 目录下。从 JAR 释放到根目录再迁移。
+     * 确保根目录 api.yml 存在（从 JAR 释放，默认 url 为空）。
      */
     private void ensureApiConfigFile() {
-        if (!tasksDir.exists()) {
-            tasksDir.mkdirs();
-        }
-        File target = getApiConfigFile();
-        if (target.exists()) {
+        File rootFile = new File(plugin.getDataFolder(), "api.yml");
+        if (rootFile.exists()) {
             return;
         }
-        File oldFile = new File(plugin.getDataFolder(), "api.yml");
-        if (oldFile.exists()) {
-            if (oldFile.renameTo(target)) {
-                return;
-            }
-        }
         try {
-            plugin.saveResource("api.yml", true);
+            plugin.saveResource("api.yml", false);
         } catch (IllegalArgumentException ignored) {
             // JAR 中无该资源时忽略
-        }
-        if (oldFile.exists() && !target.exists()) {
-            oldFile.renameTo(target);
         }
     }
 
@@ -465,10 +493,12 @@ public class TaskManager {
         // 同一天但 dailyTasks 为空（重启后）：从持久化名单恢复
         if (today == currentDay && !configChanged && !dailyTaskNames.isEmpty()) {
             dailyTasks.clear();
-            for (String name : dailyTaskNames) {
-                Task t = findTaskByName(dailyTaskPool, name);
+            for (int i = 0; i < dailyTaskNames.size(); i++) {
+                Task t = findTaskByName(dailyTaskPool, dailyTaskNames.get(i));
                 if (t != null) {
-                    dailyTasks.add(t);
+                    int target = i < dailyTaskTargets.size()
+                            ? dailyTaskTargets.get(i) : t.getTarget();
+                    dailyTasks.add(t.withTarget(target));
                 }
             }
             for (Task special : specialTasks) {
@@ -481,6 +511,7 @@ public class TaskManager {
         currentDay = today;
         dailyTasks.clear();
         dailyTaskNames.clear();
+        dailyTaskTargets.clear();
         if (dailyEnabled && !dailyTaskPool.isEmpty()) {
             if (randomAssign) {
                 // 随机抽取 count 个
@@ -489,14 +520,18 @@ public class TaskManager {
                 for (int i = 0; i < count; i++) {
                     int idx = random.nextInt(pool.size());
                     Task picked = pool.remove(idx);
-                    dailyTasks.add(picked);
-                    dailyTaskNames.add(picked.getName());
+                    Task daily = randomizeDailyTarget(picked);
+                    dailyTasks.add(daily);
+                    dailyTaskNames.add(daily.getName());
+                    dailyTaskTargets.add(daily.getTarget());
                 }
             } else {
                 // 自由选择：全部放入
                 for (Task t : dailyTaskPool) {
-                    dailyTasks.add(t);
-                    dailyTaskNames.add(t.getName());
+                    Task daily = randomizeDailyTarget(t);
+                    dailyTasks.add(daily);
+                    dailyTaskNames.add(daily.getName());
+                    dailyTaskTargets.add(daily.getTarget());
                 }
             }
         }
@@ -543,6 +578,20 @@ public class TaskManager {
             broadcastExpire(t);
         }
         saveState();
+    }
+
+    /**
+     * 根据任务池中的 target-min/max 随机一个当日目标值。
+     * 无 range（max<=min）时保持原 target。
+     */
+    private Task randomizeDailyTarget(Task base) {
+        int min = base.getTarget();
+        int max = dailyTargetMaxMap.getOrDefault(base.getName(), min);
+        if (max <= min) {
+            return base;
+        }
+        int chosen = min + random.nextInt(max - min + 1);
+        return base.withTarget(chosen);
     }
 
     // ==================== 每周任务刷新 ====================
@@ -642,6 +691,12 @@ public class TaskManager {
         if (cfg.isList("dailyTaskNames")) {
             dailyTaskNames.addAll(cfg.getStringList("dailyTaskNames"));
         }
+        dailyTaskTargets.clear();
+        if (cfg.isList("dailyTaskTargets")) {
+            for (Object o : cfg.getIntegerList("dailyTaskTargets")) {
+                dailyTaskTargets.add((Integer) o);
+            }
+        }
 
         weeklyTaskNames.clear();
         weeklyTaskTargets.clear();
@@ -685,6 +740,7 @@ public class TaskManager {
         cfg.set("persistedWeeklyRandomAssign", persistedWeeklyRandomAssign);
         cfg.set("persistedWeeklyEnabled", persistedWeeklyEnabled);
         cfg.set("dailyTaskNames", dailyTaskNames);
+        cfg.set("dailyTaskTargets", dailyTaskTargets);
         cfg.set("weeklyTaskNames", weeklyTaskNames);
         cfg.set("weeklyTaskTargets", weeklyTaskTargets);
 
@@ -713,7 +769,6 @@ public class TaskManager {
         map.put("name", t.getName());
         map.put("description", t.getDescription());
         map.put("reward-exp", t.getRewardExp());
-        map.put("reward-coins", t.getRewardCoins());
         if (t.getTargetPlayer() != null) {
             map.put("target-player", t.getTargetPlayer());
         }
@@ -737,15 +792,26 @@ public class TaskManager {
         if (state != null) {
             return state;
         }
-        File f = getPlayerFile(uuid);
-        if (f.exists()) {
-            YamlConfiguration cfg = YamlConfiguration.loadConfiguration(f);
-            state = PlayerTaskState.load(uuid, cfg);
-        } else {
-            state = new PlayerTaskState(uuid);
+        // 多服同步：优先从数据库读取最新进度
+        if (taskDatabase != null) {
+            state = taskDatabase.loadPlayerState(uuid);
+        }
+        if (state == null) {
+            File f = getPlayerFile(uuid);
+            if (f.exists()) {
+                YamlConfiguration cfg = YamlConfiguration.loadConfiguration(f);
+                state = PlayerTaskState.load(uuid, cfg);
+            } else {
+                state = new PlayerTaskState(uuid);
+            }
         }
         playerStates.put(uuid, state);
         return state;
+    }
+
+    /** 玩家加入时清除内存缓存，强制从数据库/文件重新加载最新进度（多服同步）。 */
+    public void removeCachedState(UUID uuid) {
+        playerStates.remove(uuid);
     }
 
     public void savePlayerState(UUID uuid) {
@@ -759,6 +825,10 @@ public class TaskManager {
             cfg.save(getPlayerFile(uuid));
         } catch (IOException ex) {
             plugin.getLogger().warning("[TaskManager] 保存玩家状态失败 " + uuid + ": " + ex.getMessage());
+        }
+        // 同步写入数据库（多服共享）
+        if (taskDatabase != null) {
+            taskDatabase.savePlayerState(state);
         }
     }
 
@@ -795,6 +865,7 @@ public class TaskManager {
         state.setAcceptedDay(today);
         state.setAcceptedTaskIndex(index);
         Task t = dailyTasks.get(index);
+        state.setAcceptedTaskName(t.getName());
         state.setAcceptedSpecialName(t.isSpecial() ? t.getName() : null);
         state.setAcceptedBountyTarget(t.getTargetPlayer());
         state.setProgress(0);
@@ -816,35 +887,53 @@ public class TaskManager {
         }
         refreshDailyIfNeeded();
 
-        // 通过任务名 + 目标玩家（追杀令）查找，不再依赖索引
-        String expectedName = state.getAcceptedSpecialName();
+        // 优先按任务名匹配（跨服共享的关键）：普通/特殊任务都持久化任务名
+        String expectedName = state.getAcceptedTaskName();
+        if (expectedName == null) {
+            expectedName = state.getAcceptedSpecialName();
+        }
         String expectedTarget = state.getAcceptedBountyTarget();
 
-        for (Task t : dailyTasks) {
-            // 非特殊任务：名字匹配即可
-            if (expectedName == null && !t.isSpecial()) {
-                // 普通任务：使用 acceptedTaskIndex 作为后备
-                int idx = state.getAcceptedTaskIndex();
-                if (idx >= 0 && idx < dailyTasks.size() && dailyTasks.get(idx) == t) {
-                    return t;
-                }
-                continue;
-            }
-            // 特殊任务：名字必须匹配
-            if (expectedName != null && t.isSpecial()
-                    && t.getName().equalsIgnoreCase(expectedName)) {
-                // 追杀令：还需匹配目标玩家
-                if (t.isBounty()) {
-                    if (expectedTarget != null
-                            && t.getTargetPlayer() != null
-                            && t.getTargetPlayer().equalsIgnoreCase(expectedTarget)) {
+        if (expectedName != null) {
+            for (Task t : dailyTasks) {
+                if (t.getName().equalsIgnoreCase(expectedName)) {
+                    // 追杀令：还需匹配目标玩家
+                    if (t.isBounty()) {
+                        if (expectedTarget != null && t.getTargetPlayer() != null
+                                && t.getTargetPlayer().equalsIgnoreCase(expectedTarget)) {
+                            return t;
+                        }
+                    } else {
                         return t;
                     }
-                } else {
-                    // 其他限时任务：名字匹配即可
-                    return t;
                 }
             }
+            // 本服当日列表没有该任务（跨服时各服随机选择不同任务）：
+            // 从任务池/特殊任务兜底，并补入当日列表，保证领取时间与进度可读
+            Task fallback = findTaskByName(dailyTaskPool, expectedName);
+            if (fallback == null) {
+                fallback = findTaskByName(specialTasks, expectedName);
+            }
+            if (fallback != null) {
+                boolean found = false;
+                for (Task t : dailyTasks) {
+                    if (t.getName().equalsIgnoreCase(expectedName)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    dailyTasks.add(fallback);
+                }
+                return fallback;
+            }
+            return null;
+        }
+
+        // 老数据兜底：按已接受的索引查找（仅同服/当日有效）
+        int idx = state.getAcceptedTaskIndex();
+        if (idx >= 0 && idx < dailyTasks.size()) {
+            return dailyTasks.get(idx);
         }
         return null;
     }
@@ -937,56 +1026,46 @@ public class TaskManager {
 
     private void notifyCompletion(Player player, Task task) {
         TaskMessages.msg(player, "daily-complete", "task", task.getDisplayName());
-        TaskMessages.msg(player, "reward-line",
-                "exp", task.getRewardExp(), "coins", task.getRewardCoins());
+        TaskMessages.msg(player, "reward-line", "exp", task.getRewardExp());
     }
 
     private void notifyWeeklyCompletion(Player player, Task task) {
         TaskMessages.msg(player, "weekly-complete", "task", task.getDisplayName());
-        TaskMessages.msg(player, "reward-line",
-                "exp", task.getRewardExp(), "coins", task.getRewardCoins());
+        TaskMessages.msg(player, "reward-line", "exp", task.getRewardExp());
     }
 
     // ==================== 奖励发放（HTTP API 异步）====================
 
     /**
-     * 异步调用奖励 API 给予玩家经验和栖云币。
+     * 异步调用奖励 API 给予玩家经验。
      * 在任务完成（每日/每周/限时）时调用，仅触发一次。
      */
     private void grantReward(final Player player, final Task task) {
-        grantRewardsAsync(player.getName(), task.getRewardExp(), task.getRewardCoins(), task.getName());
+        grantRewardsAsync(player.getName(), task.getRewardExp(), task.getName());
     }
 
     /**
-     * 异步调用奖励 API 给予玩家指定经验和栖云币（通用方法）。
+     * 异步调用奖励 API 给予玩家指定经验（通用方法）。
      * @param playerName 玩家名
      * @param exp 经验数量（<=0 则不发放经验）
-     * @param coins 栖云币数量（<=0 则不发放栖云币）
      * @param source 来源描述（用于日志，如任务名或"普通击杀"）
      */
-    public void grantRewardsAsync(final String playerName, final int exp, final int coins,
-                                  final String source) {
+    public void grantRewardsAsync(final String playerName, final int exp, final String source) {
         if (apiUrl == null || apiUrl.isEmpty() || apiKey == null || apiKey.isEmpty()) {
             plugin.getLogger().warning("[TaskManager] 奖励 API 未配置，跳过发放: "
                     + playerName + " / " + source);
             return;
         }
-        if (exp <= 0 && coins <= 0) {
+        if (exp <= 0) {
             return;
         }
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                if (exp > 0) {
-                    String resp = callRewardApi(playerName, "add_exp", exp);
-                    plugin.getLogger().info("[TaskManager] 奖励API(exp) " + playerName
-                            + " +" + exp + " (" + source + "): " + resp);
-                }
-                if (coins > 0) {
-                    String resp = callRewardApi(playerName, "add_coins", coins);
-                    plugin.getLogger().info("[TaskManager] 奖励API(coins) " + playerName
-                            + " +" + coins + " (" + source + "): " + resp);
-                }
+                // 只发放经验
+                String resp = callRewardApi(playerName, "add_exp", exp);
+                plugin.getLogger().info("[TaskManager] 奖励API(exp) " + playerName
+                        + " +" + exp + " (" + source + "): " + resp);
             }
         });
     }
@@ -996,29 +1075,29 @@ public class TaskManager {
     /** 普通击杀奖励（可重复，每次击杀都发放） */
     public void rewardNormalKill(Player killer) {
         TaskMessages.msg(killer, "ingame-normal-kill",
-                "exp", ingameNormalKillExp, "coins", ingameNormalKillCoins);
-        grantRewardsAsync(killer.getName(), ingameNormalKillExp, ingameNormalKillCoins, "普通击杀");
+                "exp", ingameNormalKillExp);
+        grantRewardsAsync(killer.getName(), ingameNormalKillExp, "普通击杀");
     }
 
     /** 最终击杀奖励（可重复，每次最终击杀都发放） */
     public void rewardFinalKill(Player killer) {
         TaskMessages.msg(killer, "ingame-final-kill",
-                "exp", ingameFinalKillExp, "coins", ingameFinalKillCoins);
-        grantRewardsAsync(killer.getName(), ingameFinalKillExp, ingameFinalKillCoins, "最终击杀");
+                "exp", ingameFinalKillExp);
+        grantRewardsAsync(killer.getName(), ingameFinalKillExp, "最终击杀");
     }
 
     /** 拆床奖励（可重复，每次拆床都发放） */
     public void rewardDestroyBed(Player player) {
         TaskMessages.msg(player, "ingame-destroy-bed",
-                "exp", ingameDestroyBedExp, "coins", ingameDestroyBedCoins);
-        grantRewardsAsync(player.getName(), ingameDestroyBedExp, ingameDestroyBedCoins, "拆床");
+                "exp", ingameDestroyBedExp);
+        grantRewardsAsync(player.getName(), ingameDestroyBedExp, "拆床");
     }
 
     /** 胜利奖励（每局仅一次） */
     public void rewardWin(Player player) {
         TaskMessages.msg(player, "ingame-win",
-                "exp", ingameWinExp, "coins", ingameWinCoins);
-        grantRewardsAsync(player.getName(), ingameWinExp, ingameWinCoins, "胜利");
+                "exp", ingameWinExp);
+        grantRewardsAsync(player.getName(), ingameWinExp, "胜利");
     }
 
     // ==================== 追杀令（限时任务专用）====================
@@ -1039,7 +1118,7 @@ public class TaskManager {
         String taskName = "击杀令";
         String desc = "在游戏中击杀目标玩家: " + targetPlayer;
         Task bounty = new Task(TaskType.BOUNTY, 1, taskName, desc,
-                bountyRewardExp, bountyRewardCoins, true, false, targetPlayer);
+                bountyRewardExp, true, false, targetPlayer);
         specialTasks.add(bounty);
         specialTaskPublishTime.put(getSpecialTaskKey(bounty),
                 System.currentTimeMillis());
@@ -1113,8 +1192,7 @@ public class TaskManager {
         }
         if (bounty != null) {
             TaskMessages.msg(killer, "bounty-complete", "target", victim.getName());
-            TaskMessages.msg(killer, "reward-line",
-                    "exp", bounty.getRewardExp(), "coins", bounty.getRewardCoins());
+            TaskMessages.msg(killer, "reward-line", "exp", bounty.getRewardExp());
             grantReward(killer, bounty);
         }
         savePlayerState(killer.getUniqueId());
@@ -1133,7 +1211,7 @@ public class TaskManager {
 
     /**
      * 调用奖励 API：POST api_key=&name=&lt;field&gt;=&lt;amount&gt;。
-     * @param field "add_exp" 或 "add_coins"
+     * @param field 请求字段（当前仅使用 "add_exp"）
      */
     private String callRewardApi(String playerName, String field, int amount) {
         try {
@@ -1172,26 +1250,6 @@ public class TaskManager {
 
     // ==================== 限时任务发布（原特殊任务）====================
 
-    public int publishSpecialTask(String name) {
-        Task found = findTaskByName(dailyTaskPool, name);
-        if (found == null) {
-            return 0;
-        }
-        for (Task s : specialTasks) {
-            if (s.getName().equalsIgnoreCase(found.getName())) {
-                return -1;
-            }
-        }
-        Task special = found.asSpecial();
-        specialTasks.add(special);
-        specialTaskPublishTime.put(getSpecialTaskKey(special), System.currentTimeMillis());
-        refreshDailyIfNeeded();
-        dailyTasks.add(special);
-        saveState();
-        broadcastPublish(special);
-        return 1;
-    }
-
     private void broadcastPublish(Task task) {
         String msg = TaskMessages.get("timed-publish-broadcast",
                 "task", task.getDisplayName(),
@@ -1213,10 +1271,31 @@ public class TaskManager {
         return bp.getGameManager().getGameOfPlayer(p) != null;
     }
 
+    /**
+     * 清空所有限时任务（追杀令），并重置所有玩家的活跃击杀令状态。
+     *
+     * <p>注意：不能只依赖 refreshDailyIfNeeded() 重建 dailyTasks——
+     * 同一天且配置未变、dailyTasks 非空时会直接返回，导致 GUI 仍显示已清空的限时任务。
+     * 因此这里显式从 dailyTasks 中移除所有限时任务，并清除玩家残留的活跃击杀令，
+     * 否则清空后仍会提示"已有活跃击杀任务"而无法接取新的击杀令。</p>
+     */
     public void clearSpecialTasks() {
         specialTasks.clear();
         specialTaskPublishTime.clear();
-        refreshDailyIfNeeded();
+        // 显式移除内存每日任务列表中的限时任务（GUI 立即不再显示）
+        dailyTasks.removeIf(Task::isSpecial);
+        // 清除所有已加载/在线玩家的活跃击杀令状态
+        Set<UUID> uuids = new HashSet<>(playerStates.keySet());
+        for (Player p : plugin.getServer().getOnlinePlayers()) {
+            uuids.add(p.getUniqueId());
+        }
+        for (UUID uuid : uuids) {
+            PlayerTaskState st = getPlayerState(uuid);
+            if (st != null && st.hasActiveBounty()) {
+                st.clearActiveBounty();
+                savePlayerState(uuid);
+            }
+        }
         saveState();
     }
 
@@ -1361,6 +1440,7 @@ public class TaskManager {
         currentDay = getCurrentDay() + 1; // 强制触发刷新
         dailyTasks.clear();
         dailyTaskNames.clear();
+        dailyTaskTargets.clear();
         refreshDailyIfNeeded();
         saveState();
         plugin.getLogger().info("[TaskManager] 每日任务已强制刷新");
@@ -1380,8 +1460,11 @@ public class TaskManager {
     /** 热重载：重新加载 tasks.yml + api.yml 配置并刷新当日/本周任务。 */
     public void reload() {
         TaskMessages.reload();
+        plugin.reloadConfig();
+        plugin.reloadDatabase();
         loadApiConfig();
         loadConfig();
+        initTaskDatabase();
         // 标记需要重新选择
         persistedRandomAssign = !randomAssign; // 强制触发 refreshDailyIfNeeded 中的 configChanged
         persistedWeeklyRandomAssign = !weeklyRandomAssign;
@@ -1389,7 +1472,8 @@ public class TaskManager {
         refreshWeeklyIfNeeded();
         plugin.getLogger().info("[TaskManager] 配置已重载: 每日池 " + dailyTaskPool.size()
                 + ", 每周池 " + weeklyTaskPool.size()
-                + ", 奖励API=" + (apiUrl.isEmpty() ? "未配置" : "已配置"));
+                + ", 奖励API=" + (apiUrl.isEmpty() ? "未配置" : "已配置")
+                + ", 数据库=" + (taskDatabase != null ? "已连接" : "未连接"));
     }
 
     // ==================== 玩家状态重置 ====================

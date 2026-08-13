@@ -7,6 +7,7 @@ import io.jmmym.bedwarspro.game.BungeeGameCycle;
 import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.game.GameState;
 import io.jmmym.bedwarspro.game.Team;
+import io.jmmym.bedwarspro.joinitem.JoinItem;
 import io.jmmym.bedwarspro.shop.NewItemShop;
 import io.jmmym.bedwarspro.utils.ChatWriter;
 import io.jmmym.bedwarspro.villager.MerchantCategory;
@@ -483,6 +484,11 @@ public class PlayerListener extends BaseListener {
   @EventHandler
   public void onDrop(PlayerDropItemEvent die) {
     Player p = die.getPlayer();
+    // 禁止丢弃加入物品（下界之星/粘液球等右键快捷物品），防止误丢
+    if (JoinItem.isJoinItem(die.getItemDrop().getItemStack())) {
+      die.setCancelled(true);
+      return;
+    }
     Game g = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(p);
     if (g == null) {
       return;
@@ -692,12 +698,17 @@ public class PlayerListener extends BaseListener {
 
     final Player player = je.getPlayer();
 
-    // 屏蔽默认全局消息，只发给不在游戏中的玩家
+    // 多服同步：清除快捷存储开关缓存，重新从数据库读取最新状态
+    io.jmmym.bedwarspro.quickstash.PunchToDeposit.onPlayerJoin(player.getUniqueId());
+
+    // 屏蔽默认全局消息，只发给不在游戏中的玩家；BungeeCord 模式下不提示（跨服进服提示由 BC 网络统一处理）
     je.setJoinMessage(null);
-    String msg = ChatColor.YELLOW + player.getName() + " 进入了起床战争大厅";
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      if (BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(p) == null) {
-        p.sendMessage(msg);
+    if (!BedwarsPRO.getInstance().isBungee()) {
+      String msg = ChatColor.YELLOW + player.getName() + " 进入了起床战争大厅";
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        if (BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(p) == null) {
+          p.sendMessage(msg);
+        }
       }
     }
 

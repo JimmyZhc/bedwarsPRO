@@ -21,6 +21,8 @@ public class PlayerTaskState {
     // ===== 每日任务状态 =====
     private long acceptedDay = 0L;
     private int acceptedTaskIndex = -1;
+    /** 接受任务时的任务名（普通/限时任务都存，用于跨服按名匹配）。 */
+    private String acceptedTaskName = null;
     private String acceptedSpecialName = null;
     /** 追杀令接受时的目标玩家名，用于精确定位任务（其他类型为 null）。 */
     private String acceptedBountyTarget = null;
@@ -77,6 +79,14 @@ public class PlayerTaskState {
         this.acceptedSpecialName = acceptedSpecialName;
     }
 
+    public String getAcceptedTaskName() {
+        return acceptedTaskName;
+    }
+
+    public void setAcceptedTaskName(String acceptedTaskName) {
+        this.acceptedTaskName = acceptedTaskName;
+    }
+
     public String getAcceptedBountyTarget() {
         return acceptedBountyTarget;
     }
@@ -116,6 +126,7 @@ public class PlayerTaskState {
     public void resetForNewDay() {
         this.acceptedDay = 0L;
         this.acceptedTaskIndex = -1;
+        this.acceptedTaskName = null;
         this.acceptedSpecialName = null;
         this.acceptedBountyTarget = null;
         this.progress = 0;
@@ -198,6 +209,7 @@ public class PlayerTaskState {
     public void save(ConfigurationSection section) {
         section.set("acceptedDay", acceptedDay);
         section.set("acceptedTaskIndex", acceptedTaskIndex);
+        section.set("acceptedTaskName", acceptedTaskName);
         section.set("progress", progress);
         section.set("completed", completed);
         section.set("acceptedSpecialName", acceptedSpecialName);
@@ -222,6 +234,7 @@ public class PlayerTaskState {
         }
         state.acceptedDay = section.getLong("acceptedDay", 0L);
         state.acceptedTaskIndex = section.getInt("acceptedTaskIndex", -1);
+        state.acceptedTaskName = section.getString("acceptedTaskName", null);
         state.progress = section.getInt("progress", 0);
         state.completed = section.getBoolean("completed", false);
         state.acceptedSpecialName = section.getString("acceptedSpecialName", null);

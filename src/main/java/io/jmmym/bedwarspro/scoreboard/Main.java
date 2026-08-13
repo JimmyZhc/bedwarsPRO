@@ -1,14 +1,12 @@
 package io.jmmym.bedwarspro.scoreboard;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -103,32 +101,7 @@ public class Main {
 		instance = this;
 		localeConfig = new LocaleConfig();
 		Main.getInstance().getLocaleConfig().loadLocaleConfig();
-		File configFile = new File(BedwarsPRO.getInstance().getDataFolder(), "config.yml");
-		if (!configFile.exists()) {
-			BedwarsPRO.getInstance().saveResource("config.yml", false);
-		}
-
-		String expectedKey = "Modified By JmmYm";
-		YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(configFile);
-		String userKey = yamlConfig.getString("license-key");
-		if (!expectedKey.equals(userKey)) {
-			if (userKey == null) {
-				yamlConfig.set("license-key", "");
-				try {
-					yamlConfig.save(configFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "==========================================");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "  License key error or missing! Plugin disabled.");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "  Set license-key in config.yml");
-			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "==========================================");
-			BedwarsPRO.getInstance().getLogger().severe("License key verification failed, plugin disabled.");
-			BedwarsPRO.getInstance().getServer().getPluginManager().disablePlugin(BedwarsPRO.getInstance());
-			return;
-		}
-		BedwarsPRO.getInstance().getLogger().info("License key verified!");
+		// 授权验证已由 BedwarsPRO.onEnable 统一联网完成（MD5 白名单），此处无需重复校验
 		arenaManager = new ArenaManager();
 		editHolographicManager = new EditHolographicManager();
 		holographicManager = new HolographicManager();

@@ -1,0 +1,54 @@
+# ===================================================
+# BedwarsPRO 快捷存储系统配置
+#  功能说明:
+#    - 手持物品 左键点击箱子/末影箱 → 将手中整组物品存入箱子
+#    - 潜行 + 左键点击 → 将背包内所有同种物品一次性全部存入
+#    - 剑、工具、弓等武器无法存入（可在下方黑名单自定义）
+# ===================================================
+
+# 模块总开关
+enabled: true
+
+# -------- 世界隔离 --------
+# world-mode: whitelist = 仅下列 world 中的箱子触发快捷存入（建议填写游戏世界）
+# world-mode: blacklist = 除下列 world 外全部生效（可在此排除大厅/主城世界）
+world-mode: whitelist
+worlds:
+  - world
+  - world_nether
+  - world_the_end
+
+# 触发快捷存入的方块类型（1.8.8 兼容）
+blocks:
+  - CHEST
+  - TRAPPED_CHEST
+  - ENDER_CHEST
+
+# -------- 物品黑名单（无法存入） --------
+blacklist:
+  - DIAMOND_SWORD
+  - IRON_SWORD
+  - GOLD_SWORD
+  - STONE_SWORD
+  - WOOD_SWORD
+  - BOW
+  - ARROW
+
+# 自动黑名单工具/武器类:
+# 以 _SWORD / _AXE / _PICKAXE / _SPADE / _SHOVEL / _HOE 结尾，以及弓(BOW)、钓鱼竿(FISHING_ROD)
+blacklist-tools: true
+
+# -------- 聊天消息 --------
+messages:
+  prefix: "&8[&6快捷存入&8] &r"
+  cmd-no-permission: "&c你没有权限使用快捷存入"
+  cmd-help: "&7用法: /bwpro quickstash <gui|on|off|status>"
+  cmd-help-detail: "&7  gui=打开设置界面  on/off=开启/关闭快捷存入  status=查看当前状态"
+  cmd-on: "&a快捷存入已开启"
+  cmd-off: "&c快捷存入已关闭"
+  cmd-status-on: "&a快捷存入当前状态: 开启"
+  cmd-status-off: "&c快捷存入当前状态: 关闭"
+  cmd-reload: "&a快捷存入配置已重载"
+  gui-on: "&a快捷存入已开启"
+  gui-off: "&c快捷存入已关闭"
+  db-local-only-hint: "&7(数据库未配置，开关状态仅保存在本地)"

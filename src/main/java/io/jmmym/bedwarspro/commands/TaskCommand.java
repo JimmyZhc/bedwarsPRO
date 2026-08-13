@@ -1,13 +1,21 @@
 package io.jmmym.bedwarspro.commands;
 
 import io.jmmym.bedwarspro.BedwarsPRO;
+import io.jmmym.bedwarspro.auth.AuthManager;
+import io.jmmym.bedwarspro.auth.Cfg;
+import io.jmmym.bedwarspro.auth.Str;
+import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.task.PlayerTaskState;
 import io.jmmym.bedwarspro.task.Task;
 import io.jmmym.bedwarspro.task.TaskGUI;
 import io.jmmym.bedwarspro.task.TaskManager;
 import io.jmmym.bedwarspro.task.TaskMessages;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,8 +35,7 @@ import org.bukkit.entity.Player;
  *   <li>/bwpro task weekly on|off             — 开关每周任务（admin）</li>
  *   <li>/bwpro task wrandom on|off            — 开关每周随机分配（admin）</li>
  *   <li>/bwpro task reload                    — 重载 tasks.yml 配置（admin）</li>
- *   <li>/bwpro task publish &lt;name&gt;         — 发布金色名限时任务（publish）</li>
- *   <li>/bwpro task publish 击杀令 &lt;玩家名&gt;  — 发布追杀令</li>
+ *   <li>/bwpro task publish 击杀令 &lt;玩家名&gt;  — 发布追杀令（仅支持追杀令）</li>
  *   <li>/bwpro task list                      — 列出所有已发布限时任务及ID</li>
  *   <li>/bwpro task remove &lt;id&gt;           — 按ID移除单个限时任务（admin）</li>
  *   <li>/bwpro task clear                     — 清空所有限时任务（admin）</li>
@@ -41,6 +48,22 @@ public class TaskCommand implements CommandExecutor {
     private static final String PERM_ADMIN = "bwpro.task.admin";
     private static final String PERM_RELOAD = "bwpro.task.reload";
 
+    /** 清除确认码的有效期（毫秒）。 */
+    private static final long CONFIRM_TTL_MS = 60_000L;
+    /** 待二次确认的清除操作：key = 发送者|类型|目标。 */
+    private final Map<String, PendingConfirm> pendingClears = new HashMap<>();
+
+    /** 一次待确认的清除操作。 */
+    private static class PendingConfirm {
+        final String code;
+        final long expiresAt;
+
+        PendingConfirm(String code, long expiresAt) {
+            this.code = code;
+            this.expiresAt = expiresAt;
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // 支持 /bwpro reload（不带 task 前缀）
@@ -51,6 +74,36 @@ public class TaskCommand implements CommandExecutor {
                 return true;
             }
             return handleReload(sender, tm);
+        }
+
+        // /bwpro quickstash ... 快捷存入模块命令
+        if (args.length >= 1 && args[0].equalsIgnoreCase("quickstash")) {
+            return io.jmmym.bedwarspro.quickstash.PunchToDeposit.handleCommand(sender, args);
+        }
+
+        // /bwpro info — 显示本服务器授权信息（服务器UUID / 插件授权码 / 授权服务器地址）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("info")) {
+            return handleAuthInfo(sender);
+        }
+
+        // /bwpro scoreboard ... 世界计分板模块命令
+        if (args.length >= 1 && args[0].equalsIgnoreCase("scoreboard")) {
+            return handleModuleReload(sender, "scoreboard", args);
+        }
+
+        // /bwpro joinitem ... 加入物品模块命令
+        if (args.length >= 1 && args[0].equalsIgnoreCase("joinitem")) {
+            return io.jmmym.bedwarspro.joinitem.JoinItem.handleCommand(sender, args);
+        }
+
+        // /bwpro clearstats <玩家> [确认码] — 清除玩家起床战争统计数据（确认码二次确认）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("clearstats")) {
+            return handleClearStats(sender, args);
+        }
+
+        // /bwpro clearrecord <地图> [确认码] — 清除地图最快通关记录（确认码二次确认）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("clearrecord")) {
+            return handleClearRecord(sender, args);
         }
 
         if (args.length < 1 || !args[0].equalsIgnoreCase("task")) {
@@ -184,6 +237,12 @@ public class TaskCommand implements CommandExecutor {
             TaskMessages.reload();
             // 重载任务配置 tasks.yml + api.yml
             tm.reload();
+            // 重载快捷存储配置 config-quickstash.yml
+            io.jmmym.bedwarspro.quickstash.PunchToDeposit.reload();
+            // 重载世界计分板配置 Scoreboard/config.yml
+            io.jmmym.bedwarspro.worldscoreboard.WorldScoreboard.reload();
+            // 重载加入物品配置 Scoreboard/join-item.yml
+            io.jmmym.bedwarspro.joinitem.JoinItem.reload();
             TaskMessages.msg(sender, "cmd-reload-success");
             TaskMessages.msg(sender, "cmd-reload-detail",
                     "daily", tm.isDailyEnabled() ? "开" : "关",
@@ -194,6 +253,137 @@ public class TaskCommand implements CommandExecutor {
             TaskMessages.msg(sender, "cmd-reload-fail", "error", e.getMessage());
         }
         return true;
+    }
+
+    /** 分步重载指令：/bwpro scoreboard reload 等（分别刷新对应模块配置）。 */
+    private boolean handleModuleReload(CommandSender sender, String module, String[] args) {
+        if (args.length < 2 || !args[1].equalsIgnoreCase("reload")) {
+            sender.sendMessage(org.bukkit.ChatColor.RED + "用法: /bwpro " + module + " reload");
+            return true;
+        }
+        if (!sender.hasPermission(PERM_RELOAD) && !hasAdminPerm(sender)) {
+            TaskMessages.msg(sender, "cmd-no-permission");
+            return true;
+        }
+        try {
+            if (module.equals("scoreboard")) {
+                io.jmmym.bedwarspro.worldscoreboard.WorldScoreboard.reload();
+            }
+            TaskMessages.msg(sender, "cmd-module-reload-success", "module", module);
+        } catch (Exception e) {
+            TaskMessages.msg(sender, "cmd-reload-fail", "error", e.getMessage());
+        }
+        return true;
+    }
+
+    /**
+     * /bwpro clearstats &lt;玩家名&gt; [确认码] — 清除玩家起床战争统计数据（确认码二次确认）。
+     *
+     * <p>第一次输入只生成确认码并警告，第二次必须带上确认码才会真正执行清除。</p>
+     */
+    private boolean handleClearStats(CommandSender sender, String[] args) {
+        if (!hasAdminPerm(sender)) {
+            TaskMessages.msg(sender, "cmd-no-permission");
+            return true;
+        }
+        if (args.length < 2 || args.length > 3) {
+            sender.sendMessage(ChatColor.RED + "用法: /bwpro clearstats <玩家名> [确认码]");
+            return true;
+        }
+        String playerName = args[1];
+        OfflinePlayer target = Bukkit.getOfflinePlayer(playerName);
+        if (target == null || target.getUniqueId() == null) {
+            sender.sendMessage(ChatColor.RED + "玩家不存在: " + playerName);
+            return true;
+        }
+        if (args.length == 2) {
+            // 第一步：生成确认码，等待二次确认
+            String code = issueConfirmCode(sender, "clearstats", playerName);
+            sender.sendMessage(ChatColor.RED + "警告：即将永久清除玩家 " + target.getName()
+                    + " 的全部起床战争统计数据（击杀/死亡/胜场/败场/摧毁床/积分）！");
+            sender.sendMessage(ChatColor.GOLD + "确认码: " + code + ChatColor.GRAY + "（60 秒内有效）");
+            sender.sendMessage(ChatColor.GOLD + "请再次输入 /bwpro clearstats " + playerName
+                    + " " + code + " 以执行清除。");
+            return true;
+        }
+        // 第二步：校验确认码
+        if (!checkConfirmCode(sender, "clearstats", playerName, args[2])) {
+            sender.sendMessage(ChatColor.RED + "确认码错误或已过期，请重新输入 /bwpro clearstats "
+                    + playerName + " 获取新的确认码。");
+            return true;
+        }
+        BedwarsPRO.getInstance().getPlayerStatisticManager().resetStatistic(target);
+        sender.sendMessage(ChatColor.GREEN + "已清除玩家 " + target.getName()
+                + " 的起床战争统计数据。");
+        return true;
+    }
+
+    /**
+     * /bwpro clearrecord &lt;地图名&gt; [确认码] — 清除地图最快通关记录（确认码二次确认）。
+     *
+     * <p>第一次输入只生成确认码并警告，第二次必须带上确认码才会真正执行清除。</p>
+     */
+    private boolean handleClearRecord(CommandSender sender, String[] args) {
+        if (!hasAdminPerm(sender)) {
+            TaskMessages.msg(sender, "cmd-no-permission");
+            return true;
+        }
+        if (args.length < 2 || args.length > 3) {
+            sender.sendMessage(ChatColor.RED + "用法: /bwpro clearrecord <地图名> [确认码]");
+            return true;
+        }
+        String mapName = args[1];
+        Game game = BedwarsPRO.getInstance().getGameManager().getGame(mapName);
+        if (game == null) {
+            sender.sendMessage(ChatColor.RED + "未找到地图: " + mapName);
+            return true;
+        }
+        if (args.length == 2) {
+            // 第一步：生成确认码，等待二次确认
+            String code = issueConfirmCode(sender, "clearrecord", mapName);
+            sender.sendMessage(ChatColor.RED + "警告：即将清除地图 " + mapName
+                    + " 的最快通关记录（当前: " + game.getFormattedRecord() + "）！");
+            sender.sendMessage(ChatColor.GOLD + "确认码: " + code + ChatColor.GRAY + "（60 秒内有效）");
+            sender.sendMessage(ChatColor.GOLD + "请再次输入 /bwpro clearrecord " + mapName
+                    + " " + code + " 以执行清除。");
+            return true;
+        }
+        // 第二步：校验确认码
+        if (!checkConfirmCode(sender, "clearrecord", mapName, args[2])) {
+            sender.sendMessage(ChatColor.RED + "确认码错误或已过期，请重新输入 /bwpro clearrecord "
+                    + mapName + " 获取新的确认码。");
+            return true;
+        }
+        game.setRecord(BedwarsPRO.getInstance().getMaxLength());
+        game.getRecordHolders().clear();
+        game.saveRecord();
+        sender.sendMessage(ChatColor.GREEN + "已清除地图 " + mapName + " 的最快通关记录。");
+        return true;
+    }
+
+    /** 生成 6 位随机确认码并登记待确认操作。 */
+    private String issueConfirmCode(CommandSender sender, String type, String target) {
+        String code = String.format("%06d", ThreadLocalRandom.current().nextInt(1000000));
+        pendingClears.put(confirmKey(sender, type, target),
+                new PendingConfirm(code, System.currentTimeMillis() + CONFIRM_TTL_MS));
+        return code;
+    }
+
+    /** 校验确认码：匹配且未过期返回 true（无论成败都会移除该待确认项）。 */
+    private boolean checkConfirmCode(CommandSender sender, String type, String target, String code) {
+        PendingConfirm p = pendingClears.remove(confirmKey(sender, type, target));
+        if (p == null) {
+            return false;
+        }
+        if (System.currentTimeMillis() > p.expiresAt) {
+            return false;
+        }
+        return p.code.equals(code);
+    }
+
+    /** 待确认项的唯一键：发送者|类型|目标（均小写）。 */
+    private String confirmKey(CommandSender sender, String type, String target) {
+        return sender.getName().toLowerCase() + "|" + type + "|" + target.toLowerCase();
     }
 
     private boolean handlePublish(CommandSender sender, String[] args, TaskManager tm) {
@@ -221,17 +411,8 @@ public class TaskCommand implements CommandExecutor {
             }
             return true;
         }
-        // 普通限时任务发布
-        String name = args[2];
-        int result = tm.publishSpecialTask(name);
-        if (result == 1) {
-            TaskMessages.msg(sender, "timed-publish-success",
-                    "task", name, "minutes", tm.getTimedDurationMinutes());
-        } else if (result == 0) {
-            TaskMessages.msg(sender, "timed-publish-not-found", "task", name);
-        } else if (result == -1) {
-            TaskMessages.msg(sender, "timed-publish-duplicate");
-        }
+        // 仅支持发布追杀令
+        TaskMessages.msg(sender, "timed-publish-only-bounty");
         return true;
     }
 
@@ -394,14 +575,32 @@ public class TaskCommand implements CommandExecutor {
             TaskMessages.msg(sender, "help-weekly");
             TaskMessages.msg(sender, "help-wrandom");
             TaskMessages.msg(sender, "help-reload");
+            TaskMessages.msg(sender, "help-scoreboard-reload");
+            TaskMessages.msg(sender, "help-joinitem-reload");
             TaskMessages.msg(sender, "help-taskrefresh");
             TaskMessages.msg(sender, "help-remove");
             TaskMessages.msg(sender, "help-clear");
             TaskMessages.msg(sender, "help-reset");
+            TaskMessages.msg(sender, "help-clearstats");
+            TaskMessages.msg(sender, "help-clearrecord");
         }
         if (sender.hasPermission(PERM_PUBLISH) || sender.isOp()) {
             TaskMessages.msg(sender, "help-publish");
-            TaskMessages.msg(sender, "help-publish-bounty");
         }
+    }
+
+    /** /bwpro info — 显示本服务器的授权信息（服务器UUID / 插件授权码 / 授权服务器地址）。 */
+    private boolean handleAuthInfo(CommandSender sender) {
+        BedwarsPRO plugin = BedwarsPRO.getInstance();
+        String sid = plugin.getConfig().getString("auth-server-id", "");
+        String md5 = AuthManager.jarMd5(plugin.getPluginJarFile());
+        sender.sendMessage(ChatColor.WHITE + "---------------------------------");
+        sender.sendMessage(ChatColor.AQUA + "          BedwarsPRO 授权信息");
+        sender.sendMessage(ChatColor.GREEN + "服务器UUID: " + ChatColor.YELLOW + sid);
+        sender.sendMessage(ChatColor.GREEN + "插件授权码: " + ChatColor.YELLOW + md5);
+        sender.sendMessage(ChatColor.GREEN + "授权服务器: " + ChatColor.YELLOW + Str.s(Cfg.URL));
+        sender.sendMessage(ChatColor.GREEN + "备用授权服务器: " + ChatColor.YELLOW + Str.s(Cfg.URL_BACKUP));
+        sender.sendMessage(ChatColor.WHITE + "---------------------------------");
+        return true;
     }
 }

@@ -28,7 +28,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -308,13 +307,6 @@ public class EventListener implements Listener {
 	public void onArmorStandManipulate(PlayerArmorStandManipulateEvent e) {
 		for (Arena arena : Main.getInstance().getArenaManager().getArenas().values()) {
 			arena.onArmorStandManipulate(e);
-		}
-	}
-
-	@EventHandler
-	public void onClick(InventoryClickEvent e) {
-		for (Arena arena : Main.getInstance().getArenaManager().getArenas().values()) {
-			arena.onClick(e);
 		}
 	}
 

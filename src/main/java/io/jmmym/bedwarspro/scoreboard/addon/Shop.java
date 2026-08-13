@@ -10,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.comphenix.protocol.PacketType;
@@ -29,9 +28,7 @@ import io.jmmym.bedwarspro.scoreboard.api.HolographicAPI;
 import io.jmmym.bedwarspro.scoreboard.arena.Arena;
 import io.jmmym.bedwarspro.scoreboard.config.Config;
 import io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenItemShopEvent;
-import io.jmmym.bedwarspro.scoreboard.events.BoardAddonPlayerOpenTeamShopEvent;
 import io.jmmym.bedwarspro.scoreboard.utils.BedwarsUtil;
-import io.jmmym.bedwarspro.events.BedwarsOpenShopEvent;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.skin.SkinnableEntity;
@@ -45,7 +42,6 @@ public class Shop {
 	@Getter
 	private Arena arena;
 	private List<NPC> shops;
-	private List<NPC> teamshops;
 	private List<HolographicAPI> titles;
 	private List<Integer> npcid;
 	private WrappedDataWatcher.Serializer booleanserializer;
@@ -54,7 +50,6 @@ public class Shop {
 		this.arena = arena;
 		this.game = arena.getGame();
 		shops = new ArrayList<NPC>();
-		teamshops = new ArrayList<NPC>();
 		titles = new ArrayList<HolographicAPI>();
 		npcid = new ArrayList<Integer>();
 		if (!BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
@@ -70,15 +65,6 @@ public class Shop {
 					}
 				}
 			}
-			if (Config.game_shop_team.containsKey(game.getName())) {
-				for (String loc : Config.game_shop_team.get(game.getName())) {
-					Location location = toLocation(loc);
-					if (location != null) {
-						teamshops.add(spawnShop(location.clone(), Config.shop_team_shop_look, Config.shop_team_shop_type, Config.shop_team_shop_skin));
-						setTitle(location.clone().add(0, -0.1, 0), Config.shop_team_shop_name);
-					}
-				}
-			}
 		}
 		new BukkitRunnable() {
 			@Override
@@ -86,9 +72,6 @@ public class Shop {
 				if (game.getState() != GameState.RUNNING || game.getPlayers().size() < 1) {
 					cancel();
 					for (NPC npc : shops) {
-						CitizensAPI.getNPCRegistry().deregister(npc);
-					}
-					for (NPC npc : teamshops) {
 						CitizensAPI.getNPCRegistry().deregister(npc);
 					}
 					for (HolographicAPI holo : titles) {
@@ -121,37 +104,9 @@ public class Shop {
 						itemShop.openCategoryInventory(player);
 					}
 				}
-			} else if (teamshops.contains(npc)) {
-				if (isGamePlayer(player)) {
-					isCancelled = true;
-					BoardAddonPlayerOpenTeamShopEvent openTeamShopEvent = new BoardAddonPlayerOpenTeamShopEvent(game, player);
-					Bukkit.getPluginManager().callEvent(openTeamShopEvent);
-					if (!openTeamShopEvent.isCancelled()) {
-						player.closeInventory();
-						Main.getInstance().getArenaManager().getArena(game.getName()).getTeamShop().openTeamShop(player);
-					}
-				}
 			}
 		}
 		return isCancelled;
-	}
-
-	public void onOpenShop(BedwarsOpenShopEvent e) {
-		if (!Config.shop_enabled) {
-			return;
-		}
-		Player player = (Player) e.getPlayer();
-		if (player.getGameMode().equals(GameMode.SPECTATOR)) {
-			e.setCancelled(true);
-			return;
-		}
-		if (e.getEntity() instanceof Villager) {
-			if (CitizensAPI.getNPCRegistry().isNPC(e.getEntity()) && teamshops.contains(CitizensAPI.getNPCRegistry().getNPC(e.getEntity()))) {
-				e.setCancelled(true);
-				player.closeInventory();
-				Main.getInstance().getArenaManager().getArena(e.getGame().getName()).getTeamShop().openTeamShop(player);
-			}
-		}
 	}
 
 	public void onPlayerJoined(Player player) {
@@ -291,9 +246,6 @@ public class Shop {
 
 	public void remove() {
 		for (NPC npc : shops) {
-			CitizensAPI.getNPCRegistry().deregister(npc);
-		}
-		for (NPC npc : teamshops) {
 			CitizensAPI.getNPCRegistry().deregister(npc);
 		}
 		for (HolographicAPI holo : titles) {
