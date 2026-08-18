@@ -165,6 +165,28 @@ public class EditGame implements Listener {
 		}
 		ItemUtil.setItemLore(itemStack, lore);
 		inventory.setItem(23, itemStack);
+		// 经验模式 / 物品模式 开关（点击切换并保存到 game.yml）
+		if (game.isXpMode()) {
+			itemStack.setType(Material.EXP_BOTTLE);
+		} else {
+			itemStack.setType(Material.WORKBENCH);
+		}
+		String xpModeName = Config.getLanguage("item.edit_game.name.xp_mode");
+		if (xpModeName.equals("null")) {
+			xpModeName = "§d经验模式开关";
+		}
+		ItemUtil.setItemName(itemStack, xpModeName);
+		lore = new ArrayList<String>();
+		lore.add("");
+		if (game.isXpMode()) {
+			lore.add("§e当前：经验模式");
+			lore.add("§a点击切换为物品模式");
+		} else {
+			lore.add("§7当前：物品模式");
+			lore.add("§a点击切换为经验模式");
+		}
+		ItemUtil.setItemLore(itemStack, lore);
+		inventory.setItem(24, itemStack);
 		itemStack.setType(Material.WOOL);
 		itemStack.setDurability((short) 3);
 		ItemUtil.setItemName(itemStack, Config.getLanguage("item.edit_game.name.save_game"));
@@ -567,6 +589,10 @@ public class EditGame implements Listener {
 					player.closeInventory();
 					Bukkit.dispatchCommand(player, "BedwarsPRO:bw setregion " + game_name + " loc2");
 					Main.getInstance().getEditHolographicManager().displayGameLocation(player, game.getName());
+					break;
+				case 24:
+					game.setXpModeAndSave(!game.isXpMode());
+					openMenu(player, game);
 					break;
 				case 39:
 					player.closeInventory();

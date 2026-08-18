@@ -8,6 +8,7 @@ import io.jmmym.bedwarspro.utils.SoundMachine;
 import io.jmmym.bedwarspro.utils.Utils;
 import io.jmmym.bedwarspro.villager.MerchantCategory;
 import io.jmmym.bedwarspro.villager.VillagerTrade;
+import io.jmmym.bedwarspro.xp.XpManager;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -172,6 +173,18 @@ public class NewItemShop {
 
   private boolean deductResources(Player player, VillagerTrade trade) {
     PlayerInventory inventory = player.getInventory();
+
+    // ---- 经验起床模式：价格换算为经验扣除 ----
+    Game xpGame = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
+    if (xpGame != null && XpManager.isXpMode(xpGame)) {
+      int cost = XpManager.costToXp(trade);
+      if (cost < 0 || !XpManager.takeXp(xpGame, player, cost)) {
+        return false;
+      }
+      player.updateInventory();
+      return true;
+    }
+
     if (!hasEnoughRessource(player, trade)) {
       return false;
     }
@@ -220,6 +233,17 @@ public class NewItemShop {
 
   private void refundResources(Player player, VillagerTrade trade) {
     PlayerInventory inventory = player.getInventory();
+
+    // ---- 经验起床模式：退回经验 ----
+    Game xpGame = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
+    if (xpGame != null && XpManager.isXpMode(xpGame)) {
+      int cost = XpManager.costToXp(trade);
+      if (cost > 0) {
+        XpManager.addXp(xpGame, player, cost);
+      }
+      return;
+    }
+
     if (trade.getItem1() != null) {
       ItemStack refund1 = trade.getItem1().clone();
       inventory.addItem(refund1);
@@ -349,7 +373,7 @@ public class NewItemShop {
     }
 
     if (!deductResources(player, trade)) {
-      player.sendMessage(ChatColor.RED + "灵魂不足！");
+      player.sendMessage(ChatColor.RED + (XpManager.isXpMode(game) ? "经验不足！" : "灵魂不足！"));
       return;
     }
 
@@ -380,37 +404,43 @@ public class NewItemShop {
     ItemStack addingItem = item.clone();
     boolean isLeggings = isLeggings(addingItem.getType());
     boolean equipped = false;
+    boolean xpMode = game != null && XpManager.isXpMode(game);
 
     // 先检查资源是否足够
     if (!deductResources(player, trade)) {
-      player.sendMessage(ChatColor.RED + "资源不足！");
+      player.sendMessage(ChatColor.RED + (xpMode ? "经验不足！" : "资源不足！"));
       return false;
     }
 
     if (isLeggings) {
-      // ========== 护甲购买限制（不能购买同等级或更低等级） ==========
-      int targetLevel = getArmorLevel(addingItem);
-      ItemStack currentLeggings = inventory.getLeggings();
-      int currentLeggingsLevel = currentLeggings == null ? 0 : getArmorLevel(currentLeggings);
-      ItemStack currentBoots = inventory.getBoots();
-      int currentBootsLevel = currentBoots == null ? 0 : getArmorLevel(currentBoots);
+      if (xpMode) {
+        // ========== 经验模式：买的啥就是啥 ==========
+        // 单件购买：不自动穿戴、不附赠靴子（保留团队护甲保护升级），物品直接放入背包
+        applyTeamArmorEnchantment(addingItem, game, player);
+      } else {
+        // ========== 护甲购买限制（不能购买同等级或更低等级） ==========
+        int targetLevel = getArmorLevel(addingItem);
+        ItemStack currentLeggings = inventory.getLeggings();
+        int currentLeggingsLevel = currentLeggings == null ? 0 : getArmorLevel(currentLeggings);
+        ItemStack currentBoots = inventory.getBoots();
+        int currentBootsLevel = currentBoots == null ? 0 : getArmorLevel(currentBoots);
 
-      if (currentLeggingsLevel >= targetLevel || currentBootsLevel >= targetLevel) {
-        // 资源已扣除，需要退还
-        refundResources(player, trade);
-        player.sendMessage(ChatColor.RED + "你已经拥有更好的护甲，无法购买！");
-        return false;
-      }
-      // ========== 结束 ==========
+        if (currentLeggingsLevel >= targetLevel || currentBootsLevel >= targetLevel) {
+          // 资源已扣除，需要退还
+          refundResources(player, trade);
+          player.sendMessage(ChatColor.RED + "你已经拥有更好的护甲，无法购买！");
+          return false;
+        }
+        // ========== 结束 ==========
 
-      // 装备护甲
-      markAsBound(addingItem);
-      applyTeamArmorEnchantment(addingItem, game, player);
-      boolean leggingsEquipped = equipItem(player, addingItem);
-      if (leggingsEquipped) equipped = true;
+        // 装备护甲
+        markAsBound(addingItem);
+        applyTeamArmorEnchantment(addingItem, game, player);
+        boolean leggingsEquipped = equipItem(player, addingItem);
+        if (leggingsEquipped) equipped = true;
 
-      Material bootsType = getBootsForLeggings(addingItem.getType());
-      if (bootsType != null) {
+        Material bootsType = getBootsForLeggings(addingItem.getType());
+        if (bootsType != null) {
         ItemStack boots = new ItemStack(bootsType, 1);
         copyMeta(addingItem, boots);
         markAsBound(boots);
@@ -419,6 +449,7 @@ public class NewItemShop {
         if (!bootsEquipped) {
           inventory.addItem(boots);
         }
+      }
       }
     }
 
@@ -438,32 +469,42 @@ public class NewItemShop {
     if (!isLeggings) {
       // 如果是剑，尝试替换原有剑（同位置）
       if (isSword(addingItem.getType())) {
-        int targetSlot = findSwordSlot(inventory, 8);
-        int newLevel = getSwordLevel(addingItem);
-        if (targetSlot >= 0) {
-          ItemStack oldSword = inventory.getItem(targetSlot);
-          int oldLevel = getSwordLevel(oldSword);
-          if (newLevel > oldLevel) {
-            // 替换旧剑
-            inventory.setItem(targetSlot, addingItem);
-            player.updateInventory();
-            return true;
-          } else if (newLevel == oldLevel) {
+        if (xpMode) {
+          // 经验模式：剑可多次购买，不管有没有都直接放入背包（不替换、不拦截）
+          HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
+          if (notStored.size() > 0) {
             refundResources(player, trade);
-            player.sendMessage(ChatColor.RED + "你已经拥有同等级的剑，无法购买！");
-            return false;
-          } else {
-            refundResources(player, trade);
-            player.sendMessage(ChatColor.RED + "你已经拥有更好的剑，无法购买！");
+            player.sendMessage(ChatColor.RED + "背包已满，购买失败！");
             return false;
           }
-        }
-        // 没有旧剑，检查背包空间
-        HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
-        if (notStored.size() > 0) {
-          refundResources(player, trade);
-          player.sendMessage(ChatColor.RED + "背包已满，购买失败！");
-          return false;
+        } else {
+          int targetSlot = findSwordSlot(inventory, 8);
+          int newLevel = getSwordLevel(addingItem);
+          if (targetSlot >= 0) {
+            ItemStack oldSword = inventory.getItem(targetSlot);
+            int oldLevel = getSwordLevel(oldSword);
+            if (newLevel > oldLevel) {
+              // 替换旧剑
+              inventory.setItem(targetSlot, addingItem);
+              player.updateInventory();
+              return true;
+            } else if (newLevel == oldLevel) {
+              refundResources(player, trade);
+              player.sendMessage(ChatColor.RED + "你已经拥有同等级的剑，无法购买！");
+              return false;
+            } else {
+              refundResources(player, trade);
+              player.sendMessage(ChatColor.RED + "你已经拥有更好的剑，无法购买！");
+              return false;
+            }
+          }
+          // 没有旧剑，检查背包空间
+          HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
+          if (notStored.size() > 0) {
+            refundResources(player, trade);
+            player.sendMessage(ChatColor.RED + "背包已满，购买失败！");
+            return false;
+          }
         }
       } else {
         HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
@@ -659,6 +700,13 @@ public class NewItemShop {
   }
 
   private boolean hasEnoughRessource(Player player, VillagerTrade trade) {
+    // ---- 经验起床模式：校验经验是否足够 ----
+    Game xpGame = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
+    if (xpGame != null && XpManager.isXpMode(xpGame)) {
+      int cost = XpManager.costToXp(trade);
+      return cost >= 0 && XpManager.hasEnoughXp(xpGame, player, cost);
+    }
+
     ItemStack item1 = trade.getItem1();
     ItemStack item2 = trade.getItem2();
     PlayerInventory inventory = player.getInventory();
@@ -744,6 +792,19 @@ public class NewItemShop {
     }
     List<String> lores = meta.getLore();
     if (lores == null) lores = new ArrayList<String>();
+
+    // ---- 经验起床模式：价格显示为经验值 ----
+    if (game != null && XpManager.isXpMode(game)) {
+      int cost = XpManager.costToXp(trade);
+      if (cost >= 0) {
+        lores.add(ChatColor.AQUA + String.valueOf(cost) + " 经验");
+      } else {
+        lores.add(ChatColor.RED + "该商品在经验模式不可用");
+      }
+      meta.setLore(lores);
+      tradeStack.setItemMeta(meta);
+      return tradeStack;
+    }
 
     lores.add(ChatColor.WHITE + String.valueOf(item1.getAmount()) + " "
             + item1.getItemMeta().getDisplayName());

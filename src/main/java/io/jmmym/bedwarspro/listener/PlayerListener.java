@@ -11,6 +11,7 @@ import io.jmmym.bedwarspro.joinitem.JoinItem;
 import io.jmmym.bedwarspro.shop.NewItemShop;
 import io.jmmym.bedwarspro.utils.ChatWriter;
 import io.jmmym.bedwarspro.villager.MerchantCategory;
+import io.jmmym.bedwarspro.xp.XpManager;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -669,8 +670,8 @@ public class PlayerListener extends BaseListener {
       return;
     }
 
-    // ---- 禁止操作绑定护甲 ----
-    if (game.getState() == GameState.RUNNING) {
+    // ---- 禁止操作绑定护甲（经验模式允许自由取下护甲，跳过） ----
+    if (game.getState() == GameState.RUNNING && !XpManager.isXpMode(game)) {
       ItemStack clicked = ice.getCurrentItem();
       ItemStack cursor = ice.getCursor();
       if (isBoundArmor(clicked) || isBoundArmor(cursor)) {
@@ -748,7 +749,15 @@ public class PlayerListener extends BaseListener {
         return;
       }
 
-      firstGame.playerJoins(player);
+      if (firstGame.playerJoins(player)
+          && io.jmmym.bedwarspro.rank.RankManager.getInstance() != null
+          && io.jmmym.bedwarspro.rank.RankManager.getInstance()
+              .isRankedGame(firstGame.getName())) {
+        // 一端一图（BC）排位图：进服进等待大厅且该图配置为排位图 → 登记匹配队列
+        // （供蛇形重排/队列状态统计；是否排位对局由该图配置决定）
+        io.jmmym.bedwarspro.rank.RankManager.getInstance().getRankedQueue()
+            .addJoinedPlayer(player, firstGame);
+      }
 
     }
   }
@@ -874,9 +883,9 @@ public class PlayerListener extends BaseListener {
     }
 
     if (game.getState() == GameState.RUNNING) {
-      // 击杀者获得灵魂（下界之星）
+      // 击杀者获得灵魂（下界之星）；经验模式改为击杀经验转移（见 Title.onPlayerKilled），不再给灵魂
       Player killer = player.getKiller();
-      if (killer != null && game.isInGame(killer)) {
+      if (killer != null && game.isInGame(killer) && !XpManager.isXpMode(game)) {
         ItemStack soul = new ItemStack(Material.NETHER_STAR, 1);
         ItemMeta meta = soul.getItemMeta();
         meta.setDisplayName(ChatColor.DARK_RED + "灵魂");
@@ -1197,7 +1206,9 @@ public class PlayerListener extends BaseListener {
       switch (interactingMaterial) {
         case BED:
           pie.setCancelled(true);
-          if (!g.isAutobalanceEnabled()) {
+          if (!g.isAutobalanceEnabled()
+              && !io.jmmym.bedwarspro.rank.RankManager.getInstance()
+                  .isRankedGame(g.getName())) {
             g.getPlayerStorage(player).openTeamSelection(g);
           }
           break;
@@ -1277,8 +1288,14 @@ public class PlayerListener extends BaseListener {
 
     if (game.getState() == GameState.RUNNING) {
       game.getCycle().onPlayerRespawn(pre, p);
+      if (XpManager.isXpMode(game) && game.isXpHealthEventTriggered()) {
+        // 经验模式血量事件已触发：死亡/重生不影响该效果，保持最大血量上限
+        p.setMaxHealth(Game.XP_HEALTH_EVENT_MAX_HEALTH);
+        p.setHealth(Game.XP_HEALTH_EVENT_MAX_HEALTH);
+      } else {
         p.setMaxHealth(20.0);
         p.setHealth(20.0);
+      }
 
       // ---- 延迟确保观战者物品栏有物品 ----
       // toSpectator() 可能在重生事件期间物品栏未就绪，

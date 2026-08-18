@@ -168,6 +168,10 @@ public class GiveItem implements Listener {
 		if (game == null || game.getState() != GameState.RUNNING) {
 			return;
 		}
+		// 经验模式：护甲自由管理，头盔/胸甲/护腿/靴子都可以取下
+		if (io.jmmym.bedwarspro.xp.XpManager.isXpMode(game)) {
+			return;
+		}
 		Player player = (Player) e.getWhoClicked();
 		if (game.getPlayerTeam(player) == null) {
 			return;

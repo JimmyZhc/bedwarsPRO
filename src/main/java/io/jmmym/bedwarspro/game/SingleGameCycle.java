@@ -133,13 +133,6 @@ public class SingleGameCycle extends GameCycle {
     // reset region
     this.getGame().resetRegion();
 
-    // Restart lobby directly?
-    if (this.getGame().isStartable() && this.getGame().getLobbyCountdown() == null) {
-      GameLobbyCountdown lobbyCountdown = new GameLobbyCountdown(this.getGame());
-      lobbyCountdown.runTaskTimer(BedwarsPRO.getInstance(), 20L, 20L);
-      this.getGame().setLobbyCountdown(lobbyCountdown);
-    }
-
     // set state and with that, the sign
     this.getGame().setState(GameState.WAITING);
     this.getGame().updateScoreboard();

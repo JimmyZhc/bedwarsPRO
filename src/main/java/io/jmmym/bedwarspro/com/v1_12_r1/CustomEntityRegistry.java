@@ -1,99 +1,43 @@
 package io.jmmym.bedwarspro.com.v1_12_r1;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
 import net.minecraft.server.v1_12_R1.Entity;
 import net.minecraft.server.v1_12_R1.EntityTypes;
 import net.minecraft.server.v1_12_R1.MinecraftKey;
 import net.minecraft.server.v1_12_R1.RegistryMaterials;
 
-@SuppressWarnings("rawtypes")
-public class CustomEntityRegistry extends RegistryMaterials {
+@SuppressWarnings({"rawtypes", "unchecked"})
+public class CustomEntityRegistry {
 
-  private static CustomEntityRegistry instance = null;
-
-  private final BiMap<MinecraftKey, Class<? extends Entity>> customEntities = HashBiMap.create();
-  private final BiMap<Class<? extends Entity>, MinecraftKey> customEntityClasses =
-      this.customEntities.inverse();
-  private final Map<Class<? extends Entity>, Integer> customEntityIds = new HashMap<>();
-
-  private final RegistryMaterials wrapped;
-
-  private CustomEntityRegistry(RegistryMaterials original) {
-    this.wrapped = original;
-  }
+  private static boolean registered = false;
 
   public static void addCustomEntity(int entityId, String entityName,
       Class<? extends Entity> entityClass) {
-    getInstance().putCustomEntity(entityId, entityName, entityClass);
-  }
-
-  public static CustomEntityRegistry getInstance() {
-    if (instance != null) {
-      return instance;
+    if (registered) {
+      return;
     }
+    registered = true;
 
-    instance = new CustomEntityRegistry(EntityTypes.b);
+    MinecraftKey minecraftKey = new MinecraftKey(entityName);
+    RegistryMaterials registry = EntityTypes.b;
 
     try {
-      // TODO: Update name on version change (RegistryMaterials)
-      Field registryMaterialsField = EntityTypes.class.getDeclaredField("b");
-      registryMaterialsField.setAccessible(true);
+      for (Method m : registry.getClass().getMethods()) {
+        Class<?>[] params = m.getParameterTypes();
+        if (params.length == 3
+            && params[0] == int.class
+            && params[1] == MinecraftKey.class
+            && !params[2].isPrimitive()) {
+          m.invoke(registry, entityId, minecraftKey, entityClass);
+          return;
+        }
+      }
 
-      // Java 17+ 移除了 Field.modifiers，改用 Unsafe 绕过 final 限制
-      Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-      unsafeField.setAccessible(true);
-      sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-      long offset = unsafe.objectFieldOffset(registryMaterialsField);
-      unsafe.putObject(null, offset, instance);
+      Method aMethod = registry.getClass().getMethod("a", int.class, MinecraftKey.class, Object.class);
+      aMethod.invoke(registry, entityId, minecraftKey, entityClass);
     } catch (Exception e) {
-      instance = null;
-
-      throw new RuntimeException("Unable to override the old entity RegistryMaterials", e);
+      e.printStackTrace();
     }
-
-    return instance;
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public int a(Object key) { // TODO: Update name on version change (getId)
-    if (this.customEntityIds.containsKey(key)) {
-      return this.customEntityIds.get(key);
-    }
-
-    return this.wrapped.a(key);
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public MinecraftKey b(Object value) { // TODO: Update name on version change (getKey)
-    if (this.customEntityClasses.containsKey(value)) {
-      return this.customEntityClasses.get(value);
-    }
-
-    return (MinecraftKey) wrapped.b(value);
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public Class<? extends Entity> get(Object key) {
-    if (this.customEntities.containsKey(key)) {
-      return this.customEntities.get(key);
-    }
-
-    return (Class<? extends Entity>) wrapped.get(key);
-  }
-
-  public void putCustomEntity(int entityId, String entityName,
-      Class<? extends Entity> entityClass) {
-    MinecraftKey minecraftKey = new MinecraftKey(entityName);
-
-    this.customEntities.put(minecraftKey, entityClass);
-    this.customEntityIds.put(entityClass, entityId);
   }
 }

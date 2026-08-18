@@ -144,6 +144,10 @@ public class GameManager {
       Game game = new Game(name);
       game.setConfig(cfg);
 
+      if (cfg.contains("xp-mode")) {
+        game.setXpMode(cfg.getBoolean("xp-mode"));
+      }
+
       Map<String, Object> teams = new HashMap<String, Object>();
       Map<String, Object> spawner = new HashMap<String, Object>();
       String targetMaterialObj = null;

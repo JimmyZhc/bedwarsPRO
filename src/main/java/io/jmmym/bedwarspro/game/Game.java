@@ -19,6 +19,7 @@ import io.jmmym.bedwarspro.utils.ChatWriter;
 import io.jmmym.bedwarspro.utils.Utils;
 import io.jmmym.bedwarspro.villager.MerchantCategory;
 import io.jmmym.bedwarspro.villager.MerchantCategoryComparator;
+import io.jmmym.bedwarspro.xp.XpManager;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -79,9 +80,12 @@ public class Game {
   private Location mainLobby = null;
   private int minPlayers = 0;
   private String name = null;
+  // 经验模式开关：null = 未单独设置（跟随全局配置），true/false = 强制经验/物品模式
+  private Boolean xpMode = null;
   // Itemshops
   private HashMap<Player, NewItemShop> newItemShops = null;
   private List<MerchantCategory> orderedShopCategories = null;
+  private List<MerchantCategory> orderedXpShopCategories = null;
   private Map<Player, Player> playerDamages = null;
   private Map<Player, PlayerSettings> playerSettings = null;
   private HashMap<Player, PlayerStorage> playerStorages = null;
@@ -95,12 +99,17 @@ public class Game {
   private List<BukkitTask> runningTasks = null;
   private Scoreboard scoreboard = null;
   private HashMap<Material, MerchantCategory> shopCategories = null;
+  private HashMap<Material, MerchantCategory> xpShopCategories = null;
   private List<SpecialItem> specialItems = null;
   private GameState state = null;
   private Material targetMaterial = null;
   private HashMap<String, Team> teams = null;
   private int time = 1000;
   private int timeLeft = 0;
+
+  // 经验模式事件：对局进行到第6分钟触发一次，全员最大血量+5颗心（永久生效，死亡/重生不影响）
+  public static final double XP_HEALTH_EVENT_MAX_HEALTH = 30.0;
+  private boolean xpHealthEventTriggered = false;
 
   public Game(String name) {
     super();
@@ -402,6 +411,10 @@ public class Game {
 
     yml.set("autobalance", this.autobalance);
 
+    if (this.xpMode != null) {
+      yml.set("xp-mode", this.xpMode);
+    }
+
     yml.set("spawner", this.resourceSpawners);
     yml.createSection("teams", this.teams);
 
@@ -657,8 +670,35 @@ public class Game {
     return players;
   }
 
+  /** 当前模式对应的商店分类：经验模式用 xp_shop.yml，物品模式用 item_shop.yml */
   public List<MerchantCategory> getOrderedItemShopCategories() {
+    if (this.isXpMode()) {
+      return this.orderedXpShopCategories;
+    }
     return this.orderedShopCategories;
+  }
+
+  /** 当前对局是否为经验起床模式（对局单独设置优先，其次 config: xp-bedwars） */
+  public boolean isXpMode() {
+    return XpManager.isXpMode(this);
+  }
+
+  /** 设置经验模式开关并立即保存到 game.yml（bwsba 编辑 GUI 使用） */
+  public void setXpModeAndSave(boolean value) {
+    this.xpMode = value;
+    if (this.config != null) {
+      this.config.set("xp-mode", value);
+      File gameConfig = new File(BedwarsPRO.getInstance().getDataFolder() + "/"
+          + GameManager.gamesPath + "/" + this.name + "/game.yml");
+      if (gameConfig.exists()) {
+        try {
+          this.config.save(gameConfig);
+        } catch (IOException e) {
+          BedwarsPRO.getInstance().getBugsnag().notify(e);
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   public int getPlayerAmount() {
@@ -982,11 +1022,22 @@ public class Game {
 
   public void loadItemShopCategories() {
     this.shopCategories = MerchantCategory.loadCategories(BedwarsPRO.getInstance().getShopConfig());
+    this.xpShopCategories = MerchantCategory.loadCategories(BedwarsPRO.getInstance().getXpShopConfig());
     this.orderedShopCategories = this.loadOrderedItemShopCategories();
+    this.orderedXpShopCategories = this.loadOrderedXpShopCategories();
   }
 
   private List<MerchantCategory> loadOrderedItemShopCategories() {
     List<MerchantCategory> list = new ArrayList<MerchantCategory>(this.shopCategories.values());
+    Collections.sort(list, new MerchantCategoryComparator());
+    return list;
+  }
+
+  private List<MerchantCategory> loadOrderedXpShopCategories() {
+    List<MerchantCategory> list =
+            this.xpShopCategories == null
+                    ? new ArrayList<MerchantCategory>()
+                    : new ArrayList<MerchantCategory>(this.xpShopCategories.values());
     Collections.sort(list, new MerchantCategoryComparator());
     return list;
   }
@@ -1024,7 +1075,7 @@ public class Game {
   }
 
   public NewItemShop openNewItemShop(Player player) {
-    NewItemShop newShop = new NewItemShop(this.orderedShopCategories);
+    NewItemShop newShop = new NewItemShop(this.getOrderedItemShopCategories());
     this.newItemShops.put(player, newShop);
 
     return newShop;
@@ -1387,6 +1438,21 @@ public class Game {
             ChatWriter.pluginMessage(ChatColor.RED + BedwarsPRO._l(p, "ingame.player.waskicked")));
       } else {
         p.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + BedwarsPRO._l(p, "success.left")));
+      }
+    }
+
+    // 排位等待大厅：任何路径离开（右键粘液球/命令/断线/踢出）统一退出排位匹配队列，
+    // 与 /bw leave 行为一致，避免玩家离开等待房后仍留在队列中被下次匹配带上。
+    // 此时玩家已被 removeGamePlayer 移出游戏，RankMatchQueue.removePlayer 内部
+    // 的 playerLeave 分支不会再触发（getGameOfPlayer 为 null），无递归风险；
+    // removePlayer 幂等，未在队列时无副作用。
+    if (io.jmmym.bedwarspro.rank.RankManager.getInstance() != null
+        && this.state != GameState.RUNNING
+        && io.jmmym.bedwarspro.rank.RankManager.getInstance().isRankedGame(this.name)) {
+      boolean wasQueued = io.jmmym.bedwarspro.rank.RankManager.getInstance().getRankedQueue()
+          .removePlayer(p);
+      if (wasQueued && !kicked && p.isOnline()) {
+        p.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你已退出排位匹配队列！"));
       }
     }
 
@@ -1852,11 +1918,39 @@ public class Game {
           return;
         }
 
+        // 经验模式事件：对局进行到第6分钟（timeLeft 降到 总时长-360 秒）触发一次，
+        // 全员最大血量+5颗心，永久生效（死亡/重生不重置）
+        if (!Game.this.xpHealthEventTriggered && XpManager.isXpMode(Game.this)
+            && Game.this.timeLeft <= BedwarsPRO.getInstance().getMaxLength() - 360) {
+          Game.this.xpHealthEventTriggered = true;
+          Game.this.triggerXpHealthEvent();
+        }
+
         Game.this.timeLeft--;
       }
     };
 
     this.runningTasks.add(task.runTaskTimer(BedwarsPRO.getInstance(), 0L, 20L));
+  }
+
+  /**
+   * 经验模式血量事件：全体存活玩家最大血量上限+5颗心（20 -> 30），
+   * 死亡/重生后依然保持，仅触发一次。
+   */
+  private void triggerXpHealthEvent() {
+    for (Player player : this.getPlayers()) {
+      if (player.isOnline() && !this.isSpectator(player)) {
+        double diff = XP_HEALTH_EVENT_MAX_HEALTH - player.getMaxHealth();
+        player.setMaxHealth(XP_HEALTH_EVENT_MAX_HEALTH);
+        if (diff > 0) {
+          double nhealth = player.getHealth() + diff;
+          player.setHealth(nhealth > XP_HEALTH_EVENT_MAX_HEALTH ? XP_HEALTH_EVENT_MAX_HEALTH : nhealth);
+        }
+        io.jmmym.bedwarspro.itemaddon.utils.Utils.sendTitle(player, 10, 50, 10,
+            "§e最大血量提升5颗心！", "§7全体玩家血量上限永久提升");
+        player.sendMessage("§6[事件] §e全体玩家最大血量上限提升5颗心！");
+      }
+    }
   }
 
   public boolean stop() {

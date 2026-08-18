@@ -17,8 +17,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -31,6 +34,39 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.metadata.MetadataValue;
 
 public class EntityListener extends BaseListener {
+
+  private static BukkitRunnable mobClearTask;
+
+  public static void startMobClearTask() {
+    if (mobClearTask != null) return;
+    mobClearTask = new BukkitRunnable() {
+      @Override
+      public void run() {
+        for (org.bukkit.World world : org.bukkit.Bukkit.getWorlds()) {
+          for (Entity entity : world.getEntities()) {
+            if (entity instanceof Player) continue;
+            if (entity.hasMetadata("bw-plugin-entity")) continue;
+            if (entity instanceof Monster || entity instanceof Slime) {
+              if (BedwarsPRO.getInstance().getGameManager() != null) {
+                Game game = BedwarsPRO.getInstance().getGameManager().getGameByLocation(entity.getLocation());
+                if (game != null && game.getState() == GameState.RUNNING) {
+                  entity.remove();
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    mobClearTask.runTaskTimer(BedwarsPRO.getInstance(), 200L, 200L);
+  }
+
+  public static void stopMobClearTask() {
+    if (mobClearTask != null) {
+      mobClearTask.cancel();
+      mobClearTask = null;
+    }
+  }
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onEntityDamage(EntityDamageEvent ede) {
@@ -138,14 +174,17 @@ public class EntityListener extends BaseListener {
       return;
     }
 
-    if (game.getState() == GameState.STOPPED) {
+    // 仅游戏运行中允许刷怪；等待大厅/游戏结束一律禁止（含刷怪蛋、自定义生成）
+    if (game.getState() != GameState.RUNNING) {
+      ese.setCancelled(true);
       return;
     }
 
-    // 玩家使用刷怪蛋生成的实体不应被取消
-    // PlayerListener 使用 spawnEntity() 时 SpawnReason 为 CUSTOM
-    if (ese.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG
-        || ese.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) {
+    // 阻止所有非自定义的生物在游戏区域内生成
+    if (ese.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL
+        || ese.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER
+        || ese.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CHUNK_GEN) {
+      ese.setCancelled(true);
       return;
     }
 

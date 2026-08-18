@@ -10,6 +10,10 @@ import io.jmmym.bedwarspro.commands.*;
 import io.jmmym.bedwarspro.bot.BotConfig;
 import io.jmmym.bedwarspro.bot.BotManager;
 import io.jmmym.bedwarspro.database.DatabaseManager;
+import io.jmmym.bedwarspro.rank.RankManager;
+import io.jmmym.bedwarspro.rank.RankListener;
+import io.jmmym.bedwarspro.rank.RankPlaceholders;
+import io.jmmym.bedwarspro.xp.XpListener;
 import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.game.GameManager;
 import io.jmmym.bedwarspro.game.GameState;
@@ -82,7 +86,7 @@ public class BedwarsPRO extends JavaPlugin {
   // 远程可下发文件清单（插件相对路径，与后台 REMOTE_CFG_FILES 一致）：config.yml/tasks/tasks.yml 走独立字段，其余进 files JSON
   private static final String[] REMOTE_CFG_PATHS = {
           "config.yml", "tasks/tasks.yml", "tasks/messages.yml", "api.yml",
-          "shop/shop.yml", "Scoreboard/config.yml", "Scoreboard/join-item.yml",
+          "shop/shop.yml", "shop/xp_shop.yml", "Scoreboard/config.yml", "Scoreboard/join-item.yml",
           "QuickStash/config-quickstash.yml"
   };
   private static Boolean locationSerializable = null;
@@ -104,6 +108,7 @@ public class BedwarsPRO extends JavaPlugin {
   private PlayerStatisticManager playerStatisticManager = null;
   private ScoreboardManager scoreboardManager = null;
   private YamlConfiguration shopConfig = null;
+  private YamlConfiguration xpShopConfig = null;
   private BukkitTask timeTask = null;
   private BukkitTask updateChecker = null;
   private String version = null;
@@ -519,6 +524,10 @@ public class BedwarsPRO extends JavaPlugin {
     return this.shopConfig;
   }
 
+  public FileConfiguration getXpShopConfig() {
+    return this.xpShopConfig;
+  }
+
   public StorageType getStatisticStorageType() {
     String storage = this.getStringConfig("statistics.storage", "yaml");
     return StorageType.getByName(storage);
@@ -754,6 +763,32 @@ public class BedwarsPRO extends JavaPlugin {
               ChatWriter.pluginMessage(ChatColor.RED + "Couldn't load shop! Error in parsing shop!"));
       e.printStackTrace();
     }
+
+    // 经验商店：xp_shop.yml（price 直接写所需经验值）
+    File xpFile = new File(folder, "xp_shop.yml");
+    if (!xpFile.exists()) {
+      this.saveResource("shop/xp_shop.yml", false);
+
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        BedwarsPRO.getInstance().getBugsnag().notify(e);
+        e.printStackTrace();
+      }
+    }
+
+    this.xpShopConfig = new YamlConfiguration();
+
+    try {
+      BufferedReader reader =
+              new BufferedReader(new InputStreamReader(new FileInputStream(xpFile), "UTF-8"));
+      this.xpShopConfig.load(reader);
+    } catch (Exception e) {
+      BedwarsPRO.getInstance().getBugsnag().notify(e);
+      this.getServer().getConsoleSender().sendMessage(
+              ChatWriter.pluginMessage(ChatColor.RED + "Couldn't load xp shop! Error in parsing xp_shop.yml!"));
+      e.printStackTrace();
+    }
   }
 
   private void loadStatistics() {
@@ -978,12 +1013,20 @@ public class BedwarsPRO extends JavaPlugin {
           }
         } else if ("shop/shop.yml".equals(p)) {
           loadShop();
+        } else if ("shop/xp_shop.yml".equals(p)) {
+          loadShop();
         } else if ("Scoreboard/config.yml".equals(p)) {
           io.jmmym.bedwarspro.worldscoreboard.WorldScoreboard.reload();
         } else if ("Scoreboard/join-item.yml".equals(p)) {
           io.jmmym.bedwarspro.joinitem.JoinItem.reload();
         } else if ("QuickStash/config-quickstash.yml".equals(p)) {
           io.jmmym.bedwarspro.quickstash.PunchToDeposit.reload();
+        } else if ("rank/rank.yml".equals(p) || "rank/messages.yml".equals(p)) {
+          // 排位赛配置（段位/模式名）与消息文本：合并重载，确保两者都刷新
+          RankManager rm = RankManager.getInstance();
+          if (rm != null) {
+            rm.reload();
+          }
         }
       } catch (Throwable e) {
         getLogger().warning("[远程配置] 重载 " + p + " 失败: " + e.getMessage());
@@ -1166,6 +1209,15 @@ public class BedwarsPRO extends JavaPlugin {
         this.taskManager.saveAll();
       } catch (Exception e) {
         this.getLogger().warning("保存每日任务状态失败: " + e.getMessage());
+      }
+    }
+
+    // 保存排位赛数据并停止匹配队列调度
+    if (RankManager.getInstance() != null) {
+      try {
+        RankManager.getInstance().shutdown();
+      } catch (Exception e) {
+        this.getLogger().warning("关闭排位赛系统失败: " + e.getMessage());
       }
     }
 
@@ -1423,6 +1475,45 @@ public class BedwarsPRO extends JavaPlugin {
       e.printStackTrace();
     }
 
+    // ---- 排位赛系统初始化 ----
+    try {
+      RankManager rm = RankManager.getInstance();
+      if (rm == null) {
+        rm = new RankManager();
+      }
+      rm.init(this);
+      new RankListener();
+      // 注册排位赛占位符（PlaceholderAPI 可用时）
+      if (org.bukkit.Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        try {
+          new RankPlaceholders().register();
+        } catch (Exception ex) {
+          this.getLogger().warning("排位赛占位符注册失败: " + ex.getMessage());
+        }
+      }
+      this.getLogger().info("[BedwarsPRO] 排位赛系统初始化完成。");
+    } catch (Exception e) {
+      this.getLogger().severe("[BedwarsPRO] 排位赛系统初始化失败: " + e.getMessage());
+      e.printStackTrace();
+    }
+
+    // ---- 经验起床系统初始化 ----
+    try {
+      new XpListener();
+      this.getLogger().info("[BedwarsPRO] 经验起床系统初始化完成。");
+    } catch (Exception e) {
+      this.getLogger().severe("[BedwarsPRO] 经验起床系统初始化失败: " + e.getMessage());
+      e.printStackTrace();
+    }
+
+    // ---- 启动生物清理任务 ----
+    try {
+      io.jmmym.bedwarspro.listener.EntityListener.startMobClearTask();
+      this.getLogger().info("[BedwarsPRO] 生物清理任务已启动。");
+    } catch (Exception e) {
+      this.getLogger().severe("[BedwarsPRO] 生物清理任务启动失败: " + e.getMessage());
+    }
+
     // ---- 启动时显示定制信息（已修正类型转换） ----
     String pluginVersion = this.getDescription().getVersion();
     LocalizationConfig loc = getLocaleConfig();
@@ -1515,6 +1606,8 @@ public class BedwarsPRO extends JavaPlugin {
     this.commands.add(new ClearSpawnerCommand(this));
     this.commands.add(new GameTimeCommand(this));
     this.commands.add(new StatsCommand(this));
+    this.commands.add(new LeaderboardCommand(this));
+    this.commands.add(new RankLeaderboardCommand(this));
     this.commands.add(new SetMinPlayersCommand(this));
     this.commands.add(new SetGameBlockCommand(this));
     this.commands.add(new SetBuilderCommand(this));
@@ -1560,6 +1653,9 @@ public class BedwarsPRO extends JavaPlugin {
     if (this.isSpigot()) {
       new PlayerSpigotListener();
     }
+
+    new RandomTickZeroListener();
+    new WorldProtectionListener();
 
     SpecialItem.loadSpecials();
   }

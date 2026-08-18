@@ -212,6 +212,22 @@ resource:
     spawn-interval: 30000
     spread: 1.0
 
+# 经验模式对局：捡起的铁锭/金锭/钻石等资源自动换算成经验；商店价格按同一映射换算为经验扣除。
+# 商店配置已按模式拆分：
+#   shop/shop.yml —— 物品商店配置（原 shop.yml），price 为资源物品列表
+#   shop/xp_shop.yml   —— 经验商店配置（新增），结构同物品商店，price 直接写所需经验值（整数）
+# 模式判定优先级：bwsba 编辑 GUI 里给对局单独设置的经验/物品模式（game.yml 的 xp-mode）优先；
+# 未单独设置的对局回退到下面的全局开关与 games 列表。
+xp-bedwars:
+  enabled: true                 # 全局总开关（false = 未单独设置的对局全部为物品商店）
+  games: []                         # 启用经验模式的对局名列表，如 [bedwars1, bedwars2]
+  max-xp: 0                         # 单局经验上限（0 = 无上限）
+  death-cost: 0.5              # 死亡扣除经验比例（0-1；0 = 不扣，0.5 = 死亡扣一半）
+  resource-xp:                      # 资源类型 → 每单位经验值（拾取换算 & 商店价格换算共用）
+    IRON_INGOT: 1                   # 注意：下界之星是击杀奖励（灵魂），不参与经验换算
+    GOLD_INGOT: 10
+    DIAMOND: 100
+
 # -------- 更新检查 --------
 check-updates: false
 update-infos: false

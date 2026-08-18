@@ -100,12 +100,14 @@
                     <!-- 关键点：preverify 阶段需要完整类层次才能生成 StackMapTable
                          （Java 6+ 的 class 缺 StackMapTable 时，JVM 加载会报
                          VerifyError: Expecting a stackmap frame）。
-                         必须把全部编译依赖（spigot-api / craftbukkit 等）和 JDK rt.jar
+                         必须把全部编译依赖（spigot-api / craftbukkit 等）和 JDK 标准库
                          作为 libraryjars 传给 ProGuard，否则合并帧找不到共同父类报
-                         IncompleteClassHierarchyException。 -->
+                         IncompleteClassHierarchyException。
+                         项目依赖 ProtocolLib 5.4.0（Java 17 编译），需用 JDK17 构建；
+                         JDK9+ 无 rt.jar，标准库改从 jmods 目录提供。 -->
                     <includeDependency>true</includeDependency>
                     <libs>
-                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/jmods</lib>
                     </libs>
                     <options>
                         <!-- 只混淆不改结构，避免误删/误优化 -->
@@ -122,8 +124,14 @@
                         <option>-printmapping mapping.txt</option>
                         <!-- preverify 保持默认开启（不写 -dontpreverify），输出含 StackMapTable -->
                         <option>-keepattributes *Annotation*,Signature,Exceptions,InnerClasses,EnclosingMethod,Deprecated,StackMapTable</option>
-                        <!-- plugin.yml 的 main 类：Bukkit 按名字加载，必须保名 -->
-                        <option>-keep class io.jmmym.bedwarspro.BedwarsPRO</option>
+                        <!-- plugin.yml 的 main 类：Bukkit 按名字加载，必须保名；
+                             外部插件还直接调 getInstance()/getGameManager()，成员一并保 -->
+                        <option>-keep class io.jmmym.bedwarspro.BedwarsPRO { *; }</option>
+                        <!-- BedWarsProJoin 等外部插件通过 import 直接引用 game 包 API，
+                             混淆改名后 NoClassDefFoundError，整包保名保方法 -->
+                        <option>-keep class io.jmmym.bedwarspro.game.Game { *; }</option>
+                        <option>-keep class io.jmmym.bedwarspro.game.GameManager { *; }</option>
+                        <option>-keep class io.jmmym.bedwarspro.game.GameState { *; }</option>
                         <!-- com.* 版本兼容包：代码里用 Class.forName("io.jmmym.bedwarspro.com." + version + ...) 反射，必须保名 -->
                         <option>-keep class io.jmmym.bedwarspro.com.** { *; }</option>
                         <!-- Bukkit 自定义事件类：SimplePluginManager 通过反射按名字调用静态 getHandlerList()，

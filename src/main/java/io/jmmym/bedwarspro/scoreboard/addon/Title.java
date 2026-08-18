@@ -23,6 +23,7 @@ import io.jmmym.bedwarspro.events.BedwarsGameOverEvent;
 import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.game.GameState;
 import io.jmmym.bedwarspro.game.Team;
+import io.jmmym.bedwarspro.xp.XpManager;
 import io.jmmym.bedwarspro.scoreboard.Main;
 import io.jmmym.bedwarspro.scoreboard.arena.Arena;
 import io.jmmym.bedwarspro.scoreboard.config.Config;
@@ -367,6 +368,10 @@ public class Title implements Listener {
 		killCounts.put(killerName, count);
 		final int finalCount = count;
 
+		// 经验模式：击杀转移受害者全部经验，主标题显示「经验 +XXX」；物品模式保持「X杀」
+		final boolean xpMode = XpManager.isXpMode(game);
+		final int gainedXp = xpMode ? XpManager.transferXpOnKill(game, killer, victim) : 0;
+
 		// 如果之前已经有一个发送任务正在运行，先取消，避免相互干扰
 		BukkitRunnable oldTask = killTitleTasks.remove(killerName);
 		if (oldTask != null) {
@@ -384,7 +389,11 @@ public class Title implements Listener {
 					return;
 				}
 				// fadeIn=0, stay=10, fadeOut=5, 确保快速发送也能显示
-				Utils.sendTitle(killer, 0, 10, 5, "§a" + finalCount + "杀", null);
+				if (xpMode) {
+					Utils.sendTitle(killer, 0, 10, 5, "§a经验 +" + gainedXp, null);
+				} else {
+					Utils.sendTitle(killer, 0, 10, 5, "§a" + finalCount + "杀", null);
+				}
 				remaining--;
 			}
 		};

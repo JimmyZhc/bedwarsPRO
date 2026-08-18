@@ -101,6 +101,14 @@ commands:
     description: 显示起床战争的统计数据
     usage: /<command>
     permission: bw.base
+  bw leaderboard:
+    description: 显示起床战争统计排行榜（击杀/死亡/胜利/失败/拆床/积分/KD）
+    usage: /<command> [kills|deaths|wins|loses|beds|score|kd]
+    permission: bw.base
+  bw rankleaderboard:
+    description: 显示排位赛 ELO 排行榜
+    usage: /<command>
+    permission: bw.base
   bw setminplayers:
     description: 设置游戏的最小玩家数量
     usage: /<command>

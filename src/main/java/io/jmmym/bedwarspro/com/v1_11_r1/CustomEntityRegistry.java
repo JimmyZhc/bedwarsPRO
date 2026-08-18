@@ -3,7 +3,6 @@ package io.jmmym.bedwarspro.com.v1_11_r1;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.server.v1_11_R1.Entity;
@@ -40,16 +39,15 @@ public class CustomEntityRegistry extends RegistryMaterials {
     instance = new CustomEntityRegistry(EntityTypes.b);
 
     try {
-      // TODO: Update name on version change (RegistryMaterials)
       Field registryMaterialsField = EntityTypes.class.getDeclaredField("b");
       registryMaterialsField.setAccessible(true);
 
-      // Java 17+ 移除了 Field.modifiers，改用 Unsafe 绕过 final 限制
       Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
       unsafeField.setAccessible(true);
       sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-      long offset = unsafe.objectFieldOffset(registryMaterialsField);
-      unsafe.putObject(null, offset, instance);
+      Object base = unsafe.staticFieldBase(registryMaterialsField);
+      long offset = unsafe.staticFieldOffset(registryMaterialsField);
+      unsafe.putObject(base, offset, instance);
     } catch (Exception e) {
       instance = null;
 
@@ -61,7 +59,7 @@ public class CustomEntityRegistry extends RegistryMaterials {
 
   @SuppressWarnings("unchecked")
   @Override
-  public int a(Object key) { // TODO: Update name on version change (getId)
+  public int a(Object key) {
     if (this.customEntityIds.containsKey(key)) {
       return this.customEntityIds.get(key);
     }
@@ -71,7 +69,7 @@ public class CustomEntityRegistry extends RegistryMaterials {
 
   @SuppressWarnings("unchecked")
   @Override
-  public MinecraftKey b(Object value) { // TODO: Update name on version change (getKey)
+  public MinecraftKey b(Object value) {
     if (this.customEntityClasses.containsKey(value)) {
       return this.customEntityClasses.get(value);
     }

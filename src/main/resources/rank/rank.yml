@@ -1,0 +1,63 @@
+# ============================================
+#  排位赛配置（BedwarsPRO Ranked Bedwars）
+#  本文件保存在 rank 文件夹内，可自由修改。
+#  修改后执行 /bwpro rankreload 生效。
+# ============================================
+
+# 排位地图列表：列出的地图为「排位图」。
+# - 排位匹配队列（/bw join ranked）只会在这几张图中随机开局；
+# - 休闲模式 /bw join casual|random 会跳过这些图；
+# - 在这些图中进行的对局按排位结算。
+# 可通过 /bwpro mapgui 界面左键点击某张图快速切换，自动保存到此文件；
+# 手动修改后执行 /bwpro rankreload 生效。
+ranked-games: []
+
+# 段位名称（cn = 中文显示，en = 英文显示）
+# 修改后执行 /bwpro rankreload 生效；未配置的段位保持默认名称
+tiers:
+  coal: { cn: "煤炭", en: "Coal" }
+  iron: { cn: "铁", en: "Iron" }
+  copper: { cn: "铜", en: "Copper" }
+  gold: { cn: "金", en: "Gold" }
+  redstone: { cn: "红石", en: "Redstone" }
+  lapis: { cn: "青金石", en: "Lapis Lazuli" }
+  emerald: { cn: "绿宝石", en: "Emerald" }
+  diamond: { cn: "钻石", en: "Diamond" }
+  quartz: { cn: "下界石英", en: "Nether Quartz" }
+  amethyst: { cn: "紫水晶", en: "Amethyst" }
+  debris: { cn: "远古残骸", en: "Ancient Debris" }
+  obsidian: { cn: "黑曜石", en: "Obsidian" }
+  bedrock: { cn: "基岩", en: "Bedrock" }
+  netherite: { cn: "下界合金", en: "Netherite" }
+  nether_star: { cn: "下界之星", en: "Nether Star" }
+
+# 对局规模
+match:
+  players: 16           # 每局玩家总数（4 队 x 4 人）
+  teams: 4             # 队伍数量
+
+# ELO 设置（策划案 7.2 节）
+elo:
+  threshold: 500       # 匹配分段阈值：ELO < 500 随机匹配，>= 500 智能匹配
+  k-factor-new: 40     # 新玩家（前 placement-games 场）K 因子
+  k-factor-low: 25     # 常规玩家（ELO < threshold）K 因子
+  k-factor-normal: 20  # 常规玩家（ELO >= threshold）K 因子
+  k-factor-high: 16    # 高分段玩家（ELO > k-factor-high-elo）K 因子
+  k-factor-high-elo: 1500  # 高分段 K 因子生效的 ELO 阈值
+  placement-games: 10  # 新玩家 K 因子生效的场次数
+  placement-matches: 5 # 定级赛场次（前 N 场为定级赛）
+  min-elo: 0           # ELO 下限（低于该值不再扣分）
+
+# 匹配队列
+queue:
+  low-wait-timeout: 180   # 队列人数不足的提示等待时间（秒）
+
+# 队伍分配设置（策划案 7.2 节）
+team-assignment:
+  ranked:
+    method: "snake"        # 蛇形 ELO 均衡分配
+    gui-enabled: false     # 排位模式禁用选队 GUI
+  casual:
+    method: "free-choice"  # 休闲模式玩家自由选择
+    gui-enabled: true      # 开启选队 GUI
+    auto-assign-timeout: 30 # 超时自动分配（秒）

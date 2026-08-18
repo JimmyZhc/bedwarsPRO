@@ -395,6 +395,163 @@ public class PlayerStatisticManager {
     }
   }
 
+  /**
+   * 获取全服起床统计排行榜（按指定字段降序）。
+   *
+   * <p>数据源与统计存储一致：YAML 模式遍历本地文件，数据库模式按字段 SQL 排序；
+   * KD 无法在 SQL 中直接排序，统一全量读取后内存计算。</p>
+   *
+   * @param field 排序字段：kills / deaths / wins / loses / beds / score / kd
+   * @param limit 返回条数上限（至少 1）
+   */
+  public List<PlayerStatistic> getStatisticsLeaderboard(String field, int limit) {
+    String sortField = this.normalizeLeaderboardField(field);
+    List<PlayerStatistic> result = new ArrayList<>();
+    boolean needInMemorySort = false;
+
+    if (getEffectiveStorageType() == StorageType.YAML) {
+      needInMemorySort = true;
+      if (this.fileDatabase == null) {
+        File file = new File(
+            BedwarsPRO.getInstance().getDataFolder() + "/database/bw_stats_players.yml");
+        this.loadYml(file);
+      }
+      if (this.fileDatabase != null) {
+        org.bukkit.configuration.ConfigurationSection section =
+            this.fileDatabase.getConfigurationSection("data");
+        if (section != null) {
+          for (String key : section.getKeys(false)) {
+            try {
+              PlayerStatistic ps = this.loadYamlStatistic(UUID.fromString(key));
+              if (ps != null) {
+                result.add(ps);
+              }
+            } catch (IllegalArgumentException ignored) {
+              // 非法 uuid key，跳过
+            }
+          }
+        }
+      }
+    } else {
+      DatabaseManager db = BedwarsPRO.getInstance().getDatabaseManager();
+      if (db != null) {
+        try (Connection connection = db.getConnection()) {
+          if (connection != null) {
+            String sql;
+            if ("kd".equals(sortField)) {
+              // KD 需全量读取后在内存中计算排序
+              needInMemorySort = true;
+              sql = "SELECT uuid, name, kills, deaths, wins, loses, score, destroyedBeds FROM "
+                  + db.getTablePrefix() + "stats_players";
+            } else {
+              sql = "SELECT uuid, name, kills, deaths, wins, loses, score, destroyedBeds FROM "
+                  + db.getTablePrefix() + "stats_players ORDER BY " + sortField + " DESC LIMIT ?";
+            }
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+              if (!"kd".equals(sortField)) {
+                preparedStatement.setInt(1, Math.max(1, limit));
+              }
+              try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                  PlayerStatistic ps = this.statisticFromResultSet(resultSet);
+                  if (ps != null) {
+                    result.add(ps);
+                  }
+                }
+              }
+            }
+          }
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    if (needInMemorySort) {
+      result.sort(this.leaderboardComparator(sortField));
+      if (result.size() > limit) {
+        result = new ArrayList<>(result.subList(0, Math.max(1, limit)));
+      }
+    }
+    return result;
+  }
+
+  /** 校验并规范化排行榜排序字段（白名单，防止 SQL 注入）。 */
+  private String normalizeLeaderboardField(String field) {
+    if (field == null) {
+      return "kills";
+    }
+    switch (field.toLowerCase().replace("-", "")) {
+      case "death":
+      case "deaths":
+        return "deaths";
+      case "win":
+      case "wins":
+        return "wins";
+      case "lose":
+      case "loss":
+      case "loses":
+      case "losses":
+        return "loses";
+      case "bed":
+      case "beds":
+      case "destroyedbeds":
+        return "destroyedBeds";
+      case "score":
+      case "points":
+        return "score";
+      case "kd":
+      case "k/d":
+      case "killdeath":
+        return "kd";
+      default:
+        return "kills";
+    }
+  }
+
+  /** 从数据库结果集构造统计对象（字段白名单固定列，避免依赖表结构顺序）。 */
+  private PlayerStatistic statisticFromResultSet(ResultSet resultSet) throws SQLException {
+    String uuidStr = resultSet.getString("uuid");
+    if (uuidStr == null || uuidStr.isEmpty()) {
+      return null;
+    }
+    try {
+      UUID.fromString(uuidStr);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
+    HashMap<String, Object> map = new HashMap<>();
+    map.put("uuid", uuidStr);
+    map.put("name", resultSet.getString("name"));
+    map.put("kills", resultSet.getInt("kills"));
+    map.put("deaths", resultSet.getInt("deaths"));
+    map.put("wins", resultSet.getInt("wins"));
+    map.put("loses", resultSet.getInt("loses"));
+    map.put("score", resultSet.getInt("score"));
+    map.put("destroyedBeds", resultSet.getInt("destroyedBeds"));
+    return new PlayerStatistic(map);
+  }
+
+  /** 排行榜降序比较器（KD 用双击数，其余用整型字段）。 */
+  private java.util.Comparator<PlayerStatistic> leaderboardComparator(String sortField) {
+    switch (sortField) {
+      case "deaths":
+        return java.util.Comparator.comparingInt(PlayerStatistic::getDeaths);
+      case "wins":
+        return java.util.Comparator.comparingInt(PlayerStatistic::getWins);
+      case "loses":
+        return java.util.Comparator.comparingInt(PlayerStatistic::getLoses);
+      case "destroyedBeds":
+        return java.util.Comparator.comparingInt(PlayerStatistic::getDestroyedBeds);
+      case "score":
+        return java.util.Comparator.comparingInt(PlayerStatistic::getScore);
+      case "kd":
+        return java.util.Comparator.comparingDouble(PlayerStatistic::getKD);
+      default:
+        return java.util.Comparator.comparingInt(PlayerStatistic::getKills);
+    }
+  }
+
   public void unloadStatistic(OfflinePlayer player) {
     if (getEffectiveStorageType() != StorageType.YAML) {
       this.playerStatistic.remove(player.getUniqueId());

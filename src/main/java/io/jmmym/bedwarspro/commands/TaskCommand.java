@@ -5,6 +5,8 @@ import io.jmmym.bedwarspro.auth.AuthManager;
 import io.jmmym.bedwarspro.auth.Cfg;
 import io.jmmym.bedwarspro.auth.Str;
 import io.jmmym.bedwarspro.game.Game;
+import io.jmmym.bedwarspro.rank.RankManager;
+import io.jmmym.bedwarspro.rank.RankMessages;
 import io.jmmym.bedwarspro.task.PlayerTaskState;
 import io.jmmym.bedwarspro.task.Task;
 import io.jmmym.bedwarspro.task.TaskGUI;
@@ -104,6 +106,31 @@ public class TaskCommand implements CommandExecutor {
         // /bwpro clearrecord <地图> [确认码] — 清除地图最快通关记录（确认码二次确认）
         if (args.length >= 1 && args[0].equalsIgnoreCase("clearrecord")) {
             return handleClearRecord(sender, args);
+        }
+
+        // /bwpro mapgui — 地图管理界面（列出等待中/可用游戏，左键切换排位/休闲）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("mapgui")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + "该命令只能由玩家在游戏内执行！");
+                return true;
+            }
+            if (!hasAdminPerm(sender)) {
+                RankMessages.msg(sender, "cmd.no-permission");
+                return true;
+            }
+            io.jmmym.bedwarspro.rank.RankedGameGUI.open((Player) sender, 0);
+            return true;
+        }
+
+        // /bwpro rankreload — 重读排位配置与语言文件（手动改 rank.yml 后生效）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("rankreload")) {
+            if (!hasAdminPerm(sender)) {
+                RankMessages.msg(sender, "cmd.no-permission");
+                return true;
+            }
+            RankManager.getInstance().reload();
+            RankMessages.msg(sender, "cmd.reload-success");
+            return true;
         }
 
         if (args.length < 1 || !args[0].equalsIgnoreCase("task")) {

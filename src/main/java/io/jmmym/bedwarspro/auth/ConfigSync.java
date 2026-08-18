@@ -32,6 +32,7 @@ public final class ConfigSync {
             "tasks/messages.yml",
             "api.yml",
             "shop/shop.yml",
+            "shop/xp_shop.yml",
             "Scoreboard/config.yml",
             "Scoreboard/join-item.yml",
             "QuickStash/config-quickstash.yml",

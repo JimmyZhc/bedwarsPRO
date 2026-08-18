@@ -18,6 +18,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.WrappedChatComponent;
 
 import io.jmmym.bedwarspro.BedwarsPRO;
 import io.jmmym.bedwarspro.game.Game;
@@ -141,6 +142,10 @@ public class ScoreboardUtil {
 		}
 	}
 
+	private static WrappedChatComponent chatComp(String text) {
+		return WrappedChatComponent.fromText(text);
+	}
+
 	private static void sendShowHealthPacket(Player player) {
 		ProtocolManager man = ProtocolLibrary.getProtocolManager();
 		if (Config.tab_health) {
@@ -148,7 +153,8 @@ public class ScoreboardUtil {
 				PacketContainer packet = man.createPacket(PacketType.Play.Server.SCOREBOARD_OBJECTIVE);
 				packet.getIntegers().write(0, 0);
 				packet.getStrings().write(0, "bwsba-game-list");
-				packet.getStrings().write(1, "bwsba-game-list");
+				packet.getChatComponents().write(0, chatComp("bwsba-game-list"));
+				packet.getStrings().write(1, "dummy");
 				man.sendServerPacket(player, packet);
 			} catch (Exception e) {
 			}
@@ -165,7 +171,8 @@ public class ScoreboardUtil {
 				PacketContainer packet = man.createPacket(PacketType.Play.Server.SCOREBOARD_OBJECTIVE);
 				packet.getIntegers().write(0, 0);
 				packet.getStrings().write(0, "bwsba-game-name");
-				packet.getStrings().write(1, "bwsba-game-name");
+				packet.getChatComponents().write(0, chatComp("bwsba-game-name"));
+				packet.getStrings().write(1, "dummy");
 				man.sendServerPacket(player, packet);
 			} catch (Exception e) {
 			}
@@ -180,7 +187,7 @@ public class ScoreboardUtil {
 				PacketContainer packet = man.createPacket(PacketType.Play.Server.SCOREBOARD_OBJECTIVE);
 				packet.getIntegers().write(0, 2);
 				packet.getStrings().write(0, "bwsba-game-name");
-				packet.getStrings().write(1, "§c\u2764");
+				packet.getChatComponents().write(0, chatComp("\u00a7c\u2764"));
 				man.sendServerPacket(player, packet);
 			} catch (Exception e) {
 			}
@@ -188,6 +195,9 @@ public class ScoreboardUtil {
 	}
 
 	private static void sendHealthValuePacket(Player player, Player target, int value) {
+		if (target == null || !target.isOnline() || !target.isValid()) {
+			return;
+		}
 		ProtocolManager man = ProtocolLibrary.getProtocolManager();
 		if (Config.tab_health) {
 			try {
@@ -197,7 +207,6 @@ public class ScoreboardUtil {
 				packet.getStrings().write(1, "bwsba-game-list");
 				man.sendServerPacket(player, packet);
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		if (Config.tag_health) {
@@ -208,7 +217,6 @@ public class ScoreboardUtil {
 				packet.getStrings().write(1, "bwsba-game-name");
 				man.sendServerPacket(player, packet);
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 	}

@@ -20,6 +20,7 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -40,6 +41,17 @@ public class BlockListener extends BaseListener {
     }
 
     grow.setCancelled(true);
+  }
+
+  @EventHandler(priority = EventPriority.HIGHEST)
+  public void onBlockPhysics(BlockPhysicsEvent e) {
+    Material type = e.getBlock().getType();
+    if (type == Material.LEAVES || type == Material.LEAVES_2) {
+      Game game = BedwarsPRO.getInstance().getGameManager().getGameByLocation(e.getBlock().getLocation());
+      if (game != null && game.getState() != GameState.STOPPED) {
+        e.setCancelled(true);
+      }
+    }
   }
 
   @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

@@ -2,6 +2,9 @@ package io.jmmym.bedwarspro.commands;
 
 import com.google.common.collect.ImmutableMap;
 import io.jmmym.bedwarspro.BedwarsPRO;
+import io.jmmym.bedwarspro.rank.RankManager;
+import io.jmmym.bedwarspro.rank.RankMessages;
+import io.jmmym.bedwarspro.rank.RankPlayer;
 import io.jmmym.bedwarspro.statistics.PlayerStatistic;
 import io.jmmym.bedwarspro.utils.ChatWriter;
 import io.jmmym.bedwarspro.utils.UUIDFetcher;
@@ -130,6 +133,34 @@ public class StatsCommand extends BaseCommand implements ICommand {
     for (String line : BedwarsPRO.getInstance().getPlayerStatisticManager()
         .createStatisticLines(statistic, false, ChatColor.GRAY, ChatColor.YELLOW)) {
       player.sendMessage(line);
+    }
+
+    // 排位战绩（段位 / ELO / 场次 / 名次统计 / 连胜连败）
+    if (RankManager.getInstance() != null && statistic.getId() != null) {
+      RankPlayer rp = RankManager.getInstance().getStorage().getLoaded(statistic.getId());
+      if (rp == null) {
+        rp = RankManager.getInstance().getStorage().load(statistic.getId(), statistic.getName());
+      }
+      player.sendMessage(ChatWriter.pluginMessage(RankMessages.get("stats.header")));
+      if (rp.getGamesPlayed() <= 0) {
+        player.sendMessage(ChatWriter.pluginMessage(RankMessages.get("stats.no-data")));
+        return;
+      }
+      player.sendMessage(ChatWriter.pluginMessage(
+          RankMessages.get("stats.tier", "tier", rp.getTier().getCnName())));
+      player.sendMessage(ChatWriter.pluginMessage(
+          RankMessages.get("stats.elo", "elo", rp.getElo(), "highest", rp.getHighestElo())));
+      player.sendMessage(ChatWriter.pluginMessage(RankMessages.get("stats.games",
+          "games", rp.getGamesPlayed(), "wins", rp.getWins(), "rate", rp.getWinRate())));
+      player.sendMessage(ChatWriter.pluginMessage(RankMessages.get("stats.placement",
+          "first", rp.getWins(), "second", rp.getSecondCount(),
+          "third", rp.getThirdCount(), "fourth", rp.getFourthCount())));
+      player.sendMessage(ChatWriter.pluginMessage(RankMessages.get("stats.streak",
+          "win", rp.getWinStreak(), "lose", rp.getLoseStreak())));
+      player.sendMessage(ChatWriter.pluginMessage(RankMessages.get("stats.avg",
+          "kills", rp.getAvgKills(), "beds", rp.getAvgBeds())));
+      // 打开段位进度界面（奶桶 = 每个 ELO 段位，空桶 = 已达成）
+      io.jmmym.bedwarspro.rank.RankTierGUI.open(player, rp);
     }
   }
 

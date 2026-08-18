@@ -293,6 +293,10 @@ public class ScoreBoard {
                                                 }
                                         }
                                 } else {
+                                        // 经验模式地图没有特殊事件，隐藏事件行
+                                        if (io.jmmym.bedwarspro.xp.XpManager.isXpMode(game) && ls.contains("{randomevent}")) {
+                                                continue;
+                                        }
                                         String date = new SimpleDateFormat(Config.date_format).format(new Date());
                                         String add_line = ls;
 

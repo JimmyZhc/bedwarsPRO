@@ -5,6 +5,7 @@ import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.game.GameState;
 import java.util.List;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class WeatherListener extends BaseListener {
@@ -24,6 +25,26 @@ public class WeatherListener extends BaseListener {
     for (Game game : games) {
       if (game.getState() != GameState.STOPPED) {
         we.setCancelled(true);
+        break;
+      }
+    }
+  }
+
+  @EventHandler
+  public void onThunderEvent(ThunderChangeEvent te) {
+    if (te.isCancelled()) {
+      return;
+    }
+
+    List<Game> games = BedwarsPRO.getInstance().getGameManager().getGamesByWorld(te.getWorld());
+
+    if (games.size() == 0) {
+      return;
+    }
+
+    for (Game game : games) {
+      if (game.getState() != GameState.STOPPED) {
+        te.setCancelled(true);
         break;
       }
     }

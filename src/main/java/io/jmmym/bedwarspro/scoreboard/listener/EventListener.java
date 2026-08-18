@@ -54,7 +54,6 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.events.PacketListener;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.EnumWrappers.ScoreboardAction;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 
 import com.google.common.collect.ImmutableMap;
@@ -584,9 +583,15 @@ public class EventListener implements Listener {
 		PacketListener packetListener = new PacketAdapter(Main.getPlugin(), ListenerPriority.HIGHEST, new PacketType[] { PacketType.Play.Server.SCOREBOARD_SCORE }) {
 			@Override
 			public void onPacketSending(PacketEvent e) {
-				PacketContainer packet = e.getPacket();
-				if (e.getPacketType().equals(PacketType.Play.Server.SCOREBOARD_SCORE) && packet.getScoreboardActions().read(0).equals(ScoreboardAction.REMOVE) && packet.getStrings().read(1).equals("") && getPlayer(packet.getStrings().read(0)) != null) {
-					e.setCancelled(true);
+				try {
+					PacketContainer packet = e.getPacket();
+					// ProtocolLib 5.x 移除了 EnumWrappers.ScoreboardAction，改用原始整数值判断
+					// Action: 0=ADD, 1=REMOVE
+					int action = packet.getIntegers().read(1);
+					if (action == 1 && packet.getStrings().read(1).equals("") && getPlayer(packet.getStrings().read(0)) != null) {
+						e.setCancelled(true);
+					}
+				} catch (Exception ignored) {
 				}
 			}
 		};

@@ -136,8 +136,9 @@ public class PlayerStorage {
   public void loadLobbyInventory(Game game) {
     ItemMeta im = null;
 
-    // choose team only when autobalance is disabled
-    if (!game.isAutobalanceEnabled()) {
+    // choose team only when autobalance is disabled and it's not a ranked game
+    if (!game.isAutobalanceEnabled()
+        && !io.jmmym.bedwarspro.rank.RankManager.getInstance().isRankedGame(game.getName())) {
       // Choose team (Wool)
       ItemStack teamSelection = new ItemStack(Material.BED, 1);
       im = teamSelection.getItemMeta();

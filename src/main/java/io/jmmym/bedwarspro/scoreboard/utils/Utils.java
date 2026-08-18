@@ -116,11 +116,28 @@ public class Utils {
 			Method chatMethod = chatClass.getDeclaredClasses()[0].getMethod("a", String.class);
 
 			Object chatComponent = chatMethod.invoke(null, "{\"text\":\"" + message + "\"}");
-			Constructor<?> ctor = packetClass.getConstructor(chatClass, byte.class);
-			Object packet = ctor.newInstance(chatComponent, (byte) 2);
+			// 1.12.2 构造器是 (IChatBaseComponent, int)，旧版是 (IChatBaseComponent, byte)
+			Constructor<?> ctor = null;
+			for (Constructor<?> c : packetClass.getDeclaredConstructors()) {
+				Class<?>[] params = c.getParameterTypes();
+				if (params.length == 2 && chatClass.isAssignableFrom(params[0])
+						&& (params[1] == byte.class || params[1] == int.class)) {
+					ctor = c;
+					break;
+				}
+			}
+			if (ctor == null) {
+				return;
+			}
+			Object packet;
+			if (ctor.getParameterTypes()[1] == int.class) {
+				packet = ctor.newInstance(chatComponent, 2);
+			} else {
+				packet = ctor.newInstance(chatComponent, (byte) 2);
+			}
 			sendPacket(player, packet);
 		} catch (Exception e) {
-			e.printStackTrace();
+			// 静默失败，避免日志刷屏
 		}
 	}
 

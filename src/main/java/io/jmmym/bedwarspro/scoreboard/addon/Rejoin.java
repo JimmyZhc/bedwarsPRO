@@ -175,7 +175,12 @@ public class Rejoin {
 								player.getInventory().setBoots(armors.get(3));
 							}
 							Arena arena = Main.getInstance().getArenaManager().getArenas().get(game.getName());
-							player.setMaxHealth(arena.getHealthLevel().getNowHealth());
+							if (io.jmmym.bedwarspro.xp.XpManager.isXpMode(game) && game.isXpHealthEventTriggered()) {
+								// 经验模式血量事件已触发：重连也不影响该效果，保持最大血量上限
+								player.setMaxHealth(Game.XP_HEALTH_EVENT_MAX_HEALTH);
+							} else {
+								player.setMaxHealth(arena.getHealthLevel().getNowHealth());
+							}
 							player.setHealth(player.getMaxHealth());
 							if (Config.respawn_enabled) {
 								Respawn respawn = arena.getRespawn();

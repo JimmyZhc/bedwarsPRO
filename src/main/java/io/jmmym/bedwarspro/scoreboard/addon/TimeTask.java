@@ -188,6 +188,10 @@ public class TimeTask {
 	}
 
 	private static void triggerRandomEventStatic(Game game, Arena arena) {
+		// 经验模式地图没有特殊事件，直接跳过
+		if (io.jmmym.bedwarspro.xp.XpManager.isXpMode(game)) {
+			return;
+		}
 		List<Event> events = new java.util.ArrayList<>();
 		events.add(new Event("全体速度提升", PotionEffectType.SPEED, 1, 30));
 		events.add(new Event("全体力量提升", PotionEffectType.INCREASE_DAMAGE, 0, 30));
