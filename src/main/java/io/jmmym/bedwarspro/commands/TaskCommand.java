@@ -83,6 +83,26 @@ public class TaskCommand implements CommandExecutor {
             return io.jmmym.bedwarspro.quickstash.PunchToDeposit.handleCommand(sender, args);
         }
 
+        // /bwpro check — 检查授权服务器上是否有新版本插件（admin）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("check")) {
+            if (!hasAdminPerm(sender)) {
+                TaskMessages.msg(sender, "cmd-no-permission");
+                return true;
+            }
+            io.jmmym.bedwarspro.auth.UpdateFlow.checkCommand(BedwarsPRO.getInstance(), sender);
+            return true;
+        }
+
+        // /bwpro update [confirm|cancel] — 提交版本更新请求 / 二次确认 / 取消（admin）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("update")) {
+            if (!hasAdminPerm(sender)) {
+                TaskMessages.msg(sender, "cmd-no-permission");
+                return true;
+            }
+            io.jmmym.bedwarspro.auth.UpdateFlow.updateCommand(BedwarsPRO.getInstance(), sender, args);
+            return true;
+        }
+
         // /bwpro info — 显示本服务器授权信息（服务器UUID / 插件授权码 / 授权服务器地址）
         if (args.length >= 1 && args[0].equalsIgnoreCase("info")) {
             return handleAuthInfo(sender);
@@ -130,6 +150,33 @@ public class TaskCommand implements CommandExecutor {
             }
             RankManager.getInstance().reload();
             RankMessages.msg(sender, "cmd.reload-success");
+            return true;
+        }
+
+        // /bwpro debug [on|off|status] — Bot 调试日志开关（admin，默认关闭）
+        if (args.length >= 1 && args[0].equalsIgnoreCase("debug")) {
+            if (!hasAdminPerm(sender)) {
+                TaskMessages.msg(sender, "cmd-no-permission");
+                return true;
+            }
+            if (args.length < 2) {
+                sender.sendMessage(ChatColor.RED + "用法: /bwpro debug <on|off|status>");
+                return true;
+            }
+            String mode = args[1].toLowerCase();
+            if (mode.equals("on")) {
+                BedwarsPRO.getInstance().setBotDebug(true);
+                sender.sendMessage(ChatColor.GREEN + "[Bot] 调试模式已开启（假人日志将输出到控制台）");
+            } else if (mode.equals("off")) {
+                BedwarsPRO.getInstance().setBotDebug(false);
+                sender.sendMessage(ChatColor.GREEN + "[Bot] 调试模式已关闭");
+            } else if (mode.equals("status")) {
+                sender.sendMessage(BedwarsPRO.getInstance().isBotDebug()
+                        ? ChatColor.GREEN + "[Bot] 调试模式: 开启"
+                        : ChatColor.YELLOW + "[Bot] 调试模式: 关闭");
+            } else {
+                sender.sendMessage(ChatColor.RED + "用法: /bwpro debug <on|off|status>");
+            }
             return true;
         }
 
@@ -610,6 +657,9 @@ public class TaskCommand implements CommandExecutor {
             TaskMessages.msg(sender, "help-reset");
             TaskMessages.msg(sender, "help-clearstats");
             TaskMessages.msg(sender, "help-clearrecord");
+            sender.sendMessage(ChatColor.AQUA + "/bwpro check " + ChatColor.GRAY + "- 检查插件版本是否有更新");
+            sender.sendMessage(ChatColor.AQUA + "/bwpro update " + ChatColor.GRAY + "- 提交更新请求（confirm=二次确认 / cancel=取消）");
+            sender.sendMessage(ChatColor.AQUA + "/bwpro debug <on|off|status> " + ChatColor.GRAY + "- Bot 调试日志开关（默认关闭）");
         }
         if (sender.hasPermission(PERM_PUBLISH) || sender.isOp()) {
             TaskMessages.msg(sender, "help-publish");

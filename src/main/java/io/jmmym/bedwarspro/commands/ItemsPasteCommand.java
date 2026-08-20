@@ -53,7 +53,7 @@ public class ItemsPasteCommand extends BaseCommand implements ICommand {
 
                   StringBuilder b = new StringBuilder();
                   b.append(
-                      "# Welcome to this paste\n# This might help you to better add your custom items to BedwarsPRO's shop/shop.yml\n\n");
+                      "# Welcome to this paste\n# This might help you to better add your custom items to BedwarsPRO's shop/item_shop.yml\n\n");
                   b.append(uploadConfig.saveToString());
                   b.append("\n");
                   b.append(

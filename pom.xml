@@ -6,7 +6,7 @@
 
     <groupId>io.jmmym</groupId>
     <artifactId>BedwarsPRO</artifactId>
-    <version>1.1.4</version>
+    <version>1.3.6</version>
     <packaging>jar</packaging>
 
     <name>BedwarsPRO</name>
@@ -97,17 +97,11 @@
                     <injar>classes</injar>
                     <outjar>classes-obf</outjar>
                     <obfuscate>true</obfuscate>
-                    <!-- 关键点：preverify 阶段需要完整类层次才能生成 StackMapTable
-                         （Java 6+ 的 class 缺 StackMapTable 时，JVM 加载会报
-                         VerifyError: Expecting a stackmap frame）。
-                         必须把全部编译依赖（spigot-api / craftbukkit 等）和 JDK 标准库
-                         作为 libraryjars 传给 ProGuard，否则合并帧找不到共同父类报
-                         IncompleteClassHierarchyException。
-                         项目依赖 ProtocolLib 5.4.0（Java 17 编译），需用 JDK17 构建；
-                         JDK9+ 无 rt.jar，标准库改从 jmods 目录提供。 -->
+                    <!-- JDK8：rt.jar 在 jre/lib，扩展类库在 jre/lib/ext -->
                     <includeDependency>true</includeDependency>
                     <libs>
-                        <lib>${java.home}/jmods</lib>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/lib/ext</lib>
                     </libs>
                     <options>
                         <!-- 只混淆不改结构，避免误删/误优化 -->
@@ -206,11 +200,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ProtocolLib -->
+        <!-- ProtocolLib（5.1.0：支持 MC 1.8-1.19.x，1.8 上 WrappedDataWatcher 等
+             老 API 完全正常，规避 5.4.0 在低版本的 LegacyDataWatcher/枚举崩溃；
+             代码包名仍是 com.comphenix.protocol） -->
         <dependency>
-            <groupId>net.dmulloy2</groupId>
+            <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>5.4.0</version>
+            <version>5.1.0</version>
             <scope>provided</scope>
         </dependency>
 

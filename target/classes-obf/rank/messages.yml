@@ -1,0 +1,66 @@
+# ============================================
+#  排位赛消息文件（语言文件，可自由配置）
+#  保存在 rank 文件夹内，支持 & 颜色代码与 {占位符}
+#  修改后执行 /bwpro rankreload 生效
+# ============================================
+
+# ---- 匹配队列 ----
+queue:
+  joined: "&a你已加入排位匹配队列 (当前 {x}/16 人)"
+  matched: "&a匹配成功！对局已创建，即将进入 [&b{map}&a]"
+  no-map: "&c所有地图正在使用中，请耐心等待，将自动进入空闲地图..."
+  low: "&e当前匹配人数不足，建议稍后再试。"
+  already: "&c你已在匹配队列中！"
+  in-game: "&c你正在游戏中，无法加入匹配队列！"
+
+# ---- 结算 ----
+settle:
+  header: "&6=========== &e排位结算 &6==========="
+  team-line: "&f第&e{placement}&f名：{team}"
+  line: "&f你的队伍排名第 &e{placement}&f 名 &7({change}&7 ELO) &f段位：&b{tier}&f [&e{elo}&f]"
+  mvp: "&6[MVP] 全场最佳：&b{player} &7(击杀 {kills})"
+  mvp-self: "&6你被评为本场 MVP！额外 +{bonus} ELO"
+  footer: "&6=================================="
+
+# ---- /bwpro mapgui / rankreload 命令 ----
+cmd:
+  no-permission: "&c你没有权限执行该操作！"
+  usage: "&e用法: /bwpro task [gui|on|off|publish <name>|clear|info] | clearstats <玩家> [确认码] | clearrecord <地图> [确认码] | mapgui | rankreload"
+  reload-success: "&a排位配置与语言文件已重载！"
+
+# ---- /bw stats 排位信息 ----
+stats:
+  header: "&6---------- &e排位战绩 &6----------"
+  tier: "&f段位：&b{tier}"
+  elo: "&fELO：&e{elo} &7(最高 {highest})"
+  games: "&f场次：&e{games} &7| 胜场：&a{wins} &7| 胜率：&e{rate}%"
+  placement: "&f名次：&e1st {first} &7/ &e2nd {second} &7/ &e3rd {third} &7/ &e4th {fourth}"
+  streak: "&f连胜：&a{win}&7 | 连败：&c{lose}"
+  avg: "&f场均：击杀 &e{kills} &7| 破床 &e{beds}"
+  no-data: "&7（暂无排位数据，参加排位赛后显示）"
+
+# ---- 定级状态（PlaceholderAPI %bwpro_rank_placement%） ----
+placement:
+  done: "&a已完成"
+  pending: "&e定级中 ({current}/{total})"
+
+# ---- /bw stats 段位进度界面（奶桶 = 每个 ELO 段位） ----
+# 空桶（BUCKET）＝ 已达成该段位；奶桶（MILK_BUCKET）＝ 尚未达成
+tiergui:
+  title: "&8段位进度"
+  separator: " "
+  info-name: "&b{player} 的段位进度"
+  info-lore:
+    - "&f当前段位：&e{tier}"
+    - "&fELO：&e{elo} &7(最高 {highest})"
+    - "{next-hint}"
+  bucket-reached-name: "&a✔ {tier}"
+  bucket-reached-lore:
+    - "&7已达成该段位"
+    - "&7所需 ELO：&e{elo}"
+  bucket-unreached-name: "&f{tier}"
+  bucket-unreached-lore:
+    - "&7尚未达成该段位"
+    - "&7所需 ELO：&e{elo}"
+  next-need: "&f距 &b{next}&f 还需 &e{need}&f ELO"
+  at-max: "&a已达最高段位！"

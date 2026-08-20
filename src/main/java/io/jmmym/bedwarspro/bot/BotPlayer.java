@@ -45,10 +45,16 @@ public class BotPlayer {
 
   public void leaveGame() {
     if (currentGame != null) {
+      Game g = currentGame;
       this.currentGame = null;
       this.team = null;
       this.state = BotState.IDLE;
       this.tasks.clear();
+      // 从床战玩家列表/队伍完全移除（bot 残留会导致 Tab/记分板/下一局数据混乱）
+      try {
+        g.playerLeave(bukkitPlayer, false);
+      } catch (Exception ignored) {
+      }
     }
   }
 

@@ -1,13 +1,16 @@
 package io.jmmym.bedwarspro.listener;
 
 import io.jmmym.bedwarspro.BedwarsPRO;
+import io.jmmym.bedwarspro.commands.JoinGameCommand;
 import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.game.GameState;
 import io.jmmym.bedwarspro.utils.ChatWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -57,6 +60,25 @@ public class ReturnLobbyListener implements Listener {
   private final Map<String, BukkitRunnable> pendingTeleports = new HashMap<>();
   private final Map<String, Integer> countdownTasks = new HashMap<>();
 
+  /**
+   * 玩家最近一次 /bw join 的选择（如 "casual item" / "casual xp" / "ranked" /
+   * "random" / 具体图名），由 JoinGameCommand 写入。游戏结束菜单「再来一次」
+   * 按这个选择重新加入（选的啥就是啥）。
+   */
+  private static final Map<UUID, String> LAST_JOIN_MODE = new HashMap<>();
+
+  /** 记录玩家最近一次 /bw join 的选择 */
+  public static void recordJoinMode(UUID uuid, String mode) {
+    if (uuid == null) {
+      return;
+    }
+    if (mode == null || mode.isEmpty()) {
+      LAST_JOIN_MODE.remove(uuid);
+    } else {
+      LAST_JOIN_MODE.put(uuid, mode);
+    }
+  }
+
   public static boolean isMenuItem(ItemStack item) {
     if (item == null || item.getType() != Material.NETHER_STAR) return false;
     ItemMeta meta = item.getItemMeta();
@@ -84,6 +106,10 @@ public class ReturnLobbyListener implements Listener {
 
   public void giveReturnLobbySlimeBallsToGamePlayers(Game game) {
     for (Player player : game.getPlayers()) {
+      // bot 假玩家不需要游戏结束菜单
+      if (BedwarsPRO.getInstance().getBotManager().isBot(player)) {
+        continue;
+      }
       giveReturnLobbySlimeBalls(player);
     }
   }
@@ -205,12 +231,29 @@ public class ReturnLobbyListener implements Listener {
   }
 
   private void handleRejoin(Player player) {
+    // 优先按最近一次 /bw join 的选择重新加入（选的啥就是啥）：
+    // casual item → /bw join casual item、casual xp → /bw join casual xp、
+    // ranked → /bw join ranked、random → /bw join random、指定图名 → /bw join <图名>
+    String mode = LAST_JOIN_MODE.get(player.getUniqueId());
+    if (mode != null && !mode.isEmpty()) {
+      player.getInventory().clear();
+      ArrayList<String> args = new ArrayList<>(Arrays.asList(mode.split(" ")));
+      new JoinGameCommand(BedwarsPRO.getInstance()).execute(player, args);
+      return;
+    }
     Game game = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
     if (game == null) {
       game = BedwarsPRO.getInstance().getGameManager().getGameByLocation(player.getLocation());
     }
     if (game == null) {
       player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "无法重新加入：未找到游戏"));
+      return;
+    }
+    // 游戏结束流程中（菜单已发、玩家还没被踢出大厅，游戏状态仍是 RUNNING）：
+    // 没有记录到原 /bw join 选择时无法自动还原，先退出旧游戏返回大厅
+    if (game.getState() == GameState.RUNNING && game.getCycle().isEndGameRunning()) {
+      game.playerLeave(player, false);
+      player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "游戏已结束，已返回大厅"));
       return;
     }
     if (game.getState() != GameState.WAITING) {

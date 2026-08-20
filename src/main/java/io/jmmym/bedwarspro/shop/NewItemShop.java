@@ -113,15 +113,21 @@ public class NewItemShop {
         || name.equals("DIAMOND_SWORD");
   }
 
-  /** 查找玩家背包中第一个符合条件的剑的槽位 */
-  private int findSwordSlot(PlayerInventory inv, int maxHotbarSlot) {
-    for (int i = 0; i <= maxHotbarSlot; i++) {
+  /** 查找玩家背包（含快捷栏）中等级最低的剑的槽位；无剑返回 -1 */
+  private int findWorstSwordSlot(PlayerInventory inv) {
+    int worst = -1;
+    int worstLevel = Integer.MAX_VALUE;
+    for (int i = 0; i < inv.getSize(); i++) {
       ItemStack item = inv.getItem(i);
       if (item != null && isSword(item.getType())) {
-        return i;
+        int lvl = getSwordLevel(item);
+        if (lvl < worstLevel) {
+          worst = i;
+          worstLevel = lvl;
+        }
       }
     }
-    return -1;
+    return worst;
   }
 
   private boolean equipItem(Player player, ItemStack item) {
@@ -478,33 +484,24 @@ public class NewItemShop {
             return false;
           }
         } else {
-          int targetSlot = findSwordSlot(inventory, 8);
-          int newLevel = getSwordLevel(addingItem);
-          if (targetSlot >= 0) {
-            ItemStack oldSword = inventory.getItem(targetSlot);
-            int oldLevel = getSwordLevel(oldSword);
-            if (newLevel > oldLevel) {
-              // 替换旧剑
-              inventory.setItem(targetSlot, addingItem);
-              player.updateInventory();
-              return true;
-            } else if (newLevel == oldLevel) {
+          // 物品模式：替换到等级最低的剑位置，旧剑放入背包（不删除）
+          int worstSlot = findWorstSwordSlot(inventory);
+          if (worstSlot >= 0) {
+            ItemStack oldSword = inventory.getItem(worstSlot);
+            inventory.setItem(worstSlot, addingItem);
+            if (oldSword != null && oldSword.getType() != Material.AIR) {
+              inventory.addItem(oldSword);
+            }
+          } else {
+            HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
+            if (notStored.size() > 0) {
               refundResources(player, trade);
-              player.sendMessage(ChatColor.RED + "你已经拥有同等级的剑，无法购买！");
-              return false;
-            } else {
-              refundResources(player, trade);
-              player.sendMessage(ChatColor.RED + "你已经拥有更好的剑，无法购买！");
+              player.sendMessage(ChatColor.RED + "背包已满，购买失败！");
               return false;
             }
           }
-          // 没有旧剑，检查背包空间
-          HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
-          if (notStored.size() > 0) {
-            refundResources(player, trade);
-            player.sendMessage(ChatColor.RED + "背包已满，购买失败！");
-            return false;
-          }
+          player.updateInventory();
+          return true;
         }
       } else {
         HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);

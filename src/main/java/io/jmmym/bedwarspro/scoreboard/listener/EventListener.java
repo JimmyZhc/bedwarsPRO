@@ -277,24 +277,28 @@ public class EventListener implements Listener {
 	private PacketListener registerPacketListener(Player killer, Team killerTeam, Player player, Team deathTeam) {
 		PacketListener listener = new PacketAdapter(Main.getPlugin(), new PacketType[] { PacketType.Play.Server.CHAT }) {
 			public void onPacketSending(PacketEvent e) {
-				Player p = e.getPlayer();
-				WrappedChatComponent chat = e.getPacket().getChatComponents().read(0);
-				String hearts = "";
-				DecimalFormat format = new DecimalFormat("#");
-				double health = killer.getHealth() / killer.getMaxHealth() * killer.getHealthScale();
-				if (!BedwarsPRO.getInstance().getBooleanConfig("hearts-in-halfs", true)) {
-					format = new DecimalFormat("#.#");
-					health /= 2.0;
-				}
-				if (BedwarsPRO.getInstance().getBooleanConfig("hearts-on-death", true)) {
-					hearts = "[" + ChatColor.RED + "\u2764" + format.format(health) + ChatColor.GOLD + "]";
-				}
-				WrappedChatComponent[] chats = WrappedChatComponent.fromChatMessage(ChatWriter.pluginMessage(ChatColor.GOLD + BedwarsPRO._l((CommandSender) p, "ingame.player.killed", (Map<String, String>) ImmutableMap.of("killer", Game.getPlayerWithTeamString(killer, killerTeam, ChatColor.GOLD, hearts), "player", Game.getPlayerWithTeamString(player, deathTeam, ChatColor.GOLD)))));
-				for (WrappedChatComponent c : chats) {
-					if (chat.getJson().equals(c.getJson())) {
-						e.setCancelled(true);
-						break;
+				try {
+					Player p = e.getPlayer();
+					WrappedChatComponent chat = e.getPacket().getChatComponents().read(0);
+					String hearts = "";
+					DecimalFormat format = new DecimalFormat("#");
+					double health = killer.getHealth() / killer.getMaxHealth() * killer.getHealthScale();
+					if (!BedwarsPRO.getInstance().getBooleanConfig("hearts-in-halfs", true)) {
+						format = new DecimalFormat("#.#");
+						health /= 2.0;
 					}
+					if (BedwarsPRO.getInstance().getBooleanConfig("hearts-on-death", true)) {
+						hearts = "[" + ChatColor.RED + "\u2764" + format.format(health) + ChatColor.GOLD + "]";
+					}
+					WrappedChatComponent[] chats = WrappedChatComponent.fromChatMessage(ChatWriter.pluginMessage(ChatColor.GOLD + BedwarsPRO._l((CommandSender) p, "ingame.player.killed", (Map<String, String>) ImmutableMap.of("killer", Game.getPlayerWithTeamString(killer, killerTeam, ChatColor.GOLD, hearts), "player", Game.getPlayerWithTeamString(player, deathTeam, ChatColor.GOLD)))));
+					for (WrappedChatComponent c : chats) {
+						if (chat.getJson().equals(c.getJson())) {
+							e.setCancelled(true);
+							break;
+						}
+					}
+				} catch (Exception ignored) {
+					// 与其他插件（如 GrimAC/PacketEvents）共存时，异常不能冒泡到 ProtocolLib
 				}
 			}
 		};
@@ -527,9 +531,10 @@ public class EventListener implements Listener {
 	private void onPacketReceiving() {
 		PacketListener packetListener = new PacketAdapter(Main.getPlugin(), ListenerPriority.HIGHEST, new PacketType[] { PacketType.Play.Client.BLOCK_DIG, PacketType.Play.Client.WINDOW_CLICK }) {
 			public void onPacketReceiving(PacketEvent e) {
-				Player player = e.getPlayer();
-				PacketContainer packet = e.getPacket();
-				if (e.getPacketType() == PacketType.Play.Client.BLOCK_DIG) {
+				try {
+					Player player = e.getPlayer();
+					PacketContainer packet = e.getPacket();
+					if (e.getPacketType() == PacketType.Play.Client.BLOCK_DIG) {
 					if (!packet.getPlayerDigTypes().read(0).equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK)) {
 						return;
 					}
@@ -573,6 +578,9 @@ public class EventListener implements Listener {
 							}
 						}.runTaskLater(Main.getPlugin(), 1L);
 					}
+					}
+				} catch (Exception ignored) {
+					// 与其他插件（如 GrimAC/PacketEvents）共存时，异常不能冒泡到 ProtocolLib
 				}
 			}
 		};

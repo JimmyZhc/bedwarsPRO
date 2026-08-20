@@ -1,0 +1,539 @@
+# ===================================================
+# BedwarsPRO 经验商店配置（xp_shop.yml）
+# 适用于经验模式对局：price 直接写所需经验值（整数）
+# 结构参考 shop (1).yml，价格按 config.yml 的
+# xp-bedwars.resource-xp 换算：铁锭=1 / 金锭=10 / 钻石=100
+# ===================================================
+shop:
+  exp:
+    item: EXP_BOTTLE
+    name: "§6§l经验兑换资源"
+    order: 3
+    permission: bw.base
+    lore:
+    - "§a将你的经验兑换成物品"
+    offers:
+    - price: 1
+      reward:
+      - type: IRON_INGOT
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: '§f铁'
+    - price: 10
+      reward:
+      - type: GOLD_INGOT
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: '§6金'
+    - price: 100
+      reward:
+      - type: DIAMOND
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: '§b钻'
+
+  armor:
+    item: DIAMOND_CHESTPLATE
+    name: "&f盔甲"
+    order: 10
+    permission: bw.base
+    lore:
+    - "&7点击这里， 购买一些装备保护你!"
+    offers:
+    - price: 1
+      reward:
+      - type: LEATHER_HELMET
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 1
+    - price: 1
+      reward:
+      - type: LEATHER_CHESTPLATE
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 1
+    - price: 1
+      reward:
+      - type: LEATHER_LEGGINGS
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 1
+    - price: 1
+      reward:
+      - type: LEATHER_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 1
+    - price: 300
+      reward:
+      - type: IRON_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: '§a坚毅之靴'
+          lore:
+          - '§7据说穿上可以反击退哦'
+    - price: 70
+      reward:
+      - type: CHAINMAIL_CHESTPLATE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 2
+    - price: 200
+      reward:
+      - type: GOLD_HELMET
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§a幻灵盔"
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 2
+    - price: 500
+      reward:
+      - type: GOLD_CHESTPLATE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§a幻灵甲"
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 5
+    - price: 300
+      reward:
+      - type: GOLD_LEGGINGS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§a幻灵裤"
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 3
+    - price: 150
+      reward:
+      - type: GOLD_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§a幻灵靴"
+          enchants:
+            PROTECTION_ENVIRONMENTAL: 2
+    - price: 500
+      reward:
+      - type: DIAMOND_HELMET
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§e真·幻灵盔"
+          enchants:
+            WATER_WORKER: 1
+            OXYGEN: 1
+            PROTECTION_PROJECTILE: 1
+    - price: 1000
+      reward:
+      - type: DIAMOND_CHESTPLATE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§e真·幻灵甲"
+          enchants:
+            PROTECTION_EXPLOSIONS: 1
+            PROTECTION_PROJECTILE: 1
+            THORNS: 1
+    - price: 800
+      reward:
+      - type: DIAMOND_LEGGINGS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§e真·幻灵裤"
+          enchants:
+            PROTECTION_FIRE: 1
+            PROTECTION_EXPLOSIONS: 1
+            THORNS: 1
+    - price: 500
+      reward:
+      - type: DIAMOND_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§e真·幻灵靴"
+          enchants:
+            DEPTH_STRIDER: 1
+            PROTECTION_FALL: 1
+
+  swords:
+    item: DIAMOND_SWORD
+    name: "武器"
+    order: 20
+    permission: bw.base
+    lore:
+    - "&7拿起武器加入战斗吧!"
+    offers:
+    - price: 1
+      reward:
+      - type: STICK
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            KNOCKBACK: 1
+    - price: 5
+      reward:
+      - type: WOOD_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f§b青铜短剑"
+          enchants:
+            KNOCKBACK: 1
+    - price: 8
+      reward:
+      - type: FISHING_ROD
+    - price: 10
+      reward:
+      - type: STONE_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f§b铁齿剑"
+          enchants:
+            DAMAGE_ALL: 1
+    - price: 30
+      reward:
+      - type: STONE_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f§b青锋剑"
+          enchants:
+            DAMAGE_ALL: 2
+    - price: 70
+      reward:
+      - type: STONE_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f§b龙泉剑"
+          enchants:
+            DAMAGE_ALL: 3
+    - price: 300
+      reward:
+      - type: IRON_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f§b游龙剑"
+          enchants:
+            LOOT_BONUS_MOBS: 1
+    - price: 400
+      reward:
+      - type: DIAMOND_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f§e§l碧玉剑"
+          enchants:
+            LOOT_BONUS_MOBS: 1
+    - price: 600
+      reward:
+      - type: GOLD_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f§c§l北斗七星剑"
+          enchants:
+            LOOT_BONUS_MOBS: 1
+
+  bows:
+    item: BOW
+    name: "&f弓与箭"
+    order: 30
+    permission: bw.base
+    lore:
+    - "&7箭上弓弦，敌命已定!"
+    offers:
+    - price: 300
+      reward:
+      - type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_INFINITE: 1
+    - price: 700
+      reward:
+      - type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_DAMAGE: 1
+            ARROW_INFINITE: 1
+    - price: 1100
+      reward:
+      - type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_DAMAGE: 2
+            ARROW_INFINITE: 1
+    - price: 1300
+      reward:
+      - type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_DAMAGE: 3
+            ARROW_INFINITE: 1
+    - price: 1500
+      reward:
+      - type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_DAMAGE: 3
+            ARROW_INFINITE: 1
+            ARROW_KNOCKBACK: 1
+    - price: 1600
+      reward:
+      - type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            ARROW_DAMAGE: 1
+            ARROW_FIRE: 1
+            ARROW_INFINITE: 1
+    - price: 100
+      reward:
+      - type: ARROW
+
+  eat:
+    item: GRILLED_PORK
+    name: "&f食物"
+    order: 40
+    permission: bw.base
+    lore:
+    - "&7我承认你很厉害， 但是撑死总比饿死好."
+    offers:
+    - price: 4
+      reward:
+      - type: GRILLED_PORK
+        amount: 2
+    - price: 20
+      reward:
+      - type: GOLDEN_APPLE
+    - price: 100
+      reward:
+      - type: CAKE
+        amount: 8
+
+  blocks:
+    item: SANDSTONE
+    name: "&f方块与镐头"
+    order: 60
+    permission: bw.base
+    lore:
+    - "&7为了守护床和队友!"
+    offers:
+    - price: 1
+      reward:
+      - type: SANDSTONE
+        damage: 2
+        amount: 2
+    - price: 7
+      reward:
+      - type: ENDER_STONE
+    - price: 8
+      reward:
+      - type: PACKED_ICE
+    - price: 15
+      reward:
+      - type: GLOWSTONE
+        amount: 4
+    - price: 1
+      reward:
+      - type: LADDER
+    - price: 99
+      reward:
+      - type: WEB
+    - price: 200
+      reward:
+      - type: GLASS
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§c防爆玻璃"
+          lore:
+          - "§7TNT无法炸破"
+          - "§7但是又很容易被拆掉"
+          - "§7ps:他并不能保护别的方块被炸"
+    - price: 10
+      reward:
+      - type: CHEST
+    - price: 100
+      reward:
+      - type: ENDER_CHEST
+    - price: 4
+      reward:
+      - type: STONE_PICKAXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            DIG_SPEED: 1
+    - price: 40
+      reward:
+      - type: IRON_PICKAXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            DIG_SPEED: 1
+    - price: 100
+      reward:
+      - type: GOLD_PICKAXE
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            DIG_SPEED: 1
+
+  usefulstuff:
+    item: TNT
+    name: "&f道具"
+    order: 70
+    permission: bw.base
+    lore:
+    - "&7走过路过不要错过啊，守家杀人必备神器都在这里!"
+    offers:
+    - price: 288
+      reward:
+      - type: TNT
+    - price: 150
+      reward:
+      - type: BLAZE_ROD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f§c神秘之物"
+          lore:
+          - "§7用途未知(紧急救援平台)"
+    - price: 30
+      reward:
+      - type: STRING
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f陷阱"
+          lore:
+          - "§7困住偷家的!"
+    - price: 32
+      reward:
+      - type: BRICK
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§4守卫墙"
+          lore:
+          - "§a右键激活这个物品"
+          - "§7释放一个5x3的保护墙!"
+    - price: 1000
+      reward:
+      - type: MONSTER_EGG
+        damage: 91
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§cTNT 羊"
+          lore:
+          - "§7去吧! 炸飞他们"
+    - price: 100
+      reward:
+      - type: SULPHUR
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§f回城卷轴"
+          lore:
+          - "§a右键使用"
+          - "§f回到出生点."
+          - "§c使用后5秒内不能移动，否则卷轴会自毁!"
+    - price: 50
+      reward:
+      - type: COMPASS
+    - price: 500
+      reward:
+      - type: ENDER_PEARL
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§6传送球"
+          lore:
+          - "§7偷偷地搞事吧"
+    - price: 300
+      reward:
+      - type: PRISMARINE_SHARD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§3剑气立场"
+          lore:
+          - "§7看似简单的一块碎片"
+    - price: 500
+      reward:
+      - type: EGG
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: "§a搭桥蛋"
+          lore:
+          - "§7你猜他的功能是什么?"
+
+  drinks:
+    item: POTION
+    name: "&f药水"
+    order: 80
+    permission: bw.base
+    lore:
+    - "&7嗑药!做一回真男人"
+    offers:
+    - price: 30
+      reward:
+      - type: POTION
+        damage: 8197
+    - price: 50
+      reward:
+      - type: POTION
+        damage: 8229
+    - price: 70
+      reward:
+      - type: POTION
+        damage: 8194
+    - price: 88
+      reward:
+      - type: POTION
+        damage: 8235
+    - price: 100
+      reward:
+      - type: POTION
+        damage: 8201
+    - price: 300
+      reward:
+      - type: POTION
+        damage: 8193
+schema-version: 1

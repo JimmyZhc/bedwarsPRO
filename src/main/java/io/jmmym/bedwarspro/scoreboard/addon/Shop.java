@@ -17,6 +17,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 
 import io.jmmym.bedwarspro.BedwarsPRO;
 import io.jmmym.bedwarspro.game.Game;
@@ -44,7 +45,6 @@ public class Shop {
 	private List<NPC> shops;
 	private List<HolographicAPI> titles;
 	private List<Integer> npcid;
-	private WrappedDataWatcher.Serializer booleanserializer;
 
 	public Shop(Arena arena) {
 		this.arena = arena;
@@ -52,9 +52,6 @@ public class Shop {
 		shops = new ArrayList<NPC>();
 		titles = new ArrayList<HolographicAPI>();
 		npcid = new ArrayList<Integer>();
-		if (!BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
-			booleanserializer = WrappedDataWatcher.Registry.get(Boolean.class);
-		}
 		if (Config.shop_enabled) {
 			if (Config.game_shop_item.containsKey(game.getName())) {
 				for (String loc : Config.game_shop_item.get(game.getName())) {
@@ -176,13 +173,22 @@ public class Shop {
 				ProtocolManager man = ProtocolLibrary.getProtocolManager();
 				PacketContainer packet = man.createPacket(PacketType.Play.Server.ENTITY_METADATA);
 				packet.getIntegers().write(0, entity.getEntityId());
-				WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
-				if (BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
-					wrappedDataWatcher.setObject(3, (byte) 0);
-				} else {
-					wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, booleanserializer), false);
+				// 使用 WrappedWatchableObject 而非 new WrappedDataWatcher()，
+				// 避免部分 ProtocolLib 版本（LegacyDataWatcher.newHandle）构造崩溃
+				List<WrappedWatchableObject> list = new ArrayList<WrappedWatchableObject>();
+				try {
+					if (BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
+						list.add(new WrappedWatchableObject(3, (byte) 0));
+					} else {
+						// 1.9+ 必须显式指定 serializer，否则 DataWatcherObject.b()==null，
+						// GrimAC(PacketEvents) 读该包会抛 NPE/越界
+						WrappedDataWatcher.Serializer boolSerializer = WrappedDataWatcher.Registry.get(Boolean.class);
+						list.add(new WrappedWatchableObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, boolSerializer), false));
+					}
+				} catch (Exception ex) {
+					return;
 				}
-				packet.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
+				packet.getWatchableCollectionModifier().write(0, list);
 				for (Player player : game.getPlayers()) {
 					try {
 						man.sendServerPacket(player, packet, false);

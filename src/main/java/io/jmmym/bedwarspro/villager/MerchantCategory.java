@@ -110,19 +110,30 @@ public class MerchantCategory {
         }
 
         ItemStack item1 = null;
-        try {
-          item1 = setResourceName(ItemStack.deserialize(offerSection.get("price").get(0)));
-        } catch (Exception e) {
-          // CATCH EXCEPTION
-        }
-
         ItemStack item2 = null;
-        if (offerSection.get("price").size() == 2) {
-          try {
-            item2 = setResourceName(ItemStack.deserialize(offerSection.get("price").get(1)));
-          } catch (Exception e) {
-            // CATCH EXCEPTION
+
+        Object priceValue = offerSection.get("price");
+        if (priceValue instanceof List) {
+          // 物品商店：price 为资源物品列表（如 35 铁锭）
+          List<?> priceList = (List<?>) priceValue;
+          if (!priceList.isEmpty()) {
+            try {
+              item1 = setResourceName(ItemStack.deserialize((Map<String, Object>) priceList.get(0)));
+            } catch (Exception e) {
+              // CATCH EXCEPTION
+            }
           }
+          if (priceList.size() == 2) {
+            try {
+              item2 = setResourceName(ItemStack.deserialize((Map<String, Object>) priceList.get(1)));
+            } catch (Exception e) {
+              // CATCH EXCEPTION
+            }
+          }
+        } else if (priceValue instanceof Number) {
+          // 经验商店：price 直接为所需经验值，用经验瓶承载数量作为价格标记
+          int xpCost = ((Number) priceValue).intValue();
+          item1 = new ItemStack(Material.EXP_BOTTLE, Math.max(1, xpCost));
         }
         ItemStack reward = null;
         try {

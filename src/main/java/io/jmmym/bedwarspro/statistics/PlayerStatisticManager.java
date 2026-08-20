@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -275,9 +276,19 @@ public class PlayerStatisticManager {
       return playerStatistic;
     }
 
+    // 数据损坏防御：路径存在但并非配置节（标量/异常值）时移除该条数据并重建，
+    // 避免 getConfigurationSection 返回 null 导致 NPE（例如旧版本或手动编辑写入的异常数据）
+    ConfigurationSection section =
+        this.fileDatabase.getConfigurationSection("data." + uuid.toString());
+    if (section == null) {
+      this.fileDatabase.set("data." + uuid.toString(), null);
+      PlayerStatistic playerStatistic = new PlayerStatistic(uuid);
+      this.playerStatistic.put(uuid, playerStatistic);
+      return playerStatistic;
+    }
+
     HashMap<String, Object> deserialize = new HashMap<>();
-    deserialize.putAll(
-        this.fileDatabase.getConfigurationSection("data." + uuid.toString()).getValues(false));
+    deserialize.putAll(section.getValues(false));
     PlayerStatistic playerStatistic = new PlayerStatistic(deserialize);
     playerStatistic.setId(uuid);
     Player player = BedwarsPRO.getInstance().getServer().getPlayer(uuid);

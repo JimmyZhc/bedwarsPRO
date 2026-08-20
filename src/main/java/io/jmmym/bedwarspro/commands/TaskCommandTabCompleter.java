@@ -76,11 +76,26 @@ public class TaskCommandTabCompleter implements TabCompleter {
                 firstLevel.add("joinitem");
             }
             if (isAdmin(sender)) {
+                if ("mapgui".startsWith(args[0].toLowerCase())) {
+                    firstLevel.add("mapgui");
+                }
+                if ("rankreload".startsWith(args[0].toLowerCase())) {
+                    firstLevel.add("rankreload");
+                }
+                if ("debug".startsWith(args[0].toLowerCase())) {
+                    firstLevel.add("debug");
+                }
                 if ("clearstats".startsWith(args[0].toLowerCase())) {
                     firstLevel.add("clearstats");
                 }
                 if ("clearrecord".startsWith(args[0].toLowerCase())) {
                     firstLevel.add("clearrecord");
+                }
+                if ("check".startsWith(args[0].toLowerCase())) {
+                    firstLevel.add("check");
+                }
+                if ("update".startsWith(args[0].toLowerCase())) {
+                    firstLevel.add("update");
                 }
             }
             return firstLevel;
@@ -145,6 +160,26 @@ public class TaskCommandTabCompleter implements TabCompleter {
         if (args[0].equalsIgnoreCase("joinitem") && args.length == 2) {
             if (sender.hasPermission("bwpro.joinitem.admin") || sender.isOp()) {
                 return Arrays.asList("reload");
+            }
+            return new ArrayList<>();
+        }
+        // /bwpro update [confirm|cancel] — 版本更新（admin）
+        if (args[0].equalsIgnoreCase("update")) {
+            if (!isAdmin(sender)) {
+                return new ArrayList<>();
+            }
+            if (args.length == 2) {
+                return Arrays.asList("confirm", "cancel");
+            }
+            return new ArrayList<>();
+        }
+        // /bwpro debug <on|off|status> — Bot 调试日志开关（admin）
+        if (args[0].equalsIgnoreCase("debug")) {
+            if (!isAdmin(sender)) {
+                return new ArrayList<>();
+            }
+            if (args.length == 2) {
+                return Arrays.asList("on", "off", "status");
             }
             return new ArrayList<>();
         }

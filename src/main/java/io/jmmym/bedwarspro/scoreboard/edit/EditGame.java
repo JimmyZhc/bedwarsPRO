@@ -762,34 +762,38 @@ public class EditGame implements Listener {
 		PacketListener packetListener = new PacketAdapter(Main.getPlugin(), ListenerPriority.HIGHEST, new PacketType[] { PacketType.Play.Client.WINDOW_CLICK }) {
 			@Override
 			public void onPacketReceiving(PacketEvent e) {
-				PacketContainer packet = e.getPacket();
-				Player player = e.getPlayer();
-				if (packet.getIntegers().read(0) == 0) {
-					ItemStack itemStack = packet.getItemModifier().read(0);
-					if (packet.getIntegers().read(1) == 2 && itemStack != null && !itemStack.getType().equals(Material.AIR)) {
-						ItemMeta itemMeta = itemStack.getItemMeta();
-						player.closeInventory();
-						if (itemMeta.getDisplayName() != null) {
-							String lore = itemMeta.getLore().get(0);
-							String displayName = itemMeta.getDisplayName();
-							String command = lore.replace("§", "").replace("{value}", displayName);
-							
-							String[] args = command.split(" ");
-							
-							// 如果命令是 addteam 且参数个数为 5（即还需要输入最大玩家数）
-							if (args.length == 5 && args[1].equalsIgnoreCase("addteam")) {
-								openAnvilInventory(player, Config.getLanguage("anvil.edit_game.set_team_max_players"), command + " {value}");
-							} else {
-								Bukkit.dispatchCommand(player, command);
-								if (args.length >= 3) {
-									Game game = BedwarsPRO.getInstance().getGameManager().getGame(args[2]);
-									if (game != null) {
-										Main.getInstance().getEditHolographicManager().displayGameLocation(player, game.getName());
+				try {
+					PacketContainer packet = e.getPacket();
+					Player player = e.getPlayer();
+					if (packet.getIntegers().read(0) == 0) {
+						ItemStack itemStack = packet.getItemModifier().read(0);
+						if (packet.getIntegers().read(1) == 2 && itemStack != null && !itemStack.getType().equals(Material.AIR)) {
+							ItemMeta itemMeta = itemStack.getItemMeta();
+							player.closeInventory();
+							if (itemMeta.getDisplayName() != null) {
+								String lore = itemMeta.getLore().get(0);
+								String displayName = itemMeta.getDisplayName();
+								String command = lore.replace("§", "").replace("{value}", displayName);
+								
+								String[] args = command.split(" ");
+								
+								// 如果命令是 addteam 且参数个数为 5（即还需要输入最大玩家数）
+								if (args.length == 5 && args[1].equalsIgnoreCase("addteam")) {
+									openAnvilInventory(player, Config.getLanguage("anvil.edit_game.set_team_max_players"), command + " {value}");
+								} else {
+									Bukkit.dispatchCommand(player, command);
+									if (args.length >= 3) {
+										Game game = BedwarsPRO.getInstance().getGameManager().getGame(args[2]);
+										if (game != null) {
+											Main.getInstance().getEditHolographicManager().displayGameLocation(player, game.getName());
+										}
 									}
 								}
 							}
 						}
 					}
+				} catch (Exception ignored) {
+					// 与其他插件（如 GrimAC/PacketEvents）共存时，异常不能冒泡到 ProtocolLib
 				}
 			}
 		};

@@ -72,26 +72,30 @@ public class NoBreakBed {
 	private void registerPacketListener() {
 		packetListener = new PacketAdapter(Main.getPlugin(), ListenerPriority.HIGHEST, new PacketType[] { PacketType.Play.Client.BLOCK_DIG }) {
 			public void onPacketReceiving(PacketEvent e) {
-				if (!Config.nobreakbed_enabled) {
-					return;
-				}
-				Player player = e.getPlayer();
-				if (BedwarsUtil.isSpectator(game, player) || game.getState() != GameState.RUNNING) {
-					return;
-				}
-				if (!bre && e.getPacketType() == PacketType.Play.Client.BLOCK_DIG) {
-					PacketContainer packet = e.getPacket();
-					BlockPosition position = packet.getBlockPositionModifier().read(0);
-					Block block = new Location(player.getWorld(), position.getX(), position.getY(), position.getZ()).getBlock();
-					if (!block.getType().equals(game.getTargetMaterial())) {
+				try {
+					if (!Config.nobreakbed_enabled) {
 						return;
 					}
-					if (!packet.getPlayerDigTypes().read(0).equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK)) {
+					Player player = e.getPlayer();
+					if (BedwarsUtil.isSpectator(game, player) || game.getState() != GameState.RUNNING) {
 						return;
 					}
-					player.sendMessage(Config.nobreakbed_nobreakmessage);
-					e.setCancelled(true);
-					block.getState().update();
+					if (!bre && e.getPacketType() == PacketType.Play.Client.BLOCK_DIG) {
+						PacketContainer packet = e.getPacket();
+						BlockPosition position = packet.getBlockPositionModifier().read(0);
+						Block block = new Location(player.getWorld(), position.getX(), position.getY(), position.getZ()).getBlock();
+						if (!block.getType().equals(game.getTargetMaterial())) {
+							return;
+						}
+						if (!packet.getPlayerDigTypes().read(0).equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK)) {
+							return;
+						}
+						player.sendMessage(Config.nobreakbed_nobreakmessage);
+						e.setCancelled(true);
+						block.getState().update();
+					}
+				} catch (Exception ignored) {
+					// 与其他插件（如 GrimAC/PacketEvents）共存时，异常不能冒泡到 ProtocolLib
 				}
 			}
 		};

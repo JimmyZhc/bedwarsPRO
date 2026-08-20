@@ -5,11 +5,11 @@ import io.jmmym.bedwarspro.bot.tasks.BotRegistry;
 import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.utils.ChatWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -20,6 +20,8 @@ import org.bukkit.entity.Player;
 public class BotManager {
 
   private final BedwarsPRO plugin;
+  // 用并发 Map：CorpsePacketFilter 在 Netty 线程（非主线程）读取 bot 名单，
+  // 普通 HashMap 在主线程增删时并发读会抛 ConcurrentModificationException
   private final Map<UUID, BotPlayer> botPlayers;
   private final Map<UUID, String> botNames;
   private final Map<Integer, BotTaskRunner> taskRunners;
@@ -29,9 +31,9 @@ public class BotManager {
 
   public BotManager(BedwarsPRO plugin) {
     this.plugin = plugin;
-    this.botPlayers = new HashMap<>();
-    this.botNames = new HashMap<>();
-    this.taskRunners = new HashMap<>();
+    this.botPlayers = new ConcurrentHashMap<>();
+    this.botNames = new ConcurrentHashMap<>();
+    this.taskRunners = new ConcurrentHashMap<>();
     this.random = new Random();
   }
 
@@ -80,6 +82,8 @@ public class BotManager {
       bot.leaveGame();
     }
     botNames.remove(player.getUniqueId());
+    // 手动加入的假人不会自动断开，需要手动移除
+    BukkitFakePlayer.removeFakePlayer(player);
   }
 
   public void unregisterBot(UUID uuid) {
@@ -88,6 +92,10 @@ public class BotManager {
       bot.leaveGame();
     }
     botNames.remove(uuid);
+    Player p = plugin.getServer().getPlayer(uuid);
+    if (p != null) {
+      BukkitFakePlayer.removeFakePlayer(p);
+    }
   }
 
   public String generateBotName() {
@@ -116,9 +124,13 @@ public class BotManager {
       runner.stop();
     }
 
-    List<BotPlayer> bots = getBotsInGame(game);
+    // 完整移除该对局的所有 bot：床战 + 服务器玩家列表 + 世界实体 + Tab 条目
+    List<BotPlayer> bots = new ArrayList<>(getBotsInGame(game));
     for (BotPlayer bot : bots) {
-      bot.leaveGame();
+      try {
+        unregisterBot(bot.getBukkitPlayer());
+      } catch (Exception ignored) {
+      }
     }
   }
 
@@ -156,28 +168,46 @@ public class BotManager {
           // 延迟加入游戏
           plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             try {
-              // 直接找WAITING状态的游戏加入，不走命令（命令需要真实在线玩家）
+              // 优先加入调用方指定的游戏（/bwbot add <游戏>），
+              // 否则从所有等待游戏中随机选一个（避免 bot 进错图）
               List<Game> games = plugin.getGameManager().getGames();
               Game target = null;
-              for (Game g : games) {
-                if (g.getState() == io.jmmym.bedwarspro.game.GameState.WAITING
-                    && g.checkGame() == io.jmmym.bedwarspro.game.GameCheckCode.OK) {
-                  target = g;
-                  break;
+              if (game != null && game.getState() == io.jmmym.bedwarspro.game.GameState.WAITING
+                  && game.checkGame() == io.jmmym.bedwarspro.game.GameCheckCode.OK) {
+                target = game;
+              }
+              if (target == null) {
+                List<Game> candidates = new ArrayList<>();
+                for (Game g : games) {
+                  if (g.getState() == io.jmmym.bedwarspro.game.GameState.WAITING
+                      && g.checkGame() == io.jmmym.bedwarspro.game.GameCheckCode.OK) {
+                    candidates.add(g);
+                  }
+                }
+                if (!candidates.isEmpty()) {
+                  target = candidates.get(io.jmmym.bedwarspro.utils.Utils.randInt(0, candidates.size() - 1));
                 }
               }
               if (target == null) {
                 plugin.getServer().getConsoleSender().sendMessage(
                     ChatWriter.pluginMessage(ChatColor.RED + "[Bot] " + fakePlayer.getName() + " 没有可用的等待中游戏"));
+                // 清理：未加入游戏的假人不能残留
+                unregisterBot(fakePlayer);
                 return;
               }
               boolean joined = target.playerJoins(fakePlayer);
               if (joined) {
+                // 绑定 bot 与游戏（否则 getBotsInGame/getBotCountInGame 永远为空，
+                // maxBots 上限失效、游戏结束无法清理 bot、/bwbot list/remove 全失效）
+                bot.joinGame(target);
+                target.addBot(bot);
                 plugin.getServer().getConsoleSender().sendMessage(
                     ChatWriter.pluginMessage(ChatColor.GREEN + "[Bot] " + fakePlayer.getName() + " 已加入 " + target.getName()));
               } else {
                 plugin.getServer().getConsoleSender().sendMessage(
                     ChatWriter.pluginMessage(ChatColor.RED + "[Bot] " + fakePlayer.getName() + " 加入游戏失败"));
+                // 清理：加入失败则移除假人，等待下次自动补位
+                unregisterBot(fakePlayer);
               }
             } catch (Exception e) {
               plugin.getServer().getConsoleSender().sendMessage(
@@ -204,6 +234,10 @@ public class BotManager {
         bot.getCurrentGame().removeBot(bot);
       }
       bot.leaveGame();
+      try {
+        BukkitFakePlayer.removeFakePlayer(bot.getBukkitPlayer());
+      } catch (Exception ignored) {
+      }
     }
     botPlayers.clear();
     botNames.clear();

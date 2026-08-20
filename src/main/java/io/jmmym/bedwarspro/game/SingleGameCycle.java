@@ -20,6 +20,14 @@ public class SingleGameCycle extends GameCycle {
   }
 
   private void kickPlayer(Player player, boolean wasSpectator) {
+    // bot 假玩家不走真实玩家的大厅/统计/命令逻辑，直接完整移除
+    // （床战玩家列表 + 服务器玩家列表 + 世界实体 + Tab 条目），
+    // 避免假连接/假数据残留导致 Tab 重复、游戏状态异常
+    if (BedwarsPRO.getInstance().getBotManager().isBot(player)) {
+      BedwarsPRO.getInstance().getBotManager().unregisterBot(player);
+      return;
+    }
+
     for (Player freePlayer : this.getGame().getFreePlayers()) {
       player.showPlayer(freePlayer);
     }
@@ -77,65 +85,92 @@ public class SingleGameCycle extends GameCycle {
 
   @Override
   public void onGameEnds() {
-    // Reset scoreboard first
-    this.getGame().resetScoreboard();
+    try {
+      // 先清理本对局所有 bot（停止任务 + 床战 + 玩家列表 + 世界 + Tab 条目），
+      // 再踢出真人玩家：确保真人被传送回大厅时 bot 已不在服务器玩家列表，
+      // 避免玩家跨世界传送 / setPlayerVisibility 把残留 bot 的 PlayerInfo 再次
+      // 刷新给真人，导致 Tab 中不定时重复显示 bot 名字。
+      try {
+        BedwarsPRO.getInstance().getBotManager().onGameEnd(this.getGame());
+      } catch (Exception ignored) {
+      }
 
-    // First team players, they get a reserved slot in lobby
-    for (Player p : this.getGame().getTeamPlayers()) {
-      this.kickPlayer(p, false);
-    }
+      // Reset scoreboard first
+      this.getGame().resetScoreboard();
 
-    // and now the spectators
-    List<Player> freePlayers = new ArrayList<Player>(this.getGame().getFreePlayers());
-    for (Player p : freePlayers) {
-      this.kickPlayer(p, true);
-    }
-
-    // 强制传送残留玩家（安全网）
-    final Game game = this.getGame();
-    new BukkitRunnable() {
-      @Override
-      public void run() {
-        for (Player p : new ArrayList<>(game.getPlayers())) {
-          if (p.isOnline()) {
-            Location target = game.getMainLobby() != null ? game.getMainLobby() : game.getLobby();
-            if (target != null) {
-              p.teleport(target);
-            }
-            game.playerLeave(p, false);
-          }
-        }
-        // 也处理freePlayers中可能残留的
-        for (Player p : new ArrayList<>(game.getFreePlayers())) {
-          if (p.isOnline()) {
-            Location target = game.getMainLobby() != null ? game.getMainLobby() : game.getLobby();
-            if (target != null) {
-              p.teleport(target);
-            }
-            game.playerLeave(p, false);
-          }
+      // First team players, they get a reserved slot in lobby
+      for (Player p : this.getGame().getTeamPlayers()) {
+        try {
+          this.kickPlayer(p, false);
+        } catch (Exception e) {
+          // 单个玩家处理失败不影响其他玩家和游戏结束
+          e.printStackTrace();
         }
       }
-    }.runTaskLater(BedwarsPRO.getInstance(), 60L);
 
-    // reset countdown prevention breaks
-    this.setEndGameRunning(false);
+      // and now the spectators
+      List<Player> freePlayers = new ArrayList<Player>(this.getGame().getFreePlayers());
+      for (Player p : freePlayers) {
+        try {
+          this.kickPlayer(p, true);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
 
-    // Reset team chests
-    for (Team team : this.getGame().getTeams().values()) {
-      team.setInventory(null);
-      team.getChests().clear();
+      // 强制传送残留玩家（安全网）
+      final Game game = this.getGame();
+      new BukkitRunnable() {
+        @Override
+        public void run() {
+          for (Player p : new ArrayList<>(game.getPlayers())) {
+            if (p.isOnline() && !BedwarsPRO.getInstance().getBotManager().isBot(p)) {
+              Location target = game.getMainLobby() != null ? game.getMainLobby() : game.getLobby();
+              if (target != null) {
+                p.teleport(target);
+              }
+              game.playerLeave(p, false);
+            }
+          }
+          // 也处理freePlayers中可能残留的
+          for (Player p : new ArrayList<>(game.getFreePlayers())) {
+            if (p.isOnline() && !BedwarsPRO.getInstance().getBotManager().isBot(p)) {
+              Location target = game.getMainLobby() != null ? game.getMainLobby() : game.getLobby();
+              if (target != null) {
+                p.teleport(target);
+              }
+              game.playerLeave(p, false);
+            }
+          }
+        }
+      }.runTaskLater(BedwarsPRO.getInstance(), 60L);
+
+      // reset countdown prevention breaks
+      this.setEndGameRunning(false);
+
+      // Reset team chests
+      for (Team team : this.getGame().getTeams().values()) {
+        team.setInventory(null);
+        team.getChests().clear();
+      }
+
+      // clear protections
+      this.getGame().clearProtections();
+
+      // reset region
+      this.getGame().resetRegion();
+    } finally {
+      // 无论如何都要把状态改回 WAITING（防止任何异常导致游戏卡在 RUNNING）
+      this.getGame().setState(GameState.WAITING);
+      this.getGame().updateScoreboard();
+
+      // 兜底清理本对局所有 bot（停止任务 + 床战 + 玩家列表 + 世界 + Tab 条目）。
+      // 即使上方 kickPlayer 循环因异常中断，残留的 bot 也会被完整移除
+      try {
+        BedwarsPRO.getInstance().getBotManager().onGameEnd(this.getGame());
+      } catch (Exception ignored) {
+      }
     }
-
-    // clear protections
-    this.getGame().clearProtections();
-
-    // reset region
-    this.getGame().resetRegion();
-
-    // set state and with that, the sign
-    this.getGame().setState(GameState.WAITING);
-    this.getGame().updateScoreboard();
   }
 
   @Override
@@ -165,7 +200,12 @@ public class SingleGameCycle extends GameCycle {
 
     if (this.getGame().getPlayers().size() == 0 || task.getCounter() == 0) {
       BedwarsGameEndEvent endEvent = new BedwarsGameEndEvent(this.getGame());
-      BedwarsPRO.getInstance().getServer().getPluginManager().callEvent(endEvent);
+      try {
+        BedwarsPRO.getInstance().getServer().getPluginManager().callEvent(endEvent);
+      } catch (Throwable ex) {
+        // 结束事件监听器异常不能中断 onGameEnds（状态重置）
+        ex.printStackTrace();
+      }
 
       this.onGameEnds();
       task.cancel();

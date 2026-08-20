@@ -335,8 +335,22 @@ public class Game {
       Material targetMaterial = this.getTargetMaterial();
 
       if (targetMaterial.equals(Material.BED_BLOCK)) {
-        if ((t.getHeadTarget() == null || t.getFeetTarget() == null)
-            || (!Utils.isBedBlock(t.getHeadTarget()) || !Utils.isBedBlock(t.getFeetTarget()))) {
+        if (t.getHeadTarget() == null || !Utils.isBedBlock(t.getHeadTarget())) {
+          return GameCheckCode.TEAM_NO_WRONG_BED;
+        }
+
+        Block feet = t.getFeetTarget();
+        if (feet == null || !Utils.isBedBlock(feet)) {
+          // 兜底：历史配置可能缺 bedfeed（旧版反序列化在 chunk 未加载时丢弃了 feet），
+          // 床固定为两格，head 的相邻床块即为 feet，此处按 head 邻居补算。
+          Block neighbor = Utils.getBedNeighbor(t.getHeadTarget());
+          if (neighbor != null && Utils.isBedBlock(neighbor)) {
+            t.setTargetFeetBlock(neighbor.getLocation());
+            feet = neighbor;
+          }
+        }
+
+        if (feet == null || !Utils.isBedBlock(feet)) {
           return GameCheckCode.TEAM_NO_WRONG_BED;
         }
       } else {
@@ -1198,9 +1212,33 @@ public class Game {
 
       @Override
       public void run() {
+        // 玩家在任务执行前已离开本游戏（被踢出/游戏结束清理）则跳过，
+        // 避免对已移除的 bot/真人互相 hidePlayer 引发 PlayerInfo 状态错乱
+        if (!Game.this.getPlayers().contains(p)) {
+          return;
+        }
         for (Player playerInGame : Game.this.getPlayers()) {
+          if (playerInGame.equals(p)) {
+            continue;
+          }
+          // bot 不参与床战 hidePlayer/showPlayer（hide/show 会重发 PlayerInfo 包，
+          // 时序错乱会导致 Tab 重复显示 bot 名字）；bot 的可见性由 BukkitFakePlayer
+          // 统一管理（创建时 ADD+Spawn、复活时 REMOVE+ADD+Destroy+Spawn）。
+          if (BedwarsPRO.getInstance().getBotManager().isBot(p)
+              || BedwarsPRO.getInstance().getBotManager().isBot(playerInGame)) {
+            continue;
+          }
           playerInGame.hidePlayer(p);
           p.hidePlayer(playerInGame);
+        }
+        // p 是真人：补发游戏内所有 bot 的可见性包。bot 不参与上面的 hide/show，
+        // 后加入的真人需要显式收到 bot 的 ADD+Spawn 才能看到已在游戏中的 bot。
+        if (!BedwarsPRO.getInstance().getBotManager().isBot(p)) {
+          for (Player playerInGame : Game.this.getPlayers()) {
+            if (BedwarsPRO.getInstance().getBotManager().isBot(playerInGame)) {
+              io.jmmym.bedwarspro.bot.BukkitFakePlayer.sendVisibilityToPlayer(playerInGame, p);
+            }
+          }
         }
       }
 
@@ -1240,6 +1278,12 @@ public class Game {
 
         @Override
         public void run() {
+          // 玩家已不在本游戏（被踢出/游戏结束清理）则跳过 setPlayerVisibility：
+          // 否则会对其他玩家重发 ADD_PLAYER，导致 Tab 里残留/重复显示
+          // 已离开玩家（含 bot）的名字
+          if (!Game.this.getPlayers().contains(p)) {
+            return;
+          }
           Game.this.setPlayerGameMode(p);
           Game.this.setPlayerVisibility(p);
         }
@@ -1324,7 +1368,11 @@ public class Game {
           if (player.equals(p)) {
             continue;
           }
-
+          // bot 不参与 showPlayer（会重发 PlayerInfo 包导致 Tab 重复），
+          // bot 的可见性由 BukkitFakePlayer 统一管理
+          if (BedwarsPRO.getInstance().getBotManager().isBot(player)) {
+            continue;
+          }
           player.showPlayer(p);
           p.showPlayer(player);
         }
@@ -1395,6 +1443,7 @@ public class Game {
     }
 
     if (BedwarsPRO.getInstance().statisticsEnabled()) {
+      boolean isBotPlayer = BedwarsPRO.getInstance().getBotManager().isBot(p);
 
       if (BedwarsPRO.getInstance().isHologramsEnabled()
           && BedwarsPRO.getInstance().getHolographicInteractor() != null && BedwarsPRO.getInstance()
@@ -1402,11 +1451,14 @@ public class Game {
         BedwarsPRO.getInstance().getHolographicInteractor().updateHolograms(p);
       }
 
-      if (BedwarsPRO.getInstance().getBooleanConfig("statistics.show-on-game-end", true)) {
+      if (!isBotPlayer && BedwarsPRO.getInstance().getBooleanConfig("statistics.show-on-game-end", true)) {
         BedwarsPRO.getInstance().getServer().dispatchCommand(p, "bw stats");
       }
-      BedwarsPRO.getInstance().getPlayerStatisticManager().storeStatistic(statistic);
+      if (!isBotPlayer) {
+        BedwarsPRO.getInstance().getPlayerStatisticManager().storeStatistic(statistic);
+      }
 
+      // bot 也要卸载统计，防止内存泄漏
       BedwarsPRO.getInstance().getPlayerStatisticManager().unloadStatistic(p);
     }
 
@@ -1720,6 +1772,12 @@ public class Game {
   }
 
   public void setPlayerVisibility(Player player) {
+    // bot 的 Tab/实体可见性由 BukkitFakePlayer 统一管理（ADD/REMOVE/Spawn），
+    // 不参与床战 hide/show 机制——hide/show 会对 bot 重发 PlayerInfo 包，
+    // 时序错乱会导致 Tab 重复显示 bot 名字，这里直接跳过
+    if (BedwarsPRO.getInstance().getBotManager().isBot(player)) {
+      return;
+    }
     ArrayList<Player> players = new ArrayList<Player>();
     players.addAll(this.getPlayers());
 
@@ -1729,31 +1787,49 @@ public class Game {
       if (this.isSpectator(player)) {
         if (player.getGameMode().equals(GameMode.SURVIVAL)) {
           for (Player playerInGame : players) {
+            if (BedwarsPRO.getInstance().getBotManager().isBot(playerInGame)) {
+              continue;
+            }
             playerInGame.hidePlayer(player);
             player.showPlayer(playerInGame);
           }
         } else {
           for (Player teamPlayer : this.getTeamPlayers()) {
+            if (BedwarsPRO.getInstance().getBotManager().isBot(teamPlayer)) {
+              continue;
+            }
             teamPlayer.hidePlayer(player);
             player.showPlayer(teamPlayer);
           }
           for (Player freePlayer : this.getFreePlayers()) {
+            if (BedwarsPRO.getInstance().getBotManager().isBot(freePlayer)) {
+              continue;
+            }
             freePlayer.showPlayer(player);
             player.showPlayer(freePlayer);
           }
         }
       } else {
         for (Player playerInGame : players) {
+          if (BedwarsPRO.getInstance().getBotManager().isBot(playerInGame)) {
+            // 真人 show 时跳过 bot：bot 可见性由 BukkitFakePlayer 管理，
+            // 需要时（后加入玩家）通过 sendVisibilityToPlayer 补发
+            continue;
+          }
           playerInGame.showPlayer(player);
           player.showPlayer(playerInGame);
         }
       }
     } else {
       for (Player playerInGame : players) {
-        if (!playerInGame.equals(player)) {
-          playerInGame.showPlayer(player);
-          player.showPlayer(playerInGame);
+        if (playerInGame.equals(player)) {
+          continue;
         }
+        if (BedwarsPRO.getInstance().getBotManager().isBot(playerInGame)) {
+          continue;
+        }
+        playerInGame.showPlayer(player);
+        player.showPlayer(playerInGame);
       }
     }
 

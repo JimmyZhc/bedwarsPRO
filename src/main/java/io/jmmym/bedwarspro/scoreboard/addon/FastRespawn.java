@@ -40,6 +40,12 @@ public class FastRespawn implements Listener {
 		if (game == null || !game.getState().equals(GameState.RUNNING)) {
 			return;
 		}
+		// bot 假人不走真人快速复活：快速复活会把致命伤害 cancel 掉并立即回满血，
+		// 导致 bot 永远杀不死（看起来"打不动"）。bot 有自己的死亡→20tick 复活流程
+		// （PlayerListener.onPlayerDie 床完好分支），这里必须跳过。
+		if (BedwarsPRO.getInstance().getBotManager().isBot(player)) {
+			return;
+		}
 		if (BedwarsUtil.isSpectator(game, player) || player.getGameMode().equals(GameMode.SPECTATOR)) {
 			return;
 		}

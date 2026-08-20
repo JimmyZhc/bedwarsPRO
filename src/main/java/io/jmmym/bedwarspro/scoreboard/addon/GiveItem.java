@@ -154,11 +154,27 @@ public class GiveItem implements Listener {
 			if (give_option.equalsIgnoreCase("true") || (give_option.equalsIgnoreCase("start") && !respawn) || (give_option.equalsIgnoreCase("respawn") && respawn)) {
 				try {
 					ItemStack itemStack = ItemStack.deserialize((Map<String, Object>) Main.getInstance().getConfig().getList("giveitem.item." + items + ".item").get(0));
+					// 团队武器升级：发放的剑/斧直接带上队伍锋利附魔（如重生发放的木剑）
+					applyTeamWeaponEnchantment(itemStack, team);
 					player.getInventory().setItem(slot, itemStack);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+
+	/** 团队武器升级：给剑/斧加上队伍锋利附魔（无升级时不修改）。 */
+	private static void applyTeamWeaponEnchantment(ItemStack item, Team team) {
+		if (item == null || item.getType() == Material.AIR || team == null) return;
+		int level = team.getWeaponEnchantLevel();
+		if (level <= 0) return;
+		String typeName = item.getType().name();
+		if (typeName.contains("SWORD") || typeName.contains("AXE")) {
+			if (item.containsEnchantment(Enchantment.DAMAGE_ALL)) {
+				item.removeEnchantment(Enchantment.DAMAGE_ALL);
+			}
+			item.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, level);
 		}
 	}
 

@@ -6,6 +6,7 @@ import com.bugsnag.callbacks.Callback;
 import com.google.common.collect.ImmutableMap;
 import io.jmmym.bedwarspro.auth.AuthManager;
 import io.jmmym.bedwarspro.auth.AuthManager.Result;
+import io.jmmym.bedwarspro.auth.Post;
 import io.jmmym.bedwarspro.commands.*;
 import io.jmmym.bedwarspro.bot.BotConfig;
 import io.jmmym.bedwarspro.bot.BotManager;
@@ -86,7 +87,7 @@ public class BedwarsPRO extends JavaPlugin {
   // 远程可下发文件清单（插件相对路径，与后台 REMOTE_CFG_FILES 一致）：config.yml/tasks/tasks.yml 走独立字段，其余进 files JSON
   private static final String[] REMOTE_CFG_PATHS = {
           "config.yml", "tasks/tasks.yml", "tasks/messages.yml", "api.yml",
-          "shop/shop.yml", "shop/xp_shop.yml", "Scoreboard/config.yml", "Scoreboard/join-item.yml",
+          "shop/item_shop.yml", "shop/xp_shop.yml", "Scoreboard/config.yml", "Scoreboard/join-item.yml",
           "QuickStash/config-quickstash.yml"
   };
   private static Boolean locationSerializable = null;
@@ -120,6 +121,16 @@ public class BedwarsPRO extends JavaPlugin {
   private BotManager botManager = null;
   @Getter
   private BotConfig botConfig = null;
+  /** Bot 调试日志开关（/bwpro debug on|off），默认关闭。 */
+  private volatile boolean botDebug = false;
+
+  public boolean isBotDebug() {
+    return botDebug;
+  }
+
+  public void setBotDebug(boolean botDebug) {
+    this.botDebug = botDebug;
+  }
 
   public static String _l(CommandSender commandSender, String key, String singularValue,
                           Map<String, String> params) {
@@ -731,15 +742,18 @@ public class BedwarsPRO extends JavaPlugin {
     if (!folder.exists()) {
       folder.mkdirs();
     }
-    File file = new File(folder, "shop.yml");
+    // 物品商店：item_shop.yml（兼容旧版 shop.yml 自动迁移）
+    File file = new File(folder, "item_shop.yml");
     if (!file.exists()) {
-      // 兼容旧版：把位于根目录的 shop.yml 迁移到 shop/shop.yml
-      File oldFile = new File(BedwarsPRO.getInstance().getDataFolder(), "shop.yml");
+      File oldFile = new File(folder, "shop.yml");
+      if (!oldFile.exists()) {
+        oldFile = new File(BedwarsPRO.getInstance().getDataFolder(), "shop.yml");
+      }
       if (oldFile.exists()) {
         oldFile.renameTo(file);
       } else {
         // create default file
-        this.saveResource("shop/shop.yml", false);
+        this.saveResource("shop/item_shop.yml", false);
 
         // wait until it's really saved
         try {
@@ -1011,7 +1025,7 @@ public class BedwarsPRO extends JavaPlugin {
           if (taskManager != null) {
             taskManager.reload();
           }
-        } else if ("shop/shop.yml".equals(p)) {
+        } else if ("shop/item_shop.yml".equals(p)) {
           loadShop();
         } else if ("shop/xp_shop.yml".equals(p)) {
           loadShop();
@@ -1202,6 +1216,8 @@ public class BedwarsPRO extends JavaPlugin {
         this.getLogger().warning("关闭Bot系统失败: " + e.getMessage());
       }
     }
+    // 注销 Corpse 包过滤器（ProtocolLib 监听器需显式移除，避免重载泄漏）
+    io.jmmym.bedwarspro.bot.CorpsePacketFilter.shutdown();
 
     // 保存每日任务系统状态
     if (this.taskManager != null) {
@@ -1302,10 +1318,14 @@ public class BedwarsPRO extends JavaPlugin {
     // ---- 1. 保存默认配置文件（确保 config.yml 存在） ----
     saveDefaultConfig(); // 这一步会从 JAR 中复制 config.yml 到插件目录
     String authServerId = loadAuthServerId();
+    // 调试开关：备用授权域名无 SSL 证书时跳过证书校验（仅调试用，默认 false）。
+    Post.IGNORE_SSL = getConfig().getBoolean("ignore-ssl-errors", false);
     boolean authCheckEnabled = getConfig().getBoolean("auth-check", true);
     if (authCheckEnabled) {
       final Result authResult = AuthManager.check(this.getFile(), authServerId, authCheckEnabled, true);
-      if (authResult != Result.OK) {
+      // 仅对「确定未授权 / 被禁用」停服；网络异常（UNREACHABLE）直接放行启动，
+      // 由下方每 30 秒心跳持续重试连接——恢复连接后若发现未授权或被禁用仍会停服。
+      if (authResult == Result.BANNED || authResult == Result.NOT_LICENSED) {
         // 彩色控制台输出
         Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "==========================================");
         Bukkit.getConsoleSender().sendMessage(ChatColor.RED + " ");
@@ -1326,7 +1346,13 @@ public class BedwarsPRO extends JavaPlugin {
         getServer().getPluginManager().disablePlugin(this);
         return;
       }
-      getLogger().info("授权验证通过！");
+      if (authResult == Result.UNREACHABLE) {
+        // 网络异常放行：插件正常启动，由每 30 秒心跳持续重试连接。
+        getLogger().warning("[校验系统] 暂时无法连接授权服务器（网络异常），已临时放行插件启动；"
+            + "将在每 30 秒心跳中持续尝试重连，若恢复连接后发现未授权或已被禁用将自动停止运行。");
+      } else {
+        getLogger().info("授权验证通过！");
+      }
     } else {
       // 开关关闭（auth-check: false）：不强制授权验证，但仍受后台软管控。
       // 能连上授权服务器时上报状态并接受禁用指令；连不上则静默忽略，插件正常启动。
@@ -1336,6 +1362,8 @@ public class BedwarsPRO extends JavaPlugin {
     // 软管控模式下同上——后台禁用（BANNED）仍停服，其余结果（未授权/网络异常）一律忽略。
     loadRemoteConfigState();
     startAuthHeartbeat(authServerId);
+    // 启动时自动检测一次版本：后台 update/ 目录有更高版本时提示管理员执行 /bwpro update
+    io.jmmym.bedwarspro.auth.UpdateFlow.startupCheck(BedwarsPRO.this);
     
     // ---- 加载配置 ----
     loadConfigInUTF();
@@ -1444,6 +1472,18 @@ public class BedwarsPRO extends JavaPlugin {
     try {
       this.botConfig = new BotConfig(this);
       this.botManager = new BotManager(this);
+      // 启动 Corpse 尸体 Tab 周期清理 + bot 保位任务：
+      // 尸体 show 时用随机 UUID 发 ADD_PLAYER，Corpse 的 despawn 从不发 REMOVE_PLAYER，
+      // 导致 Tab 里同名条目永久累积（bot 死几次 Tab 就多几个名字）；周期任务每 5 tick
+      // 移除 bot 尸体、给真人的尸体补发 REMOVE_PLAYER，并确保 bot 在玩家列表/世界
+      // 实体列表（修复 /tp、/kill 找不到实体）。
+      io.jmmym.bedwarspro.bot.BukkitFakePlayer.startCorpseTabCleanupTask();
+      // 网络层包过滤器：Corpse 是独立插件的类，我们的 Class.forName 反射跨插件
+      // classloader 加载不到（实测 jar 内无 unldenis 类），清理代码只能静默失败。
+      // 这里直接从 ProtocolLib 拦截 Corpse 发给客户端的尸体包（随机 UUID 的
+      // ADD_PLAYER + NamedEntitySpawn），让尸体对客户端从未出现——遗体不残留、
+      // Tab 不再累积同名条目。真实假人的固定 UUID 包不受影响。
+      io.jmmym.bedwarspro.bot.CorpsePacketFilter.init(this);
       this.getLogger().info("Bot系统初始化完成。");
     } catch (Exception e) {
       this.getLogger().severe("Bot系统初始化失败: " + e.getMessage());

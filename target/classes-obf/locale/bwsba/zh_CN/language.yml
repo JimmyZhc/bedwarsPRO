@@ -60,6 +60,7 @@ item:
       set_game_spawner: "&f游戏资源生成点"
       set_region_loc1: "&f设置游戏区域A"
       set_region_loc2: "&f设置游戏区域B"
+      xp_mode: "&d经验模式开关"
       save_game: "&b保存游戏"
       start_game: "&a启用游戏"
       stop_game: "&c停止游戏"

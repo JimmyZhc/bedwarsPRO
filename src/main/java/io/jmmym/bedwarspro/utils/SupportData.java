@@ -130,6 +130,6 @@ public class SupportData {
     if (!folder.exists()) {
       folder.mkdirs();
     }
-    return new File(folder, "shop.yml");
+    return new File(folder, "item_shop.yml");
   }
 }

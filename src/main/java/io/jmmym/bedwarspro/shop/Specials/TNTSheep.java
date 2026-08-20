@@ -86,7 +86,7 @@ public class TNTSheep extends SpecialItem {
   }
 
   @SuppressWarnings("deprecation")
-  public void run(Location startLocation) {
+  public boolean run(Location startLocation) {
 
     ItemStack usedStack = null;
 
@@ -94,11 +94,13 @@ public class TNTSheep extends SpecialItem {
       usedStack = player.getInventory().getItemInHand();
       // ========== 修复：使用 durability 判断怪物蛋类型，避免强制转换 SpawnEgg ==========
       if (usedStack == null || usedStack.getType() != Material.MONSTER_EGG) {
-        return;
+        return false;
       }
       short damage = usedStack.getDurability();
       if (EntityType.fromId(damage) != EntityType.SHEEP) {
-        return;
+        // 非羊蛋：不是 TNT 羊（可能是宠物系统的宠物蛋），不消耗物品，
+        // 交还事件给宠物系统处理
+        return false;
       }
       // ========== 修复结束 ==========
       usedStack.setAmount(usedStack.getAmount() - 1);
@@ -112,6 +114,8 @@ public class TNTSheep extends SpecialItem {
         usedStack = player.getInventory().getItemInMainHand();
         usedStack.setAmount(usedStack.getAmount() - 1);
         player.getInventory().setItemInMainHand(usedStack);
+      } else {
+        return false;
       }
     }
     player.updateInventory();
@@ -123,7 +127,8 @@ public class TNTSheep extends SpecialItem {
               .pluginMessage(
                       ChatColor.RED + BedwarsPRO
                               ._l(this.player, "ingame.specials.tntsheep.no-target-found")));
-      return;
+      // 羊蛋已消耗，阻止宠物系统重复处理本次右键
+      return true;
     }
 
     BedwarsUseTNTSheepEvent event =
@@ -131,7 +136,8 @@ public class TNTSheep extends SpecialItem {
     BedwarsPRO.getInstance().getServer().getPluginManager().callEvent(event);
 
     if (event.isCancelled()) {
-      return;
+      // 羊蛋已消耗，阻止宠物系统重复处理本次右键
+      return true;
     }
 
     final Player target = event.getTargetPlayer();
@@ -185,6 +191,7 @@ public class TNTSheep extends SpecialItem {
         }
       }
     }.runTask(BedwarsPRO.getInstance());
+    return true;
   }
 
   public void updateTNT() {

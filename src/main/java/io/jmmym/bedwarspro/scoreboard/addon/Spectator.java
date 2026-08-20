@@ -86,49 +86,53 @@ public class Spectator implements Listener {
 			ProtocolManager pm = ProtocolLibrary.getProtocolManager();
 			pm.addPacketListener(new PacketAdapter(Main.getPlugin(), ListenerPriority.HIGHEST, PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.BLOCK_PLACE, PacketType.Play.Client.BLOCK_DIG, PacketType.Play.Client.USE_ITEM) {
 				public void onPacketReceiving(PacketEvent e) {
-					Player player = e.getPlayer();
-					PacketContainer packet = e.getPacket();
-					Game game = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
-					if (game == null || !game.getState().equals(GameState.RUNNING)) {
-						return;
-					}
-					if (e.getPacketType().equals(PacketType.Play.Client.USE_ENTITY)) {
-						if (packet.getEntityUseActions().read(0).equals(EntityUseAction.ATTACK) && BedwarsUtil.isSpectator(game, player)) {
-							e.setCancelled(true);
-						}
-						if (packet.getEntityUseActions().read(0).equals(EntityUseAction.INTERACT_AT) || BedwarsUtil.isSpectator(game, player)) {
+					try {
+						Player player = e.getPlayer();
+						PacketContainer packet = e.getPacket();
+						Game game = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
+						if (game == null || !game.getState().equals(GameState.RUNNING)) {
 							return;
 						}
-						int id = packet.getIntegers().read(0);
-						Player target = null;
-						for (Player p : Bukkit.getOnlinePlayers()) {
-							if (p.getEntityId() == id) {
-								target = p;
-								break;
+						if (e.getPacketType().equals(PacketType.Play.Client.USE_ENTITY)) {
+							if (packet.getEntityUseActions().read(0).equals(EntityUseAction.ATTACK) && BedwarsUtil.isSpectator(game, player)) {
+								e.setCancelled(true);
 							}
-						}
-						if (target == null) {
-							return;
-						}
-						if (!Config.spectator_enabled && !BedwarsUtil.isRespawning(game, target)) {
-							return;
-						}
-						if (!game.isInGame(target) || !BedwarsUtil.isSpectator(game, target)) {
-							return;
-						}
-						target.teleport(target.getLocation().add(0, 5, 0));
-					} else if (e.getPacketType().equals(PacketType.Play.Client.BLOCK_PLACE) || e.getPacketType().equals(PacketType.Play.Client.USE_ITEM)) {
-						if (BedwarsUtil.isRespawning(game, player)) {
+							if (packet.getEntityUseActions().read(0).equals(EntityUseAction.INTERACT_AT) || BedwarsUtil.isSpectator(game, player)) {
+								return;
+							}
+							int id = packet.getIntegers().read(0);
+							Player target = null;
+							for (Player p : Bukkit.getOnlinePlayers()) {
+								if (p.getEntityId() == id) {
+									target = p;
+									break;
+								}
+							}
+							if (target == null) {
+								return;
+							}
+							if (!Config.spectator_enabled && !BedwarsUtil.isRespawning(game, target)) {
+								return;
+							}
+							if (!game.isInGame(target) || !BedwarsUtil.isSpectator(game, target)) {
+								return;
+							}
+							target.teleport(target.getLocation().add(0, 5, 0));
+						} else if (e.getPacketType().equals(PacketType.Play.Client.BLOCK_PLACE) || e.getPacketType().equals(PacketType.Play.Client.USE_ITEM)) {
+							if (BedwarsUtil.isRespawning(game, player)) {
+								e.setCancelled(true);
+							}
+						} else if (e.getPacketType().equals(PacketType.Play.Client.BLOCK_DIG)) {
+							if (!BedwarsUtil.isRespawning(game, player)) {
+								return;
+							}
+							BlockPosition position = packet.getBlockPositionModifier().read(0);
+							Block block = new Location(player.getWorld(), position.getX(), position.getY(), position.getZ()).getBlock();
 							e.setCancelled(true);
+							block.getState().update();
 						}
-					} else if (e.getPacketType().equals(PacketType.Play.Client.BLOCK_DIG)) {
-						if (!BedwarsUtil.isRespawning(game, player)) {
-							return;
-						}
-						BlockPosition position = packet.getBlockPositionModifier().read(0);
-						Block block = new Location(player.getWorld(), position.getX(), position.getY(), position.getZ()).getBlock();
-						e.setCancelled(true);
-						block.getState().update();
+					} catch (Exception ignored) {
+						// 与其他插件（如 GrimAC/PacketEvents）共存时，异常不能冒泡到 ProtocolLib
 					}
 				}
 			});

@@ -854,6 +854,36 @@ public class PlayerListener extends BaseListener {
       pde.setDeathMessage(null);
       pde.setDroppedExp(0);
       pde.getDrops().clear();
+
+      // 移除 Corpse 为 bot 创建的同名尸体：CorpsePool.handleDeath 会给死亡玩家
+      // （含 bot）创建尸体，尸体以 bot 名字向所有附近玩家发 ADD_PLAYER，导致
+      // Tab 每死一次多一个 bot 名字；bot 复活不触发 PlayerRespawnEvent，Corpse
+      // 不会自动清尸体，这里主动移除（REMOVE_PLAYER + Destroy 一并发出）
+      io.jmmym.bedwarspro.bot.BukkitFakePlayer.scheduleRemoveCorpseForBot(player.getName());
+      // 死亡瞬间立即补位（不依赖 5 tick 周期任务）：确保 bot 仍在
+      // PlayerList.players / UUID 映射 / 世界实体列表中，/tp、/kill 按名字
+      // 能找到目标（PlayerList.getPlayer 遍历 players 列表）
+      io.jmmym.bedwarspro.bot.BukkitFakePlayer.ensureBotsInServerLists();
+
+      // 击杀者获得灵魂（下界之星）；经验模式改为击杀经验转移（见 Title.onPlayerKilled），不再给灵魂
+      Player killer = player.getKiller();
+      if (killer != null && game.isInGame(killer) && !XpManager.isXpMode(game)) {
+        ItemStack soul = new ItemStack(Material.NETHER_STAR, 1);
+        ItemMeta meta = soul.getItemMeta();
+        meta.setDisplayName(ChatColor.DARK_RED + "灵魂");
+        soul.setItemMeta(meta);
+        killer.getInventory().addItem(soul);
+      }
+
+      // 触发击杀提示 / 击杀消息 / 统计（bot 受害者的统计写入在 GameCycle.onPlayerDies 中跳过）
+      if (killer == null) {
+        killer = game.getPlayerDamager(player);
+      }
+      try {
+        game.getCycle().onPlayerDies(player, killer);
+      } catch (Exception ignored) {
+      }
+
       Team botTeam = game.getPlayerTeam(player);
       boolean bedAlive = botTeam != null && !botTeam.isDead(game);
       if (!bedAlive) {
@@ -878,7 +908,62 @@ public class PlayerListener extends BaseListener {
           }
         }.runTaskLater(BedwarsPRO.getInstance(), 5L);
       }
-      // 床完好 - 不移除，让bot自然重生
+      // 床完好 - 让bot复活。FastRespawn 对假玩家不完整（只 setHealth+teleport，
+      // 服务端 Entity.dead 未解除、客户端 bot 实体死亡后不会重新出现），这里补全复活流程。
+      // 复活延迟跟随计分板 respawn.respawn_delay（默认 5 秒），不再秒复活
+      final Player botRef = player;
+      final Game gameRef = game;
+      long botRespawnDelay = 100L;
+      try {
+        int cfgDelay = io.jmmym.bedwarspro.scoreboard.config.Config.respawn_respawn_delay;
+        if (cfgDelay > 0) {
+          botRespawnDelay = cfgDelay * 20L;
+        }
+      } catch (Throwable ignored) {
+      }
+      Bukkit.getServer().getScheduler().runTaskLater(BedwarsPRO.getInstance(), () -> {
+        try {
+          if (gameRef == null || gameRef.getState() != GameState.RUNNING) {
+            return;
+          }
+          if (!BedwarsPRO.getInstance().getBotManager().isBot(botRef)) {
+            return;
+          }
+          if (!gameRef.isInGame(botRef)) {
+            return;
+          }
+          // 先解除 NMS dead 标志 + 确保实体在世界中 + 客户端重新生成实体。
+          // 必须在 setHealth 之前执行：bot 死亡时 isDead() 为 true，
+          // 1.12 CraftPlayer.setHealth 对 dead 玩家设置正血量会抛
+          // IllegalArgumentException（Cannot set health of dead player），
+          // 若 setHealth 在前会导致整个复活流程被 catch 吞掉、bot 永远卡死。
+          io.jmmym.bedwarspro.bot.BukkitFakePlayer.respawnFakePlayer(botRef);
+          // 服务端复活：恢复血量/食物/清效果
+          botRef.setHealth(botRef.getMaxHealth());
+          botRef.setFoodLevel(20);
+          botRef.setFireTicks(0);
+          botRef.getActivePotionEffects().forEach(pe -> botRef.removePotionEffect(pe.getType()));
+          // 传送到队伍出生点
+          Team team2 = gameRef.getPlayerTeam(botRef);
+          if (team2 != null && team2.getSpawnLocation() != null) {
+            botRef.teleport(team2.getSpawnLocation());
+          }
+          // 重置 AI 状态
+          io.jmmym.bedwarspro.bot.BotPlayer bp =
+              BedwarsPRO.getInstance().getBotManager().getBotPlayer(botRef);
+          if (bp != null) {
+            bp.respawn();
+          }
+          // 复活成功后再清除尸体和Tab条目：此时bot实体已存在，尸体清理不会影响复活流程
+          try {
+            io.jmmym.bedwarspro.bot.BukkitFakePlayer.removeCorpseForBot(botRef.getName());
+            io.jmmym.bedwarspro.bot.BukkitFakePlayer.sendRemovePlayerInfo(botRef.getUniqueId(), botRef.getName(), true);
+          } catch (Throwable t) {
+            io.jmmym.bedwarspro.bot.BukkitFakePlayer.botWarn("[Bot] 复活后清理尸体/Tab失败: " + t.getMessage());
+          }
+        } catch (Exception ignored) {
+        }
+      }, botRespawnDelay);
       return;
     }
 
@@ -1288,6 +1373,12 @@ public class PlayerListener extends BaseListener {
 
     if (game.getState() == GameState.RUNNING) {
       game.getCycle().onPlayerRespawn(pre, p);
+
+      // 清理 Corpse 尸体在 Tab 里的同名残留条目：Corpse 的 despawn 只发
+      // Destroy（实体消失），玩家死亡时尸体 show 发的 ADD_PLAYER（随机 UUID）
+      // 不会被 REMOVE_PLAYER 清理，重生后 Tab 会残留一条同名玩家名
+      io.jmmym.bedwarspro.bot.BukkitFakePlayer.scheduleCleanupPlayerCorpseTabs(p);
+
       if (XpManager.isXpMode(game) && game.isXpHealthEventTriggered()) {
         // 经验模式血量事件已触发：死亡/重生不影响该效果，保持最大血量上限
         p.setMaxHealth(Game.XP_HEALTH_EVENT_MAX_HEALTH);

@@ -143,7 +143,7 @@ public class JoinItem {
         unregisterPacketListener();
     }
 
-    /** 注册 ProtocolLib 包监听：拦截 1.8 右键空气（BLOCK_PLACE face=255）。 */
+    /** 注册 ProtocolLib 包监听：拦截右键空气（使用物品），兼容 1.8 与 1.9+。 */
     private void registerPacketListener() {
         if (packetListener != null
                 || !Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
@@ -152,26 +152,35 @@ public class JoinItem {
         try {
             ProtocolManager pm = ProtocolLibrary.getProtocolManager();
             packetListener = new PacketAdapter(plugin, ListenerPriority.NORMAL,
-                    PacketType.Play.Client.BLOCK_PLACE) {
+                    PacketType.Play.Client.BLOCK_PLACE,
+                    PacketType.Play.Client.USE_ITEM) {
                 @Override
                 public void onPacketReceiving(PacketEvent event) {
                     if (event.isCancelled()) {
                         return;
                     }
                     try {
-                        // 1.8 PacketPlayInBlockPlace 的 NMS 字段：BlockPosition / int b(方向) / ItemStack / float*3，
-                        // 没有 byte 字段，方向存在 int b 中（getIntegers().read(0)），255 = 右键空气（使用物品）。
-                        Integer face = event.getPacket().getIntegers().read(0);
-                        if (face != null && face == 255) {
-                            final Player player = event.getPlayer();
-                            // 包监听运行在 netty 线程，命令执行/插件消息必须切回主线程
-                            Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                                @Override
-                                public void run() {
-                                    JoinItem.this.onInteract(player);
-                                }
-                            });
+                        // BLOCK_PLACE：1.8 的右键空气用 face=255（使用物品）表示；
+                        // 1.9+ 中面向方块放置时 face 为方向 0-5，不在此处理（由 PlayerInteractEvent 兜底）。
+                        if (event.getPacketType() == PacketType.Play.Client.BLOCK_PLACE) {
+                            Integer face = event.getPacket().getIntegers().read(0);
+                            if (face == null || face != 255) {
+                                return;
+                            }
                         }
+                        // USE_ITEM（1.9+ 的 PacketPlayInUseItem）：收到即玩家右键使用手中物品（对着空气），直接触发。
+                        final Player player = event.getPlayer();
+                        // 包监听运行在 netty 线程，命令执行/插件消息必须切回主线程。
+                        // 在 netty 线程捕获"事件发生时的世界"——此时玩家尚未被游戏逻辑
+                        // （如等待大厅粘液球的 playerLeave）传送走；世界黑白名单基于它判断，
+                        // 否则处理时玩家已被传送到生效世界（床战大厅）导致误判触发 /hub。
+                        final String worldAtEvent = player.getWorld().getName();
+                        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                JoinItem.this.onInteract(player, worldAtEvent);
+                            }
+                        });
                     } catch (Exception ignored) {
                     }
                 }
@@ -213,7 +222,7 @@ public class JoinItem {
         if (player == null || !player.isOnline()) {
             return;
         }
-        if (!isActive() || inGame(player)) {
+        if (!isActive() || inGame(player) || isInGameWorld(player)) {
             return;
         }
         if (!config.isWorldEnabled(player.getWorld().getName())) {
@@ -312,13 +321,28 @@ public class JoinItem {
 
     /** 右键处理（由监听器调用）：匹配物品后校验冷却并执行对应指令。 */
     public void onInteract(Player player) {
+        this.onInteract(player, player.getWorld().getName());
+    }
+
+    /**
+     * 右键处理（带世界信息，由包监听器调用）。
+     *
+     * <p>worldAtEvent 为右键动作发生时玩家所在世界（ProtocolLib 在 netty 线程捕获，
+     * 此时玩家尚未被床战游戏逻辑传送走）；世界黑白名单基于它判断。
+     * 同时以 inGame 前置拦截对局中的玩家（任何世界都忽略），保证等待大厅的返回大厅
+     * 粘液球完全由床战游戏自身处理（playerLeave），不会误触发 /hub。</p>
+     */
+    public void onInteract(Player player, String worldAtEvent) {
         if (!isActive() || player == null || !player.isOnline()) {
             return;
         }
+        // 对局中（等待大厅/倒计时/进行中，任何世界）完全忽略：
+        // 等待大厅的返回大厅粘液球等物品由床战游戏自身处理（playerLeave），
+        // 本模块不响应，避免误把玩家用 /hub 送回主城
         if (inGame(player)) {
             return;
         }
-        if (!config.isWorldEnabled(player.getWorld().getName())) {
+        if (!config.isWorldEnabled(worldAtEvent)) {
             return;
         }
         ItemStack hand = player.getInventory().getItemInHand();
@@ -353,6 +377,26 @@ public class JoinItem {
         } else {
             player.performCommand(command); // 未配置 hubserver：交给原版提示 Unknown command
         }
+    }
+
+    /**
+     * 判断玩家当前所在世界是否属于某个床战对局地图（等待大厅/对局中都算）。
+     * <p>用于返回类物品（如 /hub）：玩家即使已被游戏逻辑移出对局
+     * （getGameOfPlayer 返回 null），只要还在游戏地图世界，本模块就不应执行命令，
+     * 避免把玩家从床战大厅再次送回主城。</p>
+     */
+    private boolean isInGameWorld(Player player) {
+        if (player == null || plugin.getGameManager() == null) {
+            return false;
+        }
+        String world = player.getWorld().getName();
+        for (io.jmmym.bedwarspro.game.Game game : plugin.getGameManager().getGames()) {
+            if (game.getRegion() != null && game.getRegion().getWorld() != null
+                    && game.getRegion().getWorld().getName().equals(world)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

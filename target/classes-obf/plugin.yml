@@ -7,7 +7,7 @@ description: |
 author: Ram, Modified By JmmYm
 website: https://github.com/JimmyZhc/bedwarsPRO
 main: io.jmmym.bedwarspro.BedwarsPRO
-version: 1.1.4
+version: 1.3.6
 
 depend: [ProtocolLib]
 softdepend: [Multiverse-Core, Multiworld, HolographicDisplays, Citizens, PlaceholderAPI, ServerJoiner, WorldEdit, BedwarsXP]
@@ -101,6 +101,14 @@ commands:
     description: 显示起床战争的统计数据
     usage: /<command>
     permission: bw.base
+  bw leaderboard:
+    description: 显示起床战争统计排行榜（击杀/死亡/胜利/失败/拆床/积分/KD）
+    usage: /<command> [kills|deaths|wins|loses|beds|score|kd]
+    permission: bw.base
+  bw rankleaderboard:
+    description: 显示排位赛 ELO 排行榜
+    usage: /<command>
+    permission: bw.base
   bw setminplayers:
     description: 设置游戏的最小玩家数量
     usage: /<command>
@@ -151,6 +159,10 @@ commands:
     description: BedwarsPRO 管理命令（任务系统/清除统计/清除地图记录等）
     usage: /<command> task [gui|on|off|publish <name>|clear|info] | clearstats <玩家> [确认码] | clearrecord <地图> [确认码]
     permission: bwpro.task.use
+  bwbot:
+    description: BedwarsPRO Bot管理命令
+    usage: /<command> [add|remove|list|reload]
+    permission: bwbot.admin
 
 permissions:
   bw.base:
@@ -230,6 +242,12 @@ permissions:
   bwpro.task.reload:
     description: 允许重载 tasks.yml 配置
     default: op
+  bwbot.admin:
+    description: 允许管理Bot系统（添加/移除Bot）
+    default: op
+  bwbot.use:
+    description: 允许使用Bot基础命令
+    default: true
   bwpro.quickstash.use:
     description: 允许使用快捷存入功能与 /bwpro quickstash 命令
     default: true

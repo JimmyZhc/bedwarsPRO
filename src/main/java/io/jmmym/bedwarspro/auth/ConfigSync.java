@@ -31,7 +31,7 @@ public final class ConfigSync {
     public static final String[] LOCAL_OTHER_FILES = {
             "tasks/messages.yml",
             "api.yml",
-            "shop/shop.yml",
+            "shop/item_shop.yml",
             "shop/xp_shop.yml",
             "Scoreboard/config.yml",
             "Scoreboard/join-item.yml",

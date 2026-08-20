@@ -65,6 +65,11 @@ public class BotCommand extends BaseCommand {
       player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "你当前不在任何游戏中！"));
       return true;
     }
+    if (game.getState() != io.jmmym.bedwarspro.game.GameState.WAITING) {
+      // 游戏已开始：bot 只能进等待中的对局，此时添加会被随机塞进其他等待图（进错图）
+      player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "游戏已开始，只能在等待中加入Bot！"));
+      return true;
+    }
 
     int count = 1;
     if (args.size() > 1) {

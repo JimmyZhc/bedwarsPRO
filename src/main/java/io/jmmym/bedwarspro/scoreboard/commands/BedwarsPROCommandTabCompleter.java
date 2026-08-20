@@ -61,7 +61,10 @@ public class BedwarsPROCommandTabCompleter implements TabCompleter {
 					return games;
 				}
 			} else if (args[0].equalsIgnoreCase("join")) {
-				return games;
+				List<String> list = new ArrayList<String>(games);
+				list.add("ranked");
+				list.add("casual");
+				return list;
 			} else if (args[0].equalsIgnoreCase("setspawn")) {
 				if (sender.hasPermission("bw.setup")) {
 					return games;
@@ -147,6 +150,9 @@ public class BedwarsPROCommandTabCompleter implements TabCompleter {
 				for (Team team : game.getTeams().values()) {
 					teams.add(team.getName());
 				}
+			}
+			if (args[0].equalsIgnoreCase("join") && args[1].equalsIgnoreCase("casual")) {
+				return Arrays.asList("xp", "item");
 			}
 			if (args[0].equalsIgnoreCase("setspawner")) {
 				if (sender.hasPermission("bw.setup")) {

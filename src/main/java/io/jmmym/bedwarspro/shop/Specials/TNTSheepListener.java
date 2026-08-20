@@ -131,8 +131,12 @@ public class TNTSheepListener implements Listener {
 
     creature.setPlayer(player);
     creature.setGame(game);
-    creature.run(startLocation);
-    event.setCancelled(true);
+    boolean used = creature.run(startLocation);
+    if (used) {
+      // 只有真正消耗了 TNT 羊蛋才取消事件；
+      // 宠物系统的怪物蛋返回 false，事件保持未取消，正常走宠物生成
+      event.setCancelled(true);
+    }
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)

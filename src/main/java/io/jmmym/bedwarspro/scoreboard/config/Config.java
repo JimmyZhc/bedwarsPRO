@@ -672,6 +672,25 @@ public class Config {
 		}
 	}
 
+	/**
+	 * 把 jar 内 images/README.txt 同步到插件目录 images/README.txt。
+	 * 每次启动（loadImages）与版本更新完成后都会调用，确保更新说明始终是 jar 内的最新内容。
+	 */
+	public static void syncReadme() {
+		try {
+			File folder = new File(Main.getInstance().getDataFolder(), "/images");
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
+			InputStream in = Main.getInstance().getResource("images/README.txt");
+			if (in == null) {
+				return; // jar 内没有该资源时跳过，避免写入空文件
+			}
+			writeToLocal(folder.getPath() + "/README.txt", in);
+		} catch (Exception e) {
+		}
+	}
+
 	private static void loadImages() {
 		image_maps = new ArrayList<MapView>();
 		File folder = new File(Main.getInstance().getDataFolder(), "/images");

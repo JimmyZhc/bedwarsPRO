@@ -110,19 +110,24 @@ public abstract class GameCycle {
 
     Team deathTeam = this.getGame().getPlayerTeam(player);
     if (BedwarsPRO.getInstance().statisticsEnabled()) {
-      diePlayer = BedwarsPRO.getInstance().getPlayerStatisticManager().getStatistic(player);
+      // bot 受害者没有真实统计，不写死亡统计；击杀者统计照常（bot 击杀者同样跳过）
+      boolean victimIsBot = BedwarsPRO.getInstance().getBotManager().isBot(player);
+      boolean killerIsBot = killer != null && BedwarsPRO.getInstance().getBotManager().isBot(killer);
 
       boolean onlyOnBedDestroy =
           BedwarsPRO.getInstance().getBooleanConfig("statistics.bed-destroyed-kills", false);
       boolean teamIsDead = deathTeam.isDead(this.getGame());
 
-      if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
-        diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
-        diePlayer.setCurrentScore(diePlayer.getCurrentScore() + BedwarsPRO
-            .getInstance().getIntConfig("statistics.scores.die", 0));
+      if (!victimIsBot) {
+        diePlayer = BedwarsPRO.getInstance().getPlayerStatisticManager().getStatistic(player);
+        if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
+          diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
+          diePlayer.setCurrentScore(diePlayer.getCurrentScore() + BedwarsPRO
+              .getInstance().getIntConfig("statistics.scores.die", 0));
+        }
       }
 
-      if (killer != null) {
+      if (killer != null && !killerIsBot) {
         if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
           killerPlayer = BedwarsPRO.getInstance().getPlayerStatisticManager().getStatistic(killer);
           if (killerPlayer != null) {
@@ -135,6 +140,7 @@ public abstract class GameCycle {
 
       // dispatch reward commands directly
       if (BedwarsPRO.getInstance().getBooleanConfig("rewards.enabled", false) && killer != null
+          && !killerIsBot
           && ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy)) {
         List<String> commands = BedwarsPRO.getInstance().getConfig()
             .getStringList("rewards.player-kill");
@@ -289,7 +295,13 @@ public abstract class GameCycle {
   @SuppressWarnings("unchecked")
   private void runGameOver(Team winner) {
     BedwarsGameOverEvent overEvent = new BedwarsGameOverEvent(this.getGame(), winner);
-    BedwarsPRO.getInstance().getServer().getPluginManager().callEvent(overEvent);
+    try {
+      BedwarsPRO.getInstance().getServer().getPluginManager().callEvent(overEvent);
+    } catch (Throwable ex) {
+      // 监听器异常（如 bot 结算等）不能中断游戏结束流程
+      BedwarsPRO.getInstance().getBugsnag().notify(ex);
+      ex.printStackTrace();
+    }
 
     if (overEvent.isCancelled()) {
       return;
@@ -306,8 +318,13 @@ public abstract class GameCycle {
     }
 
     // 游戏结束：给所有在线玩家发放返回大厅粘液球
-    io.jmmym.bedwarspro.listener.ReturnLobbyListener.getInstance()
-        .giveReturnLobbySlimeBallsToGamePlayers(this.getGame());
+    try {
+      io.jmmym.bedwarspro.listener.ReturnLobbyListener.getInstance()
+          .giveReturnLobbySlimeBallsToGamePlayers(this.getGame());
+    } catch (Throwable ex) {
+      BedwarsPRO.getInstance().getBugsnag().notify(ex);
+      ex.printStackTrace();
+    }
 
     // new record?
     boolean storeRecords = BedwarsPRO.getInstance().getBooleanConfig("store-game-records", true);

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import io.jmmym.bedwarspro.BedwarsPRO;
 import io.jmmym.bedwarspro.game.Game;
 import io.jmmym.bedwarspro.game.GameState;
+import io.jmmym.bedwarspro.listener.ReturnLobbyListener;
 import io.jmmym.bedwarspro.rank.RankManager;
 import io.jmmym.bedwarspro.utils.ChatWriter;
 import io.jmmym.bedwarspro.utils.Utils;
@@ -25,19 +26,31 @@ public class JoinGameCommand extends BaseCommand {
       return false;
     }
 
+    // 记录玩家本次 /bw join 的选择，供游戏结束菜单「再来一次」按原选择重新加入
+    // （casual item / casual xp / ranked / random / 指定图名）
+    if (sender instanceof Player) {
+      ReturnLobbyListener.recordJoinMode(
+          ((Player) sender).getUniqueId(), String.join(" ", args));
+    }
+
     Player player = (Player) sender;
     Game game = this.getPlugin().getGameManager().getGame(args.get(0));
     Game gameOfPlayer = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(player);
 
     if (gameOfPlayer != null) {
       if (gameOfPlayer.getState() == GameState.RUNNING) {
-        sender.sendMessage(
-            ChatWriter
-                .pluginMessage(ChatColor.RED + BedwarsPRO._l(sender, "errors.notwhileingame")));
-        return false;
-      }
-
-      if (gameOfPlayer.getState() == GameState.WAITING) {
+        // 游戏结束流程中（runGameOver 已发放「再来一次」菜单、玩家还没被踢出大厅时，
+        // 游戏状态仍是 RUNNING）：旧游戏已结束，允许先退出旧游戏再重新加入，
+        // 否则「再来一次」会被 notwhileingame（你不能在一个已开始中的游戏）拒绝
+        if (gameOfPlayer.getCycle().isEndGameRunning()) {
+          gameOfPlayer.playerLeave(player, false);
+        } else {
+          sender.sendMessage(
+              ChatWriter
+                  .pluginMessage(ChatColor.RED + BedwarsPRO._l(sender, "errors.notwhileingame")));
+          return false;
+        }
+      } else if (gameOfPlayer.getState() == GameState.WAITING) {
         gameOfPlayer.playerLeave(player, false);
       }
     }
@@ -59,14 +72,18 @@ public class JoinGameCommand extends BaseCommand {
         return true;
       }
 
-      // /bw join casual|random — 随机进一张「未配置为排位图」的休闲等待图
       // /bw join casual xp|item — 指定商店模式，只从经验模式/物品模式的休闲图中随机
+      // casual 必须指定商店模式：不带 xp/item 参数不允许加入
       Boolean xpFilter = null;
-      if (args.size() > 1 && args.get(0).equalsIgnoreCase("casual")) {
-        if (args.get(1).equalsIgnoreCase("xp")) {
+      if (args.get(0).equalsIgnoreCase("casual")) {
+        if (args.size() > 1 && args.get(1).equalsIgnoreCase("xp")) {
           xpFilter = Boolean.TRUE;
-        } else if (args.get(1).equalsIgnoreCase("item")) {
+        } else if (args.size() > 1 && args.get(1).equalsIgnoreCase("item")) {
           xpFilter = Boolean.FALSE;
+        } else {
+          sender.sendMessage(ChatWriter.pluginMessage(
+              ChatColor.RED + "请指定商店模式：/bw join casual <xp|item>"));
+          return true;
         }
       }
       ArrayList<Game> games = new ArrayList<>();
@@ -82,7 +99,16 @@ public class JoinGameCommand extends BaseCommand {
             ChatWriter.pluginMessage(ChatColor.RED + BedwarsPRO._l(sender, "errors.nofreegames")));
         return true;
       }
-      game = games.get(Utils.randInt(0, games.size() - 1));
+      // 智能选图：优先加入已有人在等待的对局（聚人开局），
+      // 若所有等待对局都无人，再从全部等待对局中随机选一张
+      ArrayList<Game> withPlayers = new ArrayList<>();
+      for (Game g : games) {
+        if (!g.getPlayers().isEmpty()) {
+          withPlayers.add(g);
+        }
+      }
+      ArrayList<Game> pool = withPlayers.isEmpty() ? games : withPlayers;
+      game = pool.get(Utils.randInt(0, pool.size() - 1));
     }
 
     if (game.playerJoins(player)) {

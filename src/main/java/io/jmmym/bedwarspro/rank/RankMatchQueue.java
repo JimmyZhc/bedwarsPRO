@@ -28,9 +28,7 @@ import org.bukkit.scheduler.BukkitTask;
  */
 public class RankMatchQueue {
 
-  /** 蛇形分配索引：16 人 → 红绿蓝黄 / 黄蓝绿红 / 红绿蓝黄 / 黄蓝绿红。 */
-  private static final int[] SNAKE = {0, 1, 2, 3, 3, 2, 1, 0, 0, 1, 2, 3, 3, 2, 1, 0};
-  /** 排位分队顺序。 */
+  /** 排位分队顺序（按蛇形公式动态分配，适配任意地图人数，不写死 16 人）。 */
   private static final TeamColor[] TEAM_ORDER = {TeamColor.RED, TeamColor.GREEN, TeamColor.BLUE, TeamColor.YELLOW};
 
   private final LinkedHashMap<UUID, Player> queue = new LinkedHashMap<>();
@@ -83,8 +81,6 @@ public class RankMatchQueue {
       return false;
     }
 
-    int total = RankManager.getInstance().getMatchPlayers();
-
     // 优先加入已存在的排位等待大厅，否则创建新房间（只在配置的排位图中随机）
     Game game = this.findRankedLobby();
     if (game == null) {
@@ -93,8 +89,11 @@ public class RankMatchQueue {
         RankMessages.msg(p, "queue.no-map");
         return false;
       }
-      game.setMinPlayers(total);
+      // 满员人数 = 该地图的最大游戏人数（不写死 16 人）；开启大厅倒计时也按此人数
+      int target = this.matchTarget(game);
+      game.setMinPlayers(target);
     }
+    int total = this.matchTarget(game);
 
     if (!game.playerJoins(p)) {
       RankMessages.msg(p, "queue.no-map");
@@ -121,7 +120,8 @@ public class RankMatchQueue {
     if (this.queue.containsKey(uuid)) {
       return;
     }
-    int total = RankManager.getInstance().getMatchPlayers();
+    int total = g.getMaxPlayers() > 0 ? g.getMaxPlayers()
+        : RankManager.getInstance().getMatchPlayers();
     this.queue.put(uuid, p);
     this.queuedAt.put(uuid, System.currentTimeMillis());
     this.warned.put(uuid, Boolean.FALSE);
@@ -160,7 +160,20 @@ public class RankMatchQueue {
   // ===== 内部 =====
 
   private void tick() {
+    // 满员人数 = 当前排位房地图的最大游戏人数（不写死 16 人），
+    // 拿不到房间时回退到配置的 match.players
     int total = RankManager.getInstance().getMatchPlayers();
+    Game ranked = null;
+    for (Player qp : this.queue.values()) {
+      Game g = BedwarsPRO.getInstance().getGameManager().getGameOfPlayer(qp);
+      if (g != null) {
+        ranked = g;
+        break;
+      }
+    }
+    if (ranked != null && ranked.getMaxPlayers() > 0) {
+      total = ranked.getMaxPlayers();
+    }
     long now = System.currentTimeMillis();
     int lowWaitTimeout = RankManager.getInstance().getLowWaitTimeout();
 
@@ -227,7 +240,7 @@ public class RankMatchQueue {
     if (game == null || game.getState() != GameState.WAITING) {
       return;
     }
-    if (game.getPlayers().size() < RankManager.getInstance().getMatchPlayers()) {
+    if (game.getPlayers().size() < this.matchTarget(game)) {
       return;
     }
     // 倒计时已开始（或对局已进入倒计时阶段）：不重复分配
@@ -261,7 +274,6 @@ public class RankMatchQueue {
 
   /** 寻找已存在且未满员的排位等待大厅（仅复用「有人」的排位房，实现后续玩家集中匹配）。 */
   private Game findRankedLobby() {
-    int total = RankManager.getInstance().getMatchPlayers();
     for (Game g : BedwarsPRO.getInstance().getGameManager().getGames()) {
       if (g.getState() != GameState.WAITING) {
         continue;
@@ -273,7 +285,7 @@ public class RankMatchQueue {
         // 空的排位房不复用：让首位玩家走随机选房（cleanup 会释放其标记）
         continue;
       }
-      if (g.getPlayers().size() >= total) {
+      if (g.getPlayers().size() >= this.matchTarget(g)) {
         continue;
       }
       if (g.checkGame() != GameCheckCode.OK) {
@@ -340,11 +352,25 @@ public class RankMatchQueue {
     });
 
     Map<UUID, TeamColor> map = new HashMap<>();
+    int n = RankMatchQueue.TEAM_ORDER.length;
     for (int i = 0; i < sorted.size(); i++) {
-      map.put(sorted.get(i).getUniqueId(),
-          RankMatchQueue.TEAM_ORDER[RankMatchQueue.SNAKE[i % RankMatchQueue.SNAKE.length]]);
+      // 蛇形公式（等价于固定 16 人的 0,1,2,3,3,2,1,0 循环，但适配任意人数）：
+      // 偶数轮正向 0..n-1，奇数轮反向 n-1..0
+      int block = i / n;
+      int pos = i % n;
+      int idx = (block % 2 == 0) ? pos : (n - 1 - pos);
+      map.put(sorted.get(i).getUniqueId(), RankMatchQueue.TEAM_ORDER[idx]);
     }
     return map;
+  }
+
+  /** 该排位房的满员人数：优先地图最大游戏人数（各队上限之和，不写死 16 人），
+   * 拿不到时回退到配置的 match.players。 */
+  private int matchTarget(Game game) {
+    if (game != null && game.getMaxPlayers() > 0) {
+      return game.getMaxPlayers();
+    }
+    return RankManager.getInstance().getMatchPlayers();
   }
 
   private Team getTeamByColor(Game game, TeamColor color) {

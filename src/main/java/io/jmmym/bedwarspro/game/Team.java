@@ -55,8 +55,10 @@ public class Team implements ConfigurationSerializable {
     if (deserialize.containsKey("bedhead")) {
       this.setTargetHeadBlock(Utils.locationDeserialize(deserialize.get("bedhead")));
 
-      if (this.getTargetHeadBlock() != null && deserialize.containsKey("bedfeed")
-          && this.getTargetHeadBlock().getBlock().getType().equals(Material.BED_BLOCK)) {
+      if (this.getTargetHeadBlock() != null && deserialize.containsKey("bedfeed")) {
+        // 无条件恢复 bedfeed：不能依赖"加载瞬间 head 方块是否为床"来判断，
+        // 否则服务器启动早期 chunk 未加载时 getType() 返回 AIR，feet 会被永久
+        // 丢弃，导致 checkGame 永远报"有队伍没有设置床"。真实性交给运行时校验。
         this.setTargetFeetBlock(Utils.locationDeserialize(deserialize.get("bedfeed")));
       }
     }

@@ -40,8 +40,6 @@ public class HolographicAPI {
 	private String title;
 	private BukkitTask task;
 	private List<ItemStack> equipment;
-	private WrappedDataWatcher.Serializer stringserializer;
-	private WrappedDataWatcher.Serializer booleanserializer;
 	@Getter
 	private boolean removed;
 
@@ -52,10 +50,6 @@ public class HolographicAPI {
 		equipment = new ArrayList<ItemStack>();
 		location = loc.clone();
 		this.title = title;
-		if (!BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
-			stringserializer = WrappedDataWatcher.Registry.get(String.class);
-			booleanserializer = WrappedDataWatcher.Registry.get(Boolean.class);
-		}
 		removed = false;
 		task = new BukkitRunnable() {
 			@Override
@@ -141,15 +135,19 @@ public class HolographicAPI {
 						if (BedwarsPRO.getInstance().getCurrentVersion().startsWith("v1_8")) {
 							packet.getWatchableCollectionModifier().write(0, Arrays.asList(new WrappedWatchableObject(2, title)));
 						} else {
-							WrappedDataWatcher wrappedDataWatcher = new WrappedDataWatcher();
+							// 1.9+ 必须显式指定 serializer，否则生成的 DataWatcherObject.b()==null，
+							// GrimAC(PacketEvents) 读取该 ENTITY_METADATA 包会抛 NPE/越界
+							WrappedDataWatcher.Serializer stringSerializer = WrappedDataWatcher.Registry.get(String.class);
+							WrappedDataWatcher.Serializer boolSerializer = WrappedDataWatcher.Registry.get(Boolean.class);
 							if (title != null) {
-								wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, stringserializer), title);
-								wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, booleanserializer), true);
+								packet.getWatchableCollectionModifier().write(0, Arrays.asList(
+										new WrappedWatchableObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, stringSerializer), title),
+										new WrappedWatchableObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, boolSerializer), true)));
 							} else {
-								wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, stringserializer), "");
-								wrappedDataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, booleanserializer), false);
+								packet.getWatchableCollectionModifier().write(0, Arrays.asList(
+										new WrappedWatchableObject(new WrappedDataWatcher.WrappedDataWatcherObject(2, stringSerializer), ""),
+										new WrappedWatchableObject(new WrappedDataWatcher.WrappedDataWatcherObject(3, boolSerializer), false)));
 							}
-							packet.getWatchableCollectionModifier().write(0, wrappedDataWatcher.getWatchableObjects());
 						}
 						try {
 							protocolManager.sendServerPacket(player, packet);
